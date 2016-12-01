@@ -1,5 +1,5 @@
 #' @import stringr
-#' @importFrom purrr map_chr
+#' @import purrr
 #' @import assertthat
 NULL
 
@@ -291,6 +291,8 @@ providecommand <- function(...) {
 }
 
 #' @export
+#' @param ... Arguments passed to \code{ltxnewcommand} in
+#'   \code{newcommand} and \code{renewcommand}.
 #' @rdname ltxnewcommand
 newcommand <- function(...) {
   as.character(ltxnewcommand(..., command = "newcommand"))
@@ -334,6 +336,27 @@ renewcommand <- function(...) {
 
 ## LaTeX Environment
 
+#' Render a LaTeX New Environment
+#'
+#' Create an object representating a \verb{\\newenvironment}
+#' command in LaTeX.
+#'
+#' When rendered, the object produces the following
+#' LaTeX command
+#' \verb{\\newenvironment{name}[nargs]default]{begin_def}{end_def}}.
+#'
+#' @param name LaTeX environment name
+#' @param begin_def Beginning definition of the environment
+#' @param end_def End definition of the environment
+#' @param nargs The number of arguments
+#' @param default A default value for the first argument.
+#' @param command The LaTeX command to use for defining an environment.
+#' @param starred If \code{TRUE}, the use the starred versions of \code{command};
+#'   e.g. \verb{\\newenvironment*} and \verb{\\renewenvironment}.
+#' @return An object of class \code{latex_newenvironment}.
+#'   This is a list with elements \code{name}, \code{begin_def},
+#'   \code{nargs}, \code{default}, \code{command}, \code{starred}.
+#' @export
 ltxnewenv <- function(name,
                       begin_def = character(),
                       end_def = character(),
@@ -377,6 +400,8 @@ as.character.latex_newenvironment <- function(x, ...) {
 format.latex_newenvirnoment <- as.character.latex_newenvironment
 
 #' @export
+#' @param ... Arguments passed to \code{ltxnewenv} in  \code{newenvironment}
+#'   and \code{rewnewenvironment}.
 #' @rdname ltxnewenv
 newenvironment <- function(...) {
   as.character(ltxnewenv(..., command = "newenvironment"))
@@ -400,14 +425,6 @@ renewenvironment <- function(...) {
 # }
 
 
-# list_to_latex <- function(x, ...) {
-#   # LaTeX -> nothing
-#   # character -> escaped LaTeX
-#   # expression -> verbatim
-#   # integer, number -> math
-#   # markdown -> rendered to LaTeX
-# }
-
 regex_chunker_ <- function(string, regex) {
   idx <- str_locate_all(string, regex)[[1]]
   parsed_str <- vector("list", 2 * nrow(idx) + 2)
@@ -429,9 +446,10 @@ regex_chunker_ <- function(string, regex) {
     k <- k + 1L
     last_idx <- idx[i, "end"]
   }
-  if (idx[i, "end"] != nrow(idx)) {
-    parsed_str[[k]] <- list(str_sub(string, last_idx + 1L, -1L)[[1]],
-                            FALSE)
+  if (last_idx == 0 || last_idx != nrow(idx)) {
+    parsed_str[[k]] <-
+      list(str_sub(string, last_idx + 1L, -1L)[[1]],
+                   FALSE)
   }
   compact(parsed_str)
 }
@@ -446,10 +464,11 @@ chunk_replacer_ <- function(.x,
                             collapse = "") {
   FUNC <- function(x) {
     if (x[[2]]) {
-      fun_match(x[[1]])
+      ret <- fun_match(x[[1]])
     } else {
-      fun_nonmatch(x[[1]])
+      ret <- fun_nonmatch(x[[1]])
     }
+    ret
   }
   newstr <- map_chr(.x, FUNC)
   str_c(newstr, collapse = collapse)
@@ -459,7 +478,8 @@ chunk_replacer <- function(.x,
                            fun_match = identity,
                            fun_nonmatch = identity,
                            collapse="") {
-  map_chr(.x, chunk_replacer_,
+  map_chr(.x,
+          chunk_replacer_,
           fun_match = fun_match,
           fun_nonmatch = fun_nonmatch,
           collapse = collapse)
@@ -486,12 +506,10 @@ to_latex.default <- function(x, escape = FALSE, ...) {
 
 to_latex.LaTeX <- identity
 
-to_latex.Markdown <-
-
 # TODO: automatically set to_latex to use toLatex methods or
 # define to_latex = toLatex
-to_latex.sessionInfo <- toLatex.sessionInfo
-to_latex.citEntry <- toLatex.citEntry
+# to_latex.sessionInfo <- toLatex.sessionInfo
+# to_latex.citEntry <- toLatex.citEntry
 
 # TODO: use knitr_print() in some way
 # TODO: convert Markdown to LaTeX in some way.
@@ -499,7 +517,7 @@ to_latex.citEntry <- toLatex.citEntry
 list_to_macros <- function(x, to_latex_opts = list(), ...) {
   f <- function(name, val, ...) {
     description <- invoke(to_latex, to_latex_opts, x = val)
-    as.character(ltxnewcmd(name, description, ...))
+    as.character(ltxnewcommand(name, description, ...))
   }
 }
 
@@ -539,12 +557,23 @@ URL_REGEX <- str_c(
   collapse = ""
 )
 
-url_escaper <- function(string) {
-  replacement <- function(x) {
-    str_c("\\url{", x, "}")
+
+escape_latex_ <- function(x, ellipses=TRUE) {
+  # TODO: escape URLS:
+  # e.g. http://stackoverflow.com/questions/26496538/extract-urls-with-regex-into-a-new-data-frame-column
+  special_char <- c("{", "}", "#", "$", "&", "_", "%")
+  special_char_pattern <-  str_c("[", str_c(special_char, collapse = ""), "]")
+  x <- str_replace_all(x, str_c("(", special_char_pattern, ")"), "\\\\\\1")
+  # backslashes that are not escaping special characters
+  x <- str_replace_all(x, str_c('\\\\', "(?!", special_char_pattern, ")"),
+                       '\\\\textbackslash{}')
+  x <- str_replace_all(x, fixed("~"), "\\textasciitilde{}")
+  x <- str_replace_all(x, fixed("^"), "\\textasciicircum{}")
+  if (ellipses) {
+    # Only replace ellipses when ... exactly
+    x <- str_replace_all(x, "(?<!\\.)[.]{3}(?!\\.)", "\\\\dots")
   }
-  chunk_replacer(regex_chunker(string, URL_REGEX),
-                 fun_match = replacement)
+  x
 }
 
 #' Escape LaTeX special characters
@@ -563,23 +592,26 @@ url_escaper <- function(string) {
 #' \verb{\%}     \tab  \verb{\\\%} \cr
 #' \verb{\\}     \tab  \verb{\\textbackslash{}} \cr
 #' \verb{~}      \tab  \verb{\\textasciitilde{}} \cr
-#' \verb{^}      \tab  \verb{\\textasciicircum{}}
+#' \verb{^}      \tab  \verb{\\textasciicircum{}} \cr
+#' \verb{...}    \tab  \verb{\\dots}
 #' }
 #'
-#'
 #' @param x Character vector
+#' @param url If \code{TRUE}, escape URLs by enclosing them in \verb{\url} macros.
+#' @param ellipses If \code{TRUE}, replace \verb{...}.
 #' @return A character vector with all LaTeX special characters escaped.
 #' @export
-escape_latex <- function(x) {
-  # TODO: escape URLS:
-  # e.g. http://stackoverflow.com/questions/26496538/extract-urls-with-regex-into-a-new-data-frame-column
-  special_char <- c("{", "}", "#", "$", "&", "_", "%")
-  special_char_pattern <-  str_c("[", str_c(special_char, collapse = ""), "]")
-  x <- str_replace_all(x, str_c("(", special_char_pattern, ")"), "\\\\\\1")
-  # backslashes that are not escaping special characters
-  x <- str_replace_all(x, str_c('\\\\', "(?!", special_char_pattern, ")"),
-                       '\\\\textbackslash{}')
-  x <- str_replace_all(x, fixed("~"), "\\textasciitilde{}")
-  x <- str_replace_all(x, fixed("^"), "\\textasciicircum{}")
-  x
+escape_latex <- function(x, url=TRUE, ellipses=TRUE) {
+  assert_that(is.flag(url))
+  assert_that(is.flag(ellipses))
+  if (url) {
+    chunk_replacer(regex_chunker(x, URL_REGEX),
+                   fun_match = function(x) macro("url", x),
+                   fun_nonmatch = function(x) {
+                     escape_latex_(x, ellipses=ellipses)
+                   })
+  } else {
+    escape_latex_(x, ellipses=ellipses)
+  }
 }
+

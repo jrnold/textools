@@ -30,6 +30,9 @@ renewcommand(...)
 
 \item{starred}{If \code{TRUE}, use the starred versions of the
 commands, e.g. \verb{\\\\providecommand*}.}
+
+\item{...}{Arguments passed to \code{ltxnewcommand} in
+\code{newcommand} and \code{renewcommand}.}
 }
 \value{
 An object of class \code{"latex_newcommand"},

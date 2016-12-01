@@ -29,3 +29,14 @@ test_that("escape latex works with muliple characters", {
   expect_equivalent(f(escape_latex(names(special_chars))),
                     f(special_chars))
 })
+
+test_that("escaping ... works", {
+  expect_equivalent(escape_latex(" ... "), " \\dots ")
+  expect_equivalent(escape_latex(" ... ", ellipses=TRUE), " \\dots ")
+  expect_equivalent(escape_latex(" ... ", ellipses=FALSE), " ... ")
+})
+
+test_that("escaping ... does no work when not three dots exactly", {
+  expect_equivalent(escape_latex("..", ellipses=TRUE), "..")
+  expect_equivalent(escape_latex("....", ellipses=TRUE), "....")
+})
