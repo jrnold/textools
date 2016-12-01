@@ -465,6 +465,44 @@ chunk_replacer <- function(.x,
           collapse = collapse)
 }
 
+### To LaTeX
+
+LaTeX <- function(x, escape = FALSE, ...) {
+  x <- as.character(x)
+  if (escape) {
+    x <- escape_latex(x, ...)
+  }
+  structure(x, class = c("LaTeX", "character"))
+}
+
+to_latex <- function(x, ...) {
+  UseMethod("to_latex")
+}
+
+to_latex.default <- function(x, escape = FALSE, ...) {
+  # TODO: call toLatex if it exists
+  LaTeX(as.character(x), escape = TRUE, ...)
+}
+
+to_latex.LaTeX <- identity
+
+to_latex.Markdown <-
+
+# TODO: automatically set to_latex to use toLatex methods or
+# define to_latex = toLatex
+to_latex.sessionInfo <- toLatex.sessionInfo
+to_latex.citEntry <- toLatex.citEntry
+
+# TODO: use knitr_print() in some way
+# TODO: convert Markdown to LaTeX in some way.
+
+list_to_macros <- function(x, to_latex_opts = list(), ...) {
+  f <- function(name, val, ...) {
+    description <- invoke(to_latex, to_latex_opts, x = val)
+    as.character(ltxnewcmd(name, description, ...))
+  }
+}
+
 URL_REGEX <- str_c(
   # protocol identifier
   "(?:(?:https?|ftp)://)",
@@ -545,5 +583,3 @@ escape_latex <- function(x) {
   x <- str_replace_all(x, fixed("^"), "\\textasciicircum{}")
   x
 }
-
-
