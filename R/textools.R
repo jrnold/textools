@@ -170,12 +170,43 @@ latex_macros <- function(name, value, sep="\n") {
   str_c("\\newcommand", brackets(name), brackets(value))
 }
 
-list_to_latex <- function(x, ...) {
-  # LaTeX -> nothing
-  # character -> escaped LaTeX
-  # expression -> verbatim
-  # integer, number -> math
-  # markdown -> rendered to LaTeX
+### To LaTeX
+
+LaTeX <- function(x, escape = FALSE, ...) {
+  x <- as.character(x)
+  if (escape) {
+    x <- escape_latex(x, ...)
+  }
+  structure(x, class = c("LaTeX", "character"))
+}
+
+to_latex <- function(x, ...) {
+  UseMethod("to_latex")
+}
+
+to_latex.default <- function(x, escape = FALSE, ...) {
+  # TODO: call toLatex if it exists
+  LaTeX(as.character(x), escape = TRUE, ...)
+}
+
+to_latex.LaTeX <- identity
+
+to_latex.Markdown <-
+
+# TODO: automatically set to_latex to use toLatex methods or
+# define to_latex = toLatex
+to_latex.sessionInfo <- toLatex.sessionInfo
+to_latex.citEntry <- toLatex.citEntry
+
+# TODO: use knitr_print() in some way
+# TODO: convert Markdown to LaTeX in some way.
+
+list_to_macros <- function(x, to_latex_opts = list(), ...) {
+  f <- function(name, val, ...) {
+    description <- invoke(to_latex, to_latex_opts, x = val)
+    as.character(ltxnewcmd(name, description, ...))
+  }
+  pmap(f, names(x), x, ...)
 }
 
 escape_latex <- function(x) {
