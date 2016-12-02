@@ -104,7 +104,7 @@ escape_latex <- function(x, url=TRUE, ellipses=TRUE) {
   assert_that(is.flag(ellipses))
   if (url) {
     chunk_replacer(regex_chunker(x, URL_REGEX),
-                   fun_match = function(x) macro("url", x),
+                   fun_match = function(x) texcmd("url", x),
                    fun_nonmatch = function(x) {
                      escape_latex_(x, ellipses=ellipses)
                    })

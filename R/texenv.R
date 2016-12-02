@@ -10,8 +10,10 @@
 #' @param ... Other arguments needed for method definitions
 #' @return An object of class \code{"texenv"}, which is a list with
 #'   elements \code{name}, \code{content}, \code{args}, and \code{optargs}.
+#' @name texenv
+#' @rdname texenv
 #' @export
-texenv <- function(name, content, args = NULL, optargs = NULL) {
+texenv_ <- function(name, content, args = NULL, optargs = NULL) {
   assert_that(is.string(name))
   assert_that(.valid_macroname(name))
   assert_that(is.null(optargs) || is.character(optargs))
@@ -27,15 +29,15 @@ texenv <- function(name, content, args = NULL, optargs = NULL) {
 }
 
 #' @export
-as.character.texenv <- function(x, ...) {
-  str_c(macro("begin", args = c(x[["name"]], x[["args"]]),
+format.texenv <- function(x, ...) {
+  latex(str_c(texcmd("begin", args = c(x[["name"]], x[["args"]]),
               optargs = x[["optargs"]]),
         x[["content"]],
-        macro("end", args = x[["name"]]))
+        texcmd("end", args = x[["name"]])), escape=FALSE)
 }
 
 #' @export
-format.texenv <- as.character.texenv
+as.character.texenv <- format.texenv
 
 #' @export
 print.texenv <- function(x, ...) {
@@ -45,4 +47,4 @@ print.texenv <- function(x, ...) {
 
 #' @export
 #' @rdname texenv
-begin <- function(...) as.character(texenv(...))
+texenv <- function(...) format(texenv(...))

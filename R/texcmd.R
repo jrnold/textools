@@ -1,7 +1,12 @@
-#' LaTeX Macros
+#' LaTeX commands (macros)
 #'
 #' This returns text wrapped in a LaTeX macro:
 #' \verb{\\cmd[optional]\{arg[1]\}\{arg[2]\}}.
+#'
+#' The function \code{texcmd_} returns a list with the elements
+#' in the LaTeX macro, while the function \code{texcmd} returns
+#' the rendered LaTeX string as a character vector;
+#' executing \code{texcmd(x)} is equivalent to \code{format(texcmd_(x))}.
 #'
 #' @param command character Name of the LaTeX command
 #' @param args character vector.
@@ -9,12 +14,15 @@
 #'    square brackets. Any named elments are converted to key=value
 #'    pairs as is common in many macros. If \code{length(args) > 1},
 #'    then arguments are comma separated.
-#' @param x In methods, the \code{macro} object.
+#' @param x In methods, the \code{texcmd} object.
 #' @param ... Additional arguments in methods
-#' @return An object of class \code{"texcmd"}. This is a \code{list}
+#' @return \code{texcmd} returns an character vector.
+#'   \code{texcmd_} returns an object of class \code{"texcmd"}. This is a \code{list}
 #'   with elements \code{cmd}, \code{args}, and \code{optargs}.
+#' @name texcmd
+#' @rdname texcmd
 #' @export
-texcmd <- function(command, args=NULL, ..., optargs=NULL) {
+texcmd_ <- function(command, args=NULL, ..., optargs=NULL) {
   assert_that(is.string(command))
   assert_that(.valid_macroname(command))
   # I don't know if it will handle other cases so enforce it
@@ -31,24 +39,23 @@ texcmd <- function(command, args=NULL, ..., optargs=NULL) {
 #' @param trailing If \code{TRUE}, then trailing brackets will be
 #'    added to the macro even if there are no arguments.
 #' @export
-as.character.texcmd <- function(x, ..., trailing=TRUE) {
+format.texcmd <- function(x, ..., trailing=TRUE) {
   assert_that(is.flag(trailing))
   braces_str <- .args_to_character(x[["args"]], trailing)
   brackets_str <- .optargs_to_character(x[["optargs"]])
-  str_c("\\", x[["command"]], brackets_str, braces_str)
+  latex(str_c("\\", x[["command"]], brackets_str, braces_str),
+        escape = FALSE)
 }
 
 #' @export
-format.texcmd <- as.character.texcmd
+as.character.texcmd <- format.texcmd
+
+#' @export
+#' @rdname texcmd
+texcmd <- format.texcmd
 
 #' @export
 print.texcmd <- function(x, ...) {
   cat(str_c("Class ", sQuote(class(x)), ": ", format(x)))
   invisible(x)
-}
-
-#' @rdname texcmd
-#' @export
-macro <- function(...) {
-  as.character(texcmd(...))
 }
