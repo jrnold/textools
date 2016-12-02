@@ -7,7 +7,7 @@
 \usage{
 texenv_(name, content, args = NULL, optargs = NULL)
 
-texenv(...)
+texenv(name, content, args = NULL, optargs = NULL)
 }
 \arguments{
 \item{name}{Environment name}

@@ -32,11 +32,16 @@ test_that("escape latex works with muliple characters", {
 
 test_that("escaping ... works", {
   expect_equivalent(escape_latex(" ... "), " \\dots ")
-  expect_equivalent(escape_latex(" ... ", ellipses=TRUE), " \\dots ")
-  expect_equivalent(escape_latex(" ... ", ellipses=FALSE), " ... ")
+  expect_equivalent(escape_latex(" ... ", ellipses = TRUE), " \\dots ")
+  expect_equivalent(escape_latex(" ... ", ellipses = FALSE), " ... ")
 })
 
 test_that("escaping ... does no work when not three dots exactly", {
-  expect_equivalent(escape_latex("..", ellipses=TRUE), "..")
-  expect_equivalent(escape_latex("....", ellipses=TRUE), "....")
+  expect_equivalent(escape_latex("..", ellipses = TRUE), "..")
+  expect_equivalent(escape_latex("....", ellipses = TRUE), "....")
+})
+
+test_that("escape textbar works", {
+  expect_equivalent(escape_latex("|", textbar = TRUE), "\\textbar{}")
+  expect_equivalent(escape_latex("|", textbar = FALSE), "|")
 })

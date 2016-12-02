@@ -34,7 +34,6 @@ texcmd_ <- function(command, args=NULL, ..., optargs=NULL) {
             class = "texcmd")
 }
 
-
 #' @rdname texcmd
 #' @param trailing If \code{TRUE}, then trailing brackets will be
 #'    added to the macro even if there are no arguments.
@@ -43,16 +42,38 @@ format.texcmd <- function(x, ..., trailing=TRUE) {
   assert_that(is.flag(trailing))
   braces_str <- .args_to_character(x[["args"]], trailing)
   brackets_str <- .optargs_to_character(x[["optargs"]])
-  latex(str_c("\\", x[["command"]], brackets_str, braces_str),
-        escape = FALSE)
+  str_c("\\", x[["command"]], brackets_str, braces_str)
 }
 
 #' @export
 as.character.texcmd <- format.texcmd
 
 #' @export
+texcmd <- function() {
+  mc <- match.call()
+  mc[[1L]] <- quote(texcmd_)
+  latex(eval(mc, parent.frame()), escape = FALSE)
+}
+formals(texcmd) <- formals(texcmd_)
+
+
+#' @export
 #' @rdname texcmd
-texcmd <- format.texcmd
+texcmd <- function() {
+  # do this computing on language so that texcmd_ and texcmd
+  # always have the same args and the args are known for
+  # autocompletion
+  mc <- match.call()
+  mc[[1L]] <- quote(texcmd_)
+  latex(eval(mc, parent.frame()), escape = FALSE)
+}
+formals(texcmd) <- formals(texcmd_)
+
+#' @export
+latex.texcmd <- function(x, ...) {
+  latex(format(x, ...), escape = FALSE)
+}
+
 
 #' @export
 print.texcmd <- function(x, ...) {

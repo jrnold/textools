@@ -11,8 +11,12 @@ Imports:
   assertthat,
   purrr,
   stringr
+Suggests:
+  lintr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
 Suggests: testthat
+URL: https://github.com/jrnold/textools
+BugReports: https://github.com/jrnold/textools/issues

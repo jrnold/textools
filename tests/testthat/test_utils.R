@@ -15,22 +15,26 @@ test_that("parens works as expected", {
 test_that("math() works as expected", {
   expect_equal(math(c("x + y", "z")), c("\\(x + y\\)", "\\(z\\)"))
   expect_equal(math(c("x + y", "z"), TRUE), c("\\(x + y\\)", "\\(z\\)"))
-  expect_equal(math(c("x + y", "z"), FALSE), c("\\[x + y\\]", "\\[z\\]"))
+  expect_equal(math(c("x + y", "z"), FALSE),
+               c("\\[\nx + y\n\\]", "\\[\nz\n\\]"))
   expect_equal(imath(c("x + y", "z")), math(c("x + y", "z"), TRUE))
+  expect_equal(math(c("x + y", "z"), inline = TRUE, dollar = TRUE),
+               c("$x + y$", "$z$"))
+  expect_equal(math(c("x + y", "z"), inline = FALSE, dollar = TRUE),
+               c("$$\nx + y\n$$", "$$\nz\n$$"))
   expect_error(math("a", "b"), regexp = "not a flag")
 })
 
-test_that("pctcomment() works as expected", {
-  expect_equal(pctcomment(c("a", "b")), c("% a\n", "% b\n"))
-  expect_equal(pctcomment(c("a", "b"), newline = TRUE), c("% a\n", "% b\n"))
-  expect_equal(pctcomment(c("a", "b"), newline = FALSE), c("% a", "% b"))
+test_that("texcomment() works as expected", {
+  expect_equal(texcomment(c("a", "b")), c("% a\n", "% b\n"))
+  expect_equal(texcomment(c("a", "b"), newline = TRUE), c("% a\n", "% b\n"))
+  expect_equal(texcomment(c("a", "b"), newline = FALSE), c("% a", "% b"))
 })
 
-test_that("pctcomment() throws expected exceptions", {
-  expect_error(pctcomment("a", "b"), regexp = "not a flag")
+test_that("texcomment() throws expected exceptions", {
+  expect_error(texcomment("a", "b"), regexp = "not a flag")
 })
 
 test_that("newlines() works as expected", {
   expect_equal(newlines(c("a", "b")), "a \\\\\nb \\\\\n")
 })
-

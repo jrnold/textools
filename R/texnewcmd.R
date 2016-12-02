@@ -7,9 +7,15 @@
 #' @param command Command to use to create the LaTeX command.
 #' @param starred If \code{TRUE}, use the starred versions of the
 #'   commands, e.g. \verb{\\\\providecommand*}.
-#' @return An object of class \code{"texnewcmd"},
+#' @return The function \code{texnewcmd_} returns an object of class \code{"texnewcmd"},
+#'    while is a list with elements \code{name}, \code{definition}, \code{nargs},
+#'    \code{default}, \code{command}, and \code{starred}.
+#'    The function \code{texnewcmd} returns an object of class \code{"latex"} with
+#'    the LaTeX string.
+#' @name texnewcmd
+#' @rdname texnewcmd
 #' @export
-texnewcmd <- function(name, definition, nargs=0, default=NULL,
+texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
                           command = c("providecommand",
                                       "renewcommand",
                                       "newcommand"),
@@ -49,7 +55,7 @@ texnewcmd <- function(name, definition, nargs=0, default=NULL,
 }
 
 #' @export
-as.character.texnewcmd <- function(x, ...) {
+format.texnewcmd <- function(x, ...) {
   argstr <- .newcommand_arg_strings(x[["nargs"]], x[["default"]])
   str_c("\\", x[["command"]],
         if (x[["starred"]]) "*" else "",
@@ -60,7 +66,12 @@ as.character.texnewcmd <- function(x, ...) {
 }
 
 #' @export
-format.texnewcmd <- as.character.texnewcmd
+as.character.texnewcmd <- format.texnewcmd
+
+#' @export
+latex.texnewcmd <- function(x, ...) {
+  latex(as.character(x, ...), escape = FALSE)
+}
 
 #' @export
 print.texnewcmd <- function(x, ...) {
@@ -70,50 +81,9 @@ print.texnewcmd <- function(x, ...) {
 
 #' @export
 #' @rdname texnewcmd
-providecommand <- function(...) {
-  as.character(texnewcmd(..., command = "providecommand"))
+texnewcmd <- function() {
+  mc <- match.call()
+  mc[[1L]] <- quote(texnewcmd_)
+  latex(eval(mc, parent.frame()), escape = FALSE)
 }
-
-#' @export
-#' @param ... Arguments passed to \code{texnewcmd} in
-#'   \code{newcommand} and \code{renewcommand}.
-#' @rdname texnewcmd
-newcommand <- function(...) {
-  as.character(texnewcmd(..., command = "newcommand"))
-}
-
-#' @export
-#' @rdname texnewcmd
-renewcommand <- function(...) {
-  as.character(texnewcmd(..., command = "renewcommand"))
-}
-
-
-# TODO: check Rd macro code
-# .latex_replace_args <- function(string, args) {
-#   for (i in seq_along(args)) {
-#     # latex args max out at 9, so don't worry about it
-#     string <- str_replace(string, str_c("#", i), args[i])
-#   }
-#   string
-# }
-
-# .latex_optional_arg <- function(args, optional = NULL, default=NULL) {
-#   if (!is.null(default)) {
-#     if (!is.null(optional)) {
-#       args <- c(as.character(optional), args)
-#     } else {
-#       args <- c(default, args)
-#     }
-#   }
-#   args
-# }
-#
-# as.function.latex_command <- function(x) {
-#   function(..., optional=NULL) {
-#     args <- .latex_optional_arg(as.character(list(...)),
-#                                 optional = optional,
-#                                 default = x[["default"]])
-#     .latex_replace_args(x[["definition"]], args)
-#   }
-# }
+formals(texnewcmd) <- formals(texnewcmd_)

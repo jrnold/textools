@@ -4,7 +4,7 @@
 \alias{escape_latex}
 \title{Escape LaTeX special characters}
 \usage{
-escape_latex(x, url = TRUE, ellipses = TRUE)
+escape_latex(x, url = TRUE, ellipses = TRUE, textbar = TRUE)
 }
 \arguments{
 \item{x}{Character vector}
@@ -12,6 +12,8 @@ escape_latex(x, url = TRUE, ellipses = TRUE)
 \item{url}{If \code{TRUE}, escape URLs by enclosing them in \verb{\url} macros.}
 
 \item{ellipses}{If \code{TRUE}, replace \verb{...}.}
+
+\item{textbar}{If \code{TRUE}, replace \verb{|}.}
 }
 \value{
 A character vector with all LaTeX special characters escaped.
@@ -33,7 +35,9 @@ Orginal       \tab  Escaped     \cr
 \verb{\\}     \tab  \verb{\\textbackslash{}} \cr
 \verb{~}      \tab  \verb{\\textasciitilde{}} \cr
 \verb{^}      \tab  \verb{\\textasciicircum{}} \cr
-\verb{...}    \tab  \verb{\\dots}
+\verb{...}    \tab  \verb{\\dots} \cr
+\verb{|}      \tab  \verb{\\textbar} \cr
+\verb{http://google.com} \tab \verb{\\url{http://google.com}}
 }
 }
 

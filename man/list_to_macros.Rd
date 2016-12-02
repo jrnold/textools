@@ -4,15 +4,15 @@
 \alias{list_to_macros}
 \title{Convert a list to LaTeX macros}
 \usage{
-list_to_macros(x, latex_opts = list(), prefix = "", ...)
+list_to_macros(x, prefix = "", collapse = NULL, ...)
 }
 \arguments{
 \item{x}{A list or vector}
 
-\item{latex_opts}{A list of arguments passed to \code{\link{latex}}
-when converting objects to latex.}
-
 \item{prefix}{Prefix added to names}
+
+\item{collapse}{If not \code{NULL}, then macros are collapsed to
+a single string with \code{collapse} as a seperator.}
 
 \item{...}{Arguments passed to \code{\link{texnewcmd}}.}
 }

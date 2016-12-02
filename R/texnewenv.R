@@ -18,8 +18,10 @@
 #' @return An object of class \code{latex_newenvironment}.
 #'   This is a list with elements \code{name}, \code{begin_def},
 #'   \code{nargs}, \code{default}, \code{command}, \code{starred}.
+#' @name texnewenv
+#' @rdname texnewenv
 #' @export
-texnewenv <- function(name,
+texnewenv_ <- function(name,
                       begin_def = character(),
                       end_def = character(),
                       nargs = 0,
@@ -48,11 +50,11 @@ texnewenv <- function(name,
 }
 
 #' @export
-as.character.texnewenv <- function(x, ...) {
+format.texnewenv <- function(x, ...) {
   argstr <- .newcommand_arg_strings(x[["nargs"]], x[["default"]])
   str_c("\\", x[["command"]],
         if (x[["starred"]]) "*" else "",
-        braces(str_c("\\", x[["name"]])),
+        braces(x[["name"]]),
         argstr[["nargs"]],
         argstr[["default"]],
         braces(x[["begin_def"]]),
@@ -60,7 +62,7 @@ as.character.texnewenv <- function(x, ...) {
 }
 
 #' @export
-format.texnewenv <- as.character.texnewenv
+as.character.texnewenv <- format.texnewenv
 
 #' @export
 print.texnewenv <- function(x, ...) {
@@ -70,18 +72,14 @@ print.texnewenv <- function(x, ...) {
 }
 
 #' @export
-#' @param ... Arguments passed to \code{texnewenv} in  \code{newenvironment}
-#'   and \code{rewnewenvironment}.
 #' @rdname texnewenv
-newenvironment <- function(...) {
-  as.character(texnewenv(..., command = "newenvironment"))
+texnewenv <- function() {
+  mc <- match.call()
+  mc[[1L]] <- quote(texnewenv_)
+  latex(eval(mc, parent.frame()), escape = FALSE)
 }
+formals(texnewenv) <- formals(texnewenv_)
 
-#' @export
-#' @rdname texnewenv
-renewenvironment <- function(...) {
-  as.character(texnewenv(..., command = "renewenvironment"))
-}
 
 # as.function.latex_newenvironment <- function(x) {
 #   function(string, ..., optional = NULL) {

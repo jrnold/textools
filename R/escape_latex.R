@@ -47,20 +47,23 @@ URL_REGEX <- str_c(
 )
 
 
-escape_latex_ <- function(x, ellipses=TRUE) {
+escape_latex_ <- function(x, ellipses = TRUE, textbar = TRUE) {
   # TODO: escape URLS:
-  # e.g. http://stackoverflow.com/questions/26496538/extract-urls-with-regex-into-a-new-data-frame-column
+  # e.g. http://stackoverflow.com/questions/26496538/extract-urls-with-regex-into-a-new-data-frame-column # nolint
   special_char <- c("{", "}", "#", "$", "&", "_", "%")
   special_char_pattern <-  str_c("[", str_c(special_char, collapse = ""), "]")
   x <- str_replace_all(x, str_c("(", special_char_pattern, ")"), "\\\\\\1")
   # backslashes that are not escaping special characters
-  x <- str_replace_all(x, str_c('\\\\', "(?!", special_char_pattern, ")"),
-                       '\\\\textbackslash{}')
+  x <- str_replace_all(x, str_c("\\\\", "(?!", special_char_pattern, ")"),
+                       "\\\\textbackslash{}") # nolint
   x <- str_replace_all(x, fixed("~"), "\\textasciitilde{}")
   x <- str_replace_all(x, fixed("^"), "\\textasciicircum{}")
   if (ellipses) {
     # Only replace ellipses when ... exactly
-    x <- str_replace_all(x, "(?<!\\.)[.]{3}(?!\\.)", "\\\\dots")
+    x <- str_replace_all(x, "(?<!\\.)[.]{3}(?!\\.)", "\\\\dots") # nolint
+  }
+  if (textbar) {
+    x <- str_replace_all(x, fixed("|"), "\\textbar{}")
   }
   x
 }
@@ -91,24 +94,28 @@ smartypants <- function(x, ...) {
 #' \verb{\\}     \tab  \verb{\\textbackslash{}} \cr
 #' \verb{~}      \tab  \verb{\\textasciitilde{}} \cr
 #' \verb{^}      \tab  \verb{\\textasciicircum{}} \cr
-#' \verb{...}    \tab  \verb{\\dots}
+#' \verb{...}    \tab  \verb{\\dots} \cr
+#' \verb{|}      \tab  \verb{\\textbar} \cr
+#' \verb{http://google.com} \tab \verb{\\url{http://google.com}}
 #' }
 #'
 #' @param x Character vector
 #' @param url If \code{TRUE}, escape URLs by enclosing them in \verb{\url} macros.
 #' @param ellipses If \code{TRUE}, replace \verb{...}.
+#' @param textbar If \code{TRUE}, replace \verb{|}.
 #' @return A character vector with all LaTeX special characters escaped.
 #' @export
-escape_latex <- function(x, url=TRUE, ellipses=TRUE) {
+escape_latex <- function(x, url=TRUE, ellipses=TRUE, textbar=TRUE) {
   assert_that(is.flag(url))
   assert_that(is.flag(ellipses))
   if (url) {
     chunk_replacer(regex_chunker(x, URL_REGEX),
                    fun_match = function(x) texcmd("url", x),
                    fun_nonmatch = function(x) {
-                     escape_latex_(x, ellipses=ellipses)
+                     escape_latex_(x, ellipses = ellipses,
+                                   textbar = textbar)
                    })
   } else {
-    escape_latex_(x, ellipses = ellipses)
+    escape_latex_(x, ellipses = ellipses, textbar = textbar)
   }
 }

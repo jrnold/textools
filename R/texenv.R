@@ -30,14 +30,19 @@ texenv_ <- function(name, content, args = NULL, optargs = NULL) {
 
 #' @export
 format.texenv <- function(x, ...) {
-  latex(str_c(texcmd("begin", args = c(x[["name"]], x[["args"]]),
+  str_c(texcmd("begin", args = c(x[["name"]], x[["args"]]),
               optargs = x[["optargs"]]),
         x[["content"]],
-        texcmd("end", args = x[["name"]])), escape=FALSE)
+        texcmd("end", args = x[["name"]]))
 }
 
 #' @export
 as.character.texenv <- format.texenv
+
+#' @export
+latex.texenv <- function(x, ...) {
+  latex(as.character(x), escape = FALSE)
+}
 
 #' @export
 print.texenv <- function(x, ...) {
@@ -47,4 +52,9 @@ print.texenv <- function(x, ...) {
 
 #' @export
 #' @rdname texenv
-texenv <- function(...) format(texenv(...))
+texenv <- function() {
+  mc <- match.call()
+  mc[[1L]] <- quote(texenv_)
+  latex(eval(mc, parent.frame()), escape = FALSE)
+}
+formals(texenv) <- formals(texenv_)

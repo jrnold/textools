@@ -22,4 +22,18 @@ latex.default <- function(x, escape = TRUE, ...) {
 }
 
 #' @export
+print.latex <- function(x, ...) {
+  cat("<latex>\n")
+  print(as.character(x))
+  invisible(x)
+}
+
+#' @export
 latex.latex <- function(x, ...) x
+
+#' @export
+latex.list <- function(x, ..., collapse="\n") {
+  # recursively apply latex
+  latex(str_c(map_chr(x, latex, ...), collapse = collapse),
+        escape = FALSE)
+}

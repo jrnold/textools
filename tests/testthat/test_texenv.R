@@ -12,7 +12,7 @@ test_that("texenv_ works with only required args", {
 
 test_that("texenv_ works with all args", {
   x <- texenv_("foo", c(c("bar", "baz"), "qux"), args = c("a1", "a2"),
-              optargs = c("a", "b"="c", "d"))
+              optargs = c("a", "b" = "c", "d"))
   expect_is(x, "texenv")
   expect_named(x, c("name", "content", "args", "optargs"))
   expect_equal(x[["name"]], "foo")
@@ -37,7 +37,6 @@ test_that("texenv_ throws error with non-character optargs", {
 
 test_that("as.character method works with only required args", {
   x <- as.character(texenv_("foo", "bar"))
-  expect_is(x, "latex")
   expect_is(x, "character")
   expect_equal(x, "\\begin{foo}bar\\end{foo}")
 })
@@ -56,5 +55,8 @@ test_that("as.character and format methods produce the same results", {
 })
 
 test_that("texenv function works", {
-  expect_equal(format(texenv_("foo", "bar")), texenv("foo", "bar"))
+  x <- texenv("foo", "bar")
+  expect_is(x, "latex")
+  expect_equal(as.character(x),
+               "\\begin{foo}bar\\end{foo}")
 })

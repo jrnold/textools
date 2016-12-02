@@ -10,7 +10,7 @@ texcmd_(command, args = NULL, ..., optargs = NULL)
 
 \method{format}{texcmd}(x, ..., trailing = TRUE)
 
-texcmd(x, ..., trailing = TRUE)
+texcmd(command, args = NULL, ..., optargs = NULL)
 }
 \arguments{
 \item{command}{character Name of the LaTeX command}

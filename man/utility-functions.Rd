@@ -7,8 +7,9 @@
 \alias{math}
 \alias{newlines}
 \alias{parens}
-\alias{pctcomment}
+\alias{texcomment}
 \alias{utility-functions}
+\alias{verb}
 \title{Utility Functions}
 \usage{
 parens(x)
@@ -17,22 +18,30 @@ braces(x)
 
 brackets(x)
 
-math(x, inline = TRUE)
+math(x, inline = TRUE, dollar = FALSE)
 
 newlines(x)
 
 imath(x)
 
-pctcomment(x, newline = TRUE)
+texcomment(x, newline = TRUE)
+
+verb(x, delim = c("|", "\\"", "!", "=", "#", "^"))
 }
 \arguments{
 \item{x}{character vector}
 
 \item{inline}{In \code{math}, if \code{TRUE} wraps \code{x} in
 display math, e.g., \verb{\[x\]}. Otherwise, the it is returned
-as inline math, e.g. \verb{$x$}.}
+as inline math, e.g. \verb{\(x\)}.}
 
-\item{newline}{In \code{comment}, append a new-line character to each string.}
+\item{dollar}{In \code{math}, use \verb{$$} for display math,
+and \verb{$} for inline math, instead of the defaults.}
+
+\item{newline}{In \code{texcomment}, append a new-line character to each string.}
+
+\item{delim}{Delimiter to use for \code{verb}.
+For example, if \code{delim="|"}, then it produce \verb{\\verb|x|}.}
 }
 \value{
 A character vector with the transformed text.
@@ -49,5 +58,15 @@ function wraps text in LaTeX inline math,
 \details{
 \code{newlines} add line breaks (\verb{\\\\}) to each element in the character vector
 and concatenates them into a single newline seperated string.
+}
+\examples{
+parens("foo")
+braces("foo")
+brackets("foo")
+math("\\\\frac{1}{2}")
+math("\\\\frac{1}{2}", TRUE)
+imath("\\\\frac{1}{2}")
+math("\\\\frac{1}{2}", dollar = TRUE)
+texcomment("commented text")
 }
 

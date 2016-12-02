@@ -19,10 +19,11 @@ test_that("texcmd_ works with additional arguments", {
 })
 
 test_that("as.character method works", {
-  expect_equal(as.character(texcmd_("foo")), "\\foo{}")
+  expect_equivalent(as.character(texcmd_("foo")),
+                    "\\foo{}")
   expect_equal(as.character(texcmd_("foo", "a1", "a2", "a3",
-                                   optargs = c("a", b="2", "c", d = TRUE))),
-                            "\\foo[a,b=2,c,d=TRUE]{a1}{a2}{a3}")
+                                   optargs = c("a", b = "2", "c", d = TRUE))),
+               "\\foo[a,b=2,c,d=TRUE]{a1}{a2}{a3}")
 })
 
 test_that("format and as.character methods produce the same result", {
@@ -34,7 +35,7 @@ test_that("texcmd works as expected", {
   x <- texcmd("foo")
   expect_is(x, "latex")
   expect_is(x, "character")
-  expect_equivalent(x, "\\foo{}")
+  expect_equivalent(as.character(x), "\\foo{}")
 })
 
 test_that("texcmd_ requires a string command", {

@@ -20,12 +20,23 @@ stringify <- function(x, ...) {
 #' @param x character vector
 #' @param inline In \code{math}, if \code{TRUE} wraps \code{x} in
 #'   display math, e.g., \verb{\[x\]}. Otherwise, the it is returned
-#'   as inline math, e.g. \verb{$x$}.
-#' @param newline In \code{comment}, append a new-line character to each string.
+#'   as inline math, e.g. \verb{\(x\)}.
+#' @param newline In \code{texcomment}, append a new-line character to each string.
+#' @param dollar In \code{math}, use \verb{$$} for display math,
+#'    and \verb{$} for inline math, instead of the defaults.
 #' @return A character vector with the transformed text.
 #' @name utility-functions
 #' @rdname utility-functions
 #' @export
+#' @examples
+#' parens("foo")
+#' braces("foo")
+#' brackets("foo")
+#' math("\\frac{1}{2}")
+#' math("\\frac{1}{2}", TRUE)
+#' imath("\\frac{1}{2}")
+#' math("\\frac{1}{2}", dollar = TRUE)
+#' texcomment("commented text")
 parens <- function(x) str_c("(", x, ")")
 
 #' @rdname utility-functions
@@ -38,20 +49,31 @@ brackets <- function(x) str_c("[", x, "]")
 
 #' @rdname utility-functions
 #' @export
-math <- function(x, inline=TRUE) {
+math <- function(x, inline = TRUE, dollar = FALSE) {
   assert_that(is.flag(inline))
+  assert_that(is.flag(dollar))
   if (inline) {
-    str_c("\\(", x, "\\)")
+    if (dollar) {
+      str_c("$", x, "$")
+    } else {
+      str_c("\\(", x, "\\)")
+    }
   } else {
-    str_c("\\[", x, "\\]")
+    if (dollar) {
+      str_c("$$\n", x, "\n$$")
+    } else {
+      str_c("\\[\n", x, "\n\\]")
+    }
   }
 }
 
 #' @rdname utility-functions
 #' @export
 newlines <- function(x) {
+  # nolint start
   # TODO: could add opts for \newline, \\*, \break, \hfill\break, and \linebreak[number]
   # do all of these: https://www.sharelatex.com/learn/Line_breaks_and_blank_spaces
+  # nolint end
   str_c(x, " \\\\\n", collapse = "")
 }
 
@@ -61,18 +83,28 @@ imath <- function(x) math(x, inline = TRUE)
 
 #' @rdname utility-functions
 #' @export
-pctcomment <- function(x, newline = TRUE) {
+texcomment <- function(x, newline = TRUE) {
   assert_that(is.flag(newline))
   nl <- if (newline) "\n" else ""
   str_c("% ", x, nl)
 }
 
-# LaTeX Macros can only include letters (but can end in a star)
+#' @export
+#' @param delim Delimiter to use for \code{verb}.
+#'   For example, if \code{delim="|"}, then it produce \verb{\\verb|x|}.
+#' @rdname utility-functions
+verb <- function(x, delim=c("|", "\"", "!", "=", "#", "^")) {
+  # TODO: automatically choose delimiter that doesn't match.
+  delim <- match.arg(delim)
+  str_c("\\verb", delim, x, delim)
+}
+
+# Assertation to check for a valid LaTeX macro (command) names
 .valid_macroname <- function(x) {
-  str_detect(x, "^[A-Za-z]+[*]?$")
+  all(str_detect(x, "^[A-Za-z]+[*]?$"))
 }
 on_failure(.valid_macroname) <- function(call, env) {
-  str_c(deparse(call$x), " is not a valid LaTeX command name.")
+  str_c(deparse(call$x), " includes invalid LaTeX command names.")
 }
 
 # Convert optional arguments to string
@@ -104,7 +136,8 @@ on_failure(.valid_macroname) <- function(call, env) {
   }
 }
 
-## LaTeX Environment
+# splits a string into chunks: with matches and nonmatches
+# of a regex
 regex_chunker_ <- function(string, regex) {
   idx <- str_locate_all(string, regex)[[1]]
   parsed_str <- vector("list", 2 * nrow(idx) + 2)
@@ -112,7 +145,7 @@ regex_chunker_ <- function(string, regex) {
   k <- 1L
   for (i in seq_len(nrow(idx))) {
     # Get any string before the match
-    if ((idx[i, "start"] - 1L) != last_idx) {
+    if ( (idx[i, "start"] - 1L) != last_idx) {
       parsed_str[[k]] <-
         list(str_sub(string,
                      last_idx + 1L,
@@ -134,10 +167,14 @@ regex_chunker_ <- function(string, regex) {
   compact(parsed_str)
 }
 
+# splits each string in a character vector into a list
+# with matches (chunks) and non-matches of a character vector
 regex_chunker <- function(string, regex) {
   map(string, function(x) regex_chunker_(x, regex))
 }
 
+# For a list produced by regex_chunker,
+# apply functions to the matched and non-matched elements
 chunk_replacer_ <- function(.x,
                             fun_match = identity,
                             fun_nonmatch = identity,
@@ -154,6 +191,8 @@ chunk_replacer_ <- function(.x,
   str_c(newstr, collapse = collapse)
 }
 
+# For a list of lists produced by regex_chunker()
+# apply functions to the matched and non-matched functions
 chunk_replacer <- function(.x,
                            fun_match = identity,
                            fun_nonmatch = identity,
@@ -164,4 +203,3 @@ chunk_replacer <- function(.x,
           fun_nonmatch = fun_nonmatch,
           collapse = collapse)
 }
-
