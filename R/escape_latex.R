@@ -65,6 +65,15 @@ escape_latex_ <- function(x, ellipses=TRUE) {
   x
 }
 
+# Convert dumb quotes to smart quotes
+# Port the Python port https://bitbucket.org/livibetter/smartypants.py/src/461f29bb9ef6da16311f9046bcf448bc36526b98/smartypants.py?at=default&fileviewer=file-view-default
+# of the Markdown smartypants
+# Only the quotes are relevant. LaTeX already recognizes -- and ---, so don't need
+# to convert those, and latex uses ``'' so don't convert those.
+smartypants <- function(x, ...) {
+}
+
+
 #' Escape LaTeX special characters
 #'
 #' Escape special LaTeX special characters in text.

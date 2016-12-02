@@ -1,7 +1,4 @@
-#' @import stringr
-#' @import purrr
-#' @import assertthat
-NULL
+
 
 stringify <- function(x, ...) {
   str_c(x, ..., sep = "", collapse = "")
