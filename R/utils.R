@@ -4,6 +4,20 @@ stringify <- function(x, ...) {
   str_c(x, ..., sep = "", collapse = "")
 }
 
+BRACKETS <- list(
+  "[" = c("\\[", "\\]"),
+  "(" = c("(", ")"),
+  "{" = c("\\{", "\\}"),
+  "|" = c("|", "|"),
+  "||" = c("\\|", "\\|"),
+  "<" = c("langle", "rangle"),
+  "floor" = c("lfloor", "rceil"),
+  "ceil" = c("lceil", "rceil"),
+  "corner" = c("ulcorner", "urcorner")
+)
+
+
+
 #' Utility Functions
 #'
 #' Miscellaneous functions that are useful in latex.
@@ -39,15 +53,33 @@ stringify <- function(x, ...) {
 #' imath("\\frac{1}{2}")
 #' math("\\frac{1}{2}", dollar = TRUE)
 #' texcomment("commented text")
-parens <- function(x) str_c("(", x, ")")
+NULL
+
+
+#' @rdname utility-functions
+#' @export
+brackets <- function(x, type="[", size = "auto") {
+  bracks = BRACKETS[type]
+  if (size == "auto") {
+    lsize <- "\\left"
+    rsize <- "\\right"
+  } else {
+    lsize <- size[1]
+    rsize <- size[2]
+  }
+  latex(str_c("{", lsize, bracks[1], latex(x, TRUE), rsize, bracks[2], "}"))
+}
+
+
+#' @rdname utility-functions
+#' @export
+parens <- partial(x, type = "(")
+
 
 #' @rdname utility-functions
 #' @export
 braces <- function(x) str_c("{", x, "}")
 
-#' @rdname utility-functions
-#' @export
-brackets <- function(x) str_c("[", x, "]")
 
 #' @rdname utility-functions
 #' @export
@@ -68,6 +100,7 @@ math <- function(x, inline = TRUE, dollar = FALSE) {
     }
   }
 }
+
 
 #' @rdname utility-functions
 #' @export
