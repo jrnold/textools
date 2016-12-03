@@ -15,6 +15,10 @@
 #' @name texnewcmd
 #' @rdname texnewcmd
 #' @export
+#' @examples
+#' texnewcmd("absval",
+#'           texcmd("ensuremath", latex("\\lvert#1\\rvert", FALSE)),
+#'           nargs = 1)
 texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
                           command = c("providecommand",
                                       "renewcommand",

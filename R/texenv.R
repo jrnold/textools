@@ -13,6 +13,15 @@
 #' @name texenv
 #' @rdname texenv
 #' @export
+#' @examples
+#' texenv("figure",
+#'        texcmd("includegraphics", "figure.png"),
+#'        optargs=c("h"))
+#' texenv("center", "Centered text")
+#' texenv("enumerate",
+#'        latex(paste(c("\\item First item", "\\item Second item"),
+#'                      collapse = "\n"),
+#'              escape = FALSE))
 texenv_ <- function(name, content, args = NULL, optargs = NULL) {
   assert_that(is.string(name))
   assert_that(valid_tex_macroname(name))

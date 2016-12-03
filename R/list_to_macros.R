@@ -15,6 +15,15 @@
 #'    a single string with \code{collapse} as a seperator.
 #' @param ... Arguments passed to \code{\link{texnewcmd}}.
 #' @export
+#' @examples
+#' x <- list(Pval = ".001",
+#'           Figure = texcmd("includegraphics", "figure.png"))
+#' macros <- list_to_macros(x, prefix="MyProj", collapse="\n")
+#' \dontrun{
+#' cat(macros, file="macros.tex")
+#' }
+#' # Then \include{macros.tex} to use them in a TeX document
+#'
 list_to_macros <- function(x, prefix="", collapse = NULL, ...) {
   assert_that(!is.null(names(x)))
   macronames <- str_c(prefix, names(x))

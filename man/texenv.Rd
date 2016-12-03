@@ -28,4 +28,14 @@ An object of class \code{"texenv"}, which is a list with
 This an object represeting a LaTeX environment and which can be rendered
 to a LaTeX environment.
 }
+\examples{
+texenv("figure",
+       texcmd("includegraphics", "figure.png"),
+       optargs=c("h"))
+texenv("center", "Centered text")
+texenv("enumerate",
+       latex(paste(c("\\\\item First item", "\\\\item Second item"),
+                     collapse = "\\n"),
+             escape = FALSE))
+}
 

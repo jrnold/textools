@@ -22,6 +22,10 @@
 #' @name texcmd
 #' @rdname texcmd
 #' @export
+#' @examples
+#' texcmd("textit", "Italic text")
+#' texcmd("includegraphics", optargs=c("width"="8cm"), "path/to/figure.pdf")
+#' texcmd("centering")
 texcmd_ <- function(command, args=NULL, ..., optargs=NULL) {
   assert_that(is.string(command))
   assert_that(valid_tex_macroname(command))

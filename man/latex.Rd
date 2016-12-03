@@ -3,7 +3,7 @@
 \name{latex}
 \alias{latex}
 \alias{latex.default}
-\title{Convert R object to LaTeX}
+\title{Convert R object to LaTeX text}
 \usage{
 latex(x, ...)
 
@@ -17,9 +17,20 @@ latex(x, ...)
 \item{escape}{Escape LaTeX using the function \code{\link{escape_latex}}.}
 }
 \value{
-An object of class \code{c("latex", "character")}.
+An object of class \code{c("latex", "character")}. The
+  \code{"latex"} class is primarily used by other functions in this
+  package to identify text that is already LaTeX, so it knows not to
+  escape LaTeX special characters.
 }
 \description{
-Convert R object to LaTeX
+Convert R object to LaTeX text
+}
+\examples{
+latex("Some non-escaped LaTeX code with special symbols like # and $.")
+latex("Already \\\\textit{formatted} \\\\LaTeX text.", escape = FALSE)
+
+}
+\seealso{
+\code{\link[utils]{toLatex}}
 }
 

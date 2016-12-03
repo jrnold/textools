@@ -5,7 +5,7 @@
 \alias{brackets}
 \alias{imath}
 \alias{math}
-\alias{newlines}
+\alias{newline}
 \alias{parens}
 \alias{texcomment}
 \alias{utility-functions}
@@ -20,7 +20,7 @@ brackets(x)
 
 math(x, inline = TRUE, dollar = FALSE)
 
-newlines(x)
+newline(x = character(), vspace = NULL)
 
 imath(x)
 
@@ -37,6 +37,9 @@ as inline math, e.g. \verb{\(x\)}.}
 
 \item{dollar}{In \code{math}, use \verb{$$} for display math,
 and \verb{$} for inline math, instead of the defaults.}
+
+\item{vspace}{In \code{newline}, vertical space argument in
+LaTeX units.}
 
 \item{newline}{In \code{texcomment}, append a new-line character to each string.}
 

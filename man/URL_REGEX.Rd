@@ -11,6 +11,7 @@ URL_REGEX
 \description{
 Regular expression for URL validation from Diego Pierri
 from this \href{gist}{https://gist.github.com/dperini/729294}.
+This is used by the \code{\link{escape_latex}} function to escape URLs.
 }
 \author{
 Diego Pierri. MIT License.
@@ -20,6 +21,9 @@ Diego Pierri. MIT License.
 \item \url{https://gist.github.com/dperini/729294}
 \item \url{https://mathiasbynens.be/demo/url-regex}
 }
+}
+\seealso{
+\code{\link{escape_latex}}
 }
 \keyword{datasets}
 
