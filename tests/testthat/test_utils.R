@@ -36,5 +36,5 @@ test_that("texcomment() throws expected exceptions", {
 })
 
 test_that("newline() works as expected", {
-  expect_equal(newline(c("a", "b")), "a \\\\\nb \\\\\n")
+  expect_equal(newline(c("a", "b")), "a\\\\\nb\\\\\n")
 })

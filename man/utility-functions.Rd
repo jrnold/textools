@@ -8,6 +8,7 @@
 \alias{newline}
 \alias{parens}
 \alias{texcomment}
+\alias{texrow}
 \alias{utility-functions}
 \alias{verb}
 \title{Utility Functions}
@@ -20,13 +21,15 @@ brackets(x)
 
 math(x, inline = TRUE, dollar = FALSE)
 
-newline(x = character(), vspace = NULL)
+newline(x = character())
 
 imath(x)
 
 texcomment(x, newline = TRUE)
 
 verb(x, delim = c("|", "\\"", "!", "=", "#", "^"))
+
+texrow(x, newline = TRUE)
 }
 \arguments{
 \item{x}{character vector}
@@ -37,9 +40,6 @@ as inline math, e.g. \verb{\(x\)}.}
 
 \item{dollar}{In \code{math}, use \verb{$$} for display math,
 and \verb{$} for inline math, instead of the defaults.}
-
-\item{vspace}{In \code{newline}, vertical space argument in
-LaTeX units.}
 
 \item{newline}{In \code{texcomment}, append a new-line character to each string.}
 
@@ -56,7 +56,9 @@ text in square brackets (\verb{[...]}), curly braces (\verb{\{...\}}),
 and parentheses (\verb{(...)}), respectively. The \code{math}
 function wraps text in LaTeX inline math,
 \verb{$...$}, or display math, \verb{\[...\]}.
-\code{comment} comments out LaTeX text, \verb{\% ...}.
+\code{texcomment} comments out LaTeX text, \verb{\% ...}.
+\code{texrow} concates a character string with ampersands,
+\verb{x1 & x2 & x3 \\\\}.
 }
 \details{
 \code{newlines} add line breaks (\verb{\\\\}) to each element in the character vector
