@@ -44,4 +44,9 @@ in the LaTeX macro, while the function \code{texcmd} returns
 the rendered LaTeX string as a character vector;
 executing \code{texcmd(x)} is equivalent to \code{format(texcmd_(x))}.
 }
+\examples{
+texcmd("textit", "Italic text")
+texcmd("includegraphics", optargs=c("width"="8cm"), "path/to/figure.pdf")
+texcmd("centering")
+}
 

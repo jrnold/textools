@@ -35,6 +35,6 @@ test_that("texcomment() throws expected exceptions", {
   expect_error(texcomment("a", "b"), regexp = "not a flag")
 })
 
-test_that("newlines() works as expected", {
-  expect_equal(newlines(c("a", "b")), "a \\\\\nb \\\\\n")
+test_that("newline() works as expected", {
+  expect_equal(newline(c("a", "b")), "a \\\\\nb \\\\\n")
 })

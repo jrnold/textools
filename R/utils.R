@@ -37,15 +37,15 @@ stringify <- function(x, ...) {
 #' imath("\\frac{1}{2}")
 #' math("\\frac{1}{2}", dollar = TRUE)
 #' texcomment("commented text")
-parens <- function(x) str_c("(", x, ")")
+parens <- function(x) latex(str_c("(", x, ")"), FALSE)
 
 #' @rdname utility-functions
 #' @export
-braces <- function(x) str_c("{", x, "}")
+braces <- function(x) latex(str_c("{", x, "}"), FALSE)
 
 #' @rdname utility-functions
 #' @export
-brackets <- function(x) str_c("[", x, "]")
+brackets <- function(x) latex(str_c("[", x, "]"), FALSE)
 
 #' @rdname utility-functions
 #' @export
@@ -54,39 +54,48 @@ math <- function(x, inline = TRUE, dollar = FALSE) {
   assert_that(is.flag(dollar))
   if (inline) {
     if (dollar) {
-      str_c("$", x, "$")
+      latex(str_c("$", x, "$"), FALSE)
     } else {
-      str_c("\\(", x, "\\)")
+      latex(str_c("\\(", x, "\\)"), FALSE)
     }
   } else {
     if (dollar) {
-      str_c("$$\n", x, "\n$$")
+      latex(str_c("$$\n", x, "\n$$"), FALSE)
     } else {
-      str_c("\\[\n", x, "\n\\]")
+      latex(str_c("\\[\n", x, "\n\\]"), FALSE)
     }
   }
 }
 
 #' @rdname utility-functions
+#' @param vspace In \code{newline}, vertical space argument in
+#'   LaTeX units.
 #' @export
-newlines <- function(x) {
+newline <- function(x = character(), vspace = NULL) {
+  assert_that(is.character(x))
+  assert_that(is.null(vspace) || is.character(vspace))
   # nolint start
   # TODO: could add opts for \newline, \\*, \break, \hfill\break, and \linebreak[number]
   # do all of these: https://www.sharelatex.com/learn/Line_breaks_and_blank_spaces
   # nolint end
-  str_c(x, " \\\\\n", collapse = "")
+  if (length(vspace)) {
+    vspace_str <- brackets(vspace)
+  } else {
+    vspace_str <- ""
+  }
+  latex(str_c(x, "\\\\", vspace_str), FALSE)
 }
 
 #' @rdname utility-functions
 #' @export
-imath <- function(x) math(x, inline = TRUE)
+imath <- function(x) latex(math(x, inline = TRUE), FALSE)
 
 #' @rdname utility-functions
 #' @export
 texcomment <- function(x, newline = TRUE) {
   assert_that(is.flag(newline))
   nl <- if (newline) "\n" else ""
-  str_c("% ", x, nl)
+  latex(str_c("% ", x, nl), FALSE)
 }
 
 #' @export
@@ -96,7 +105,7 @@ texcomment <- function(x, newline = TRUE) {
 verb <- function(x, delim=c("|", "\"", "!", "=", "#", "^")) {
   # TODO: automatically choose delimiter that doesn't match.
   delim <- match.arg(delim)
-  str_c("\\verb", delim, x, delim)
+  latex(str_c("\\verb", delim, x, delim), FALSE)
 }
 
 # Assertation to check for a valid LaTeX macro (command) names

@@ -37,4 +37,9 @@ The function \code{texnewcmd_} returns an object of class \code{"texnewcmd"},
 \description{
 LaTeX newcommand macro
 }
+\examples{
+texnewcmd("absval",
+          texcmd("ensuremath", latex("\\\\lvert#1\\\\rvert", FALSE)),
+          nargs = 1)
+}
 

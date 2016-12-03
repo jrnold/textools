@@ -43,4 +43,22 @@ When rendered, the object produces the following
 LaTeX command
 \verb{\\newenvironment{name}[nargs]default]{begin_def}{end_def}}.
 }
+\examples{
+# Example environment from
+# https://www.sharelatex.com/learn/Environments
+texnewenv("boxed",
+          latex(paste(c("begin{center}",
+                        "#1\\\\\\\\[1ex]\\n",
+                        "\\\\begin{tabular}{|p{0.9\\\\textwidth}|}",
+                        "\\\\hline\\\\\\\\"), collapse = "\\n"),
+                FALSE),
+          latex(paste(c(rep(newline(""), 2),
+                        texcmd("hline"),
+                        "\\\\end{tabular}",
+                        "\\\\end{center}"),
+                      collapse = "\\n"),
+                FALSE),
+          nargs = 1)
+
+}
 

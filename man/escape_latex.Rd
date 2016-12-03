@@ -9,11 +9,14 @@ escape_latex(x, url = TRUE, ellipses = TRUE, textbar = TRUE)
 \arguments{
 \item{x}{Character vector}
 
-\item{url}{If \code{TRUE}, escape URLs by enclosing them in \verb{\url} macros.}
+\item{url}{If \code{TRUE}, escape URLs by enclosing them in \verb{\\url} macros
+The \verb{\\url} command is from the
+\href{https://www.ctan.org/pkg/hyperref}{hyperref}
+package.}
 
-\item{ellipses}{If \code{TRUE}, replace \verb{...}.}
+\item{ellipses}{If \code{TRUE}, replace ellipses, \verb{...}.}
 
-\item{textbar}{If \code{TRUE}, replace \verb{|}.}
+\item{textbar}{If \code{TRUE}, replace the vertical bar character, \verb{|}.}
 }
 \value{
 A character vector with all LaTeX special characters escaped.
@@ -37,7 +40,14 @@ Orginal       \tab  Escaped     \cr
 \verb{^}      \tab  \verb{\\textasciicircum{}} \cr
 \verb{...}    \tab  \verb{\\dots} \cr
 \verb{|}      \tab  \verb{\\textbar} \cr
-\verb{http://google.com} \tab \verb{\\url{http://google.com}}
+\verb{https://cran.r-project.org} \tab
+\verb{\\url{https://cran.r-project.org}}
 }
+}
+\examples{
+escape_latex(paste(c("These characters will be escaped",
+                     "{ } # $ & _ \% \\\\ ~ ^ ... | "),
+                    collapse = ""))
+escape_latex("By default so are URLs like https://cran.r-project.org")
 }
 

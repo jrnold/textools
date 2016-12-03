@@ -21,6 +21,23 @@
 #' @name texnewenv
 #' @rdname texnewenv
 #' @export
+#' @examples
+#' # Example environment from
+#' # https://www.sharelatex.com/learn/Environments
+#' texnewenv("boxed",
+#'           latex(paste(c("begin{center}",
+#'                         "#1\\\\[1ex]\n",
+#'                         "\\begin{tabular}{|p{0.9\\textwidth}|}",
+#'                         "\\hline\\\\"), collapse = "\n"),
+#'                 FALSE),
+#'           latex(paste(c(rep(newline(""), 2),
+#'                         texcmd("hline"),
+#'                         "\\end{tabular}",
+#'                         "\\end{center}"),
+#'                       collapse = "\n"),
+#'                 FALSE),
+#'           nargs = 1)
+#'
 texnewenv_ <- function(name,
                       begin_def = character(),
                       end_def = character(),
@@ -79,15 +96,3 @@ texnewenv <- function() {
   latex(eval(mc, parent.frame()), escape = FALSE)
 }
 formals(texnewenv) <- formals(texnewenv_)
-
-
-# as.function.latex_newenvironment <- function(x) {
-#   function(string, ..., optional = NULL) {
-#     args <- .latex_optional_arg(as.character(list(...)),
-#                                 optional = optional,
-#                                 default = x[["default"]])
-#     str_c(.latex_replace_args(begin_def, args),
-#           as.character(string),
-#           .latex_replace_args(end_def, args))
-#   }
-# }

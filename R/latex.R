@@ -1,11 +1,17 @@
-### To LaTeX
-
-#' Convert R object to LaTeX
+#' Convert R object to LaTeX text
 #'
 #' @param x An R object to be converted to LaTeX.
 #' @param ... Arguments passed to methods.
-#' @return An object of class \code{c("latex", "character")}.
+#' @return An object of class \code{c("latex", "character")}. The
+#'   \code{"latex"} class is primarily used by other functions in this
+#'   package to identify text that is already LaTeX, so it knows not to
+#'   escape LaTeX special characters.
+#' @seealso \code{\link[utils]{toLatex}}
 #' @export
+#' @examples
+#' latex("Some non-escaped LaTeX code with special symbols like # and $.")
+#' latex("Already \\textit{formatted} \\LaTeX text.", escape = FALSE)
+#'
 latex <- function(x, ...) {
   UseMethod("latex")
 }
