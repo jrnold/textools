@@ -29,7 +29,7 @@ texnewenv_ <- function(name,
                       command = c("newenvironment", "renewenvironment"),
                       starred = FALSE) {
   assert_that(is.string(name))
-  assert_that(.valid_macroname(name))
+  assert_that(valid_tex_macroname(name))
   assert_that(is.number(nargs))
   assert_that(nargs >= 0 && nargs < 10)
   nargs <- as.integer(nargs)

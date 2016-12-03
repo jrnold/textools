@@ -24,7 +24,7 @@
 #' @export
 texcmd_ <- function(command, args=NULL, ..., optargs=NULL) {
   assert_that(is.string(command))
-  assert_that(.valid_macroname(command))
+  assert_that(valid_tex_macroname(command))
   # I don't know if it will handle other cases so enforce it
   assert_that(is.null(optargs) || is.character(optargs))
   if (is.null(optargs)) optargs <- as.character(optargs)

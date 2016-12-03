@@ -4,7 +4,7 @@ Title: Functions for working with LaTeX
 Version: 0.1.0
 Authors@R: c(person("Jeffrey", "Arnold", role=c("aut", "cre"),
     email="jeffrey.arnold@gmail.com"))
-Description: Some functions for working outputting LaTeX.
+Description: Some functions for generating and manipulating LaTeX.
 Depends:
   R (>= 3.1.2)
 Imports:

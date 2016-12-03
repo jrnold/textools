@@ -100,10 +100,10 @@ verb <- function(x, delim=c("|", "\"", "!", "=", "#", "^")) {
 }
 
 # Assertation to check for a valid LaTeX macro (command) names
-.valid_macroname <- function(x) {
+valid_tex_macroname <- function(x) {
   all(str_detect(x, "^[A-Za-z]+[*]?$"))
 }
-on_failure(.valid_macroname) <- function(call, env) {
+on_failure(valid_tex_macroname) <- function(call, env) {
   str_c(deparse(call$x), " includes invalid LaTeX command names.")
 }
 

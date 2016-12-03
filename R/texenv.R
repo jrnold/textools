@@ -15,7 +15,7 @@
 #' @export
 texenv_ <- function(name, content, args = NULL, optargs = NULL) {
   assert_that(is.string(name))
-  assert_that(.valid_macroname(name))
+  assert_that(valid_tex_macroname(name))
   assert_that(is.null(optargs) || is.character(optargs))
   if (is.null(optargs)) optargs <- as.character(optargs)
   # process content into a single string
