@@ -1,5 +1,3 @@
-
-
 stringify <- function(x, ...) {
   str_c(x, ..., sep = "", collapse = "")
 }
@@ -15,7 +13,6 @@ BRACKETS <- list(
   "ceil" = c("lceil", "rceil"),
   "corner" = c("ulcorner", "urcorner")
 )
-
 
 
 #' Utility Functions
@@ -43,7 +40,6 @@ BRACKETS <- list(
 #' @return A character vector with the transformed text.
 #' @name utility-functions
 #' @rdname utility-functions
-#' @export
 #' @examples
 #' parens("foo")
 #' braces("foo")
@@ -55,11 +51,34 @@ BRACKETS <- list(
 #' texcomment("commented text")
 NULL
 
+BRACKET_SIZES <- c("\\big", "\\Big", "\\bigg", "\Bigg")
+
+FONT_SIZES <- c("\\tiny", "\\scriptsize", "\\footnotesize",
+                "\\small", "\\normalsize", "\\large",
+                "\\Large", "\\LARGE", "\\huge", "\\Huge")
+
+FONT <-
+  c(families =
+      list("rm" = list(command = "\\textrm", switch = "\\rmfamily",
+                       description = "serif (Roman)"),
+           "sf" = list(command = "\\textsf", switch = "\\sffamily",
+                       description = "sans serif"),
+           "tt" = list(command = "\\texttt", switch = "\\ttfamily",
+                       description = "typewriter (monospace)")),
+    styles =
+      list(md = list(command = "\\textmd", switch = "\\mdseries",
+                     description = "medium"),
+
+
+
 
 #' @rdname utility-functions
+#' @param type Bracket type
+#' @param size Auto-size brackets using \verb{\\left} and \verb{\\right}.
+#' @param ... passed to other functions
 #' @export
 brackets <- function(x, type="[", size = "auto") {
-  bracks = BRACKETS[type]
+  bracks <- BRACKETS[type]
   if (size == "auto") {
     lsize <- "\\left"
     rsize <- "\\right"
@@ -73,7 +92,7 @@ brackets <- function(x, type="[", size = "auto") {
 
 #' @rdname utility-functions
 #' @export
-parens <- partial(x, type = "(")
+parens <- partial(brackets, type = "(")
 
 
 #' @rdname utility-functions

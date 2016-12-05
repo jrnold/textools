@@ -1,27 +1,23 @@
 library("testthat")
 
-to_math <- function(x) {
-  expr <- substitute(x)
-  eval(expr, latex_env(expr))
-}
+# Symbols converted into LaTeX
+# Both Greek letters and others
 
-greek <- c(
+# Symbols in which the macro name is the same as the expression name
+SYMBOLS_ <- c(
   "alpha", "theta", "tau", "beta", "vartheta", "pi", "upsilon",
   "gamma", "gamma", "varpi", "phi", "delta", "kappa", "rho",
   "varphi", "epsilon", "lambda", "varrho", "chi", "varepsilon",
   "mu", "sigma", "psi", "zeta", "nu", "varsigma", "omega", "eta",
   "xi", "Gamma", "Lambda", "Sigma", "Psi", "Delta", "Xi",
-  "Upsilon", "Omega", "Theta", "Pi", "Phi")
-
-symbols <- c("cdots", "ldots", "lceil", "rceil",
-             "aleph", "nabla")
-
-greek_list <- setNames(paste0("\\", greek), greek)
+  "Upsilon", "Omega", "Theta", "Pi", "Phi",
+  "cdots", "ldots", "lceil", "rceil",
+  "aleph", "nabla")
 
 SYMBOLS <-
   c(
-    # Special names in plotmath
-    # for variants
+    setNames(paste0("\\", SYMBOLS_), SYMBOLS_),
+    # Special names in plotmath for Greek letter variants
     "Upsilon1" = "\\Upsilon",
     "omega1" = "\\varpi",
     "theta1" = "\\vartheta",
@@ -33,9 +29,9 @@ SYMBOLS <-
     "partialdiff" = "\\partial"
   )
 
+symbols_env <- list2env(as.list(SYMBOLS), parent = emptyenv())
 
-greek_env <- list2env(as.list(greek_list), parent = emptyenv())
-
+# Find all names in a call.
 all_names <- function(x) {
   if (is.atomic(x)) {
     character()
@@ -50,11 +46,12 @@ all_names <- function(x) {
   }
 }
 
+# Clone an environment
 clone_env <- function(env, parent = parent.env(env)) {
   list2env(as.list(env), parent = parent)
 }
 
-
+# Generate latex for unary op, e.g. sin(x)
 unary_op <- function(left, right) {
   force(left)
   force(right)
@@ -63,6 +60,7 @@ unary_op <- function(left, right) {
   }
 }
 
+# generate latex for binary op, e.g. x + y
 binary_op <- function(sep) {
   force(sep)
   function(e1, e2) {
@@ -70,7 +68,10 @@ binary_op <- function(sep) {
   }
 }
 
+# Function environment
 f_env <- new.env(parent = emptyenv())
+
+# List of Operators
 BINARY_OPS <-
   c("+" = " + ",
     "-" = " - ",
@@ -117,6 +118,7 @@ for (i in names(BINARY_OPS)) {
   f_env[[i]] <- binary_op(BINARY_OPS[i])
 }
 
+# Unary Operators
 UNARY_OPS <-
   list("{" = list("{\\left{ ", " \\right}}"),
        "(" = list("{\\left( ", " \\right)}"),
@@ -146,6 +148,8 @@ for (i in names(UNARY_OPS)) {
   f_env[[i]] <- invoke(unary_op, UNARY_OPS[[i]])
 }
 
+# Functions that don't fit into binary or unary
+
 # symbol(x) symbol font?
 tex_frac <- function(a, b) {
   paste0("\\frac{", a, "}{", b, "}")
@@ -158,6 +162,7 @@ sum_like <- function(name) {
   }
 }
 
+# generate latex for math operators like log, inf, sup
 mathoperator <- function(name) {
   force(name)
   function(x, under = character()) {
@@ -166,8 +171,9 @@ mathoperator <- function(name) {
 }
 
 # Other math functions
-FUNCTIONS = list(
+OTHER_FUNCTIONS <- list(
   "paste" = paste,
+  "paste0" = paste0,
   "list" = function(...) {
     paste(..., sep = ", ")
   },
@@ -204,20 +210,15 @@ FUNCTIONS = list(
            paste0(x, " * ", y))
   },
   "symbol" = function(x) {
-    # Options to support it include translating all
-    # Symbol fonts to latex equivalents
-    # Or
-    stop("symbol() is not supported")
     # \includepackage{psnfsse}
     paste0("\\Pisymbol{", x, "}")
   }
 )
-for (i in names(FUNCTIONS)) {
-  f_env[[i]] <- FUNCTIONS[[i]]
+for (i in names(OTHER_FUNCTIONS)) {
+  f_env[[i]] <- OTHER_FUNCTIONS[[i]]
 }
 
-# Labelling
-
+# Extract all calls: functions and apply
 all_calls <- function(x) {
   if (is.atomic(x) || is.name(x)) {
     character()
@@ -232,19 +233,14 @@ all_calls <- function(x) {
   }
 }
 
+# convert character vector to an environment
 chr2env <- function(x, .f = identity,
-                    ...) {
-  args <- list(...)
-  env_argnames <- c("parent", "hash", "size")
-  env_args <- keep(args, ~ .x %in% env_argnames)
-  print(env_args)
-  f_args <-
-    c(list(X = x, FUN = .f),
-      discard(args, ~ .x %in% env_argnames))
-  fx <- invoke(lapply, f_args)
-  invoke(list2env, c(list(setNames(fx, x)), env_args))
+                    parent = parent.frame(), ...) {
+  fx <- lapply(x, .f, ...)
+  list2env(setNames(fx, x), parent = parent)
 }
 
+# unknown operation / function
 unknown_op <- function(op) {
   force(op)
   function(...) {
@@ -254,99 +250,47 @@ unknown_op <- function(op) {
 }
 
 latex_env <- function(expr) {
-  calls <- all_calls(expr)
-  call_env <- chr2env(calls, .f = unknown_op)
+  # functions/calls appearing in the expression
+  call_env <- chr2env(all_calls(expr), .f = unknown_op)
 
   # Known functions
   f_env <- clone_env(f_env, call_env)
 
-  # Default symbols
-  symbols <- all_names(expr)
-  symbol_list <- setNames(as.list(symbols), symbols)
-  symbol_env <- chr2env(symbol_list, parent = f_env)
+  # symbols appear in the expression
+  symbol_env <- chr2env(all_names(expr), parent = f_env)
 
   # Known symbols
-  greek_env <- clone_env(greek_env, parent = symbol_env)
+  clone_env(symbols_env, parent = symbol_env)
 }
 
-test_that("Greek environment works", {
-  expect_equal(to_math(pi), "\\pi")
-  expect_equal(to_math(beta), "\\beta")
-})
+#' Convert Expression to LaTeX
+#'
+#' Convert an R expression to a LaTeX mathematical equation.
+#'
+#' Most of the code from this function adapted from the example in
+#' \href{http://adv-r.had.co.nz/dsl.html}{R for Data Science},
+#' "Domain Specific Languages".
+#'
+#' @param expr An expression
+#' @return A character vector with the LaTeX version of the
+#'    expression.
+#'
+#' @seealso \code{\link{plotmath}}
+#' @references http://adv-r.had.co.nz/dsl.html
+#' @author Hadley Wickham
+#' @export
+expr2latex <- function(expr) {
+  expr2latex_(substitute(expr))
+}
 
-test_that("all_names works", {
-  expect_equal(all_names(quote(x + y + f(a, b, c, 10))),
-               c("x", "y", "a", "b", "c"))
-})
+#' @rdname expr2latex
+#' @export
+expr2latex_ <- function(expr) {
+  expr <- as.expression(expr)
+  map_chr(expr, ~ eval(.x, latex_env(.x)))
+}
 
-test_that("Arbitrary names works", {
-  expect_equal(to_math(x), "x")
-  expect_equal(to_math(longvariablename), "longvariablename")
-  expect_equal(to_math(pi), "\\pi")
-})
-
-test_that("Operators work", {
-  expect_equal(to_math(sin(x + pi)), "\\sin(x + \\pi)")
-  expect_equal(to_math(log(x_i ^ 2)), "\\log(x_i^2)")
-  expect_equal(to_math(sin(sin)), "\\sin(sin)")
-})
-
-test_that("all_calls() works", {
-  expect_equal(all_calls(quote(f(g + b, c, d(a)))),
-               c("f", "+", "d"))
-})
-
-test_that("arbitrary functions are recognized", {
-  expect_equal(to_math(f(a * b)), "\\mathrm{f}(a * b)")
-})
-
-# symbols = list(
-#   "20" = c(
-#     "1" = "!",
-#     "2" = "\\forall",
-#     "3" = "\\#",
-#     "4" = "\\foreach",
-#     "5" = "\\%",
-#     "6" = "\\&",
-#     "7" = "\\in",
-#     "8" = "(",
-#     "9" = ")",
-#     "A" = "*",
-#     "B" = "+",
-#     "C" = ",",
-#     "D" = "-",
-#     "E" = ".",
-#     "F" = "/"
-#   ),
-#   "30" = c(
-#     setNames(as.character(0:9),
-#              as.character(0:9)),
-#     ":", ";", "<", "=", ">", "?"
-#   ),
-#   "40" = c(
-#     "\\cong", "A", "B", "\\Chi",
-#     "\\Delta", "E", "\\Phi", "\\Gamma",
-#     "H", "I", "\\Theta", "K", "\\Lambda",
-#     "M", "N", "O"
-#   ),
-#   "50" = c(
-#     "\\Pi", "\\Theta", "P", "\\Sigma",
-#     "T", "Y", "\\Zeta", "\\Omega", "\\Xi",
-#     "\\Psi", "Z", "\\[", "\\therefore",
-#     "\\]", "\\perp", "\\_"
-#   ),
-#   "60" = c(
-#     # 600 is a radical extender
-#     NA_character_, "\\alpha", "\\beta", "\\chi",
-#     "\\delta", "\\varepsilon", "\\phi", "\\upsilon",
-#     "\\eta", "\\iota", "\\phi", "\\kappa", "\\lambda",
-#     "\\mu", "\\nu", "\\omicron"
-#   ),
-#   "70" = c(
-#     "\\rho", "\\theta", "\\rho", "\\sigma", "\\tau",
-#     "\\upsilon", #
-#     "\\{", "|", "\\}", "\\~"
-#   ),
-#   "A0" = {
-#   }
-# )
+#' @export
+latex.expression <- function(x, ...) {
+  latex(expr2latex(x), escape = FALSE)
+}

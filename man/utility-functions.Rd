@@ -13,11 +13,11 @@
 \alias{verb}
 \title{Utility Functions}
 \usage{
-parens(x)
+brackets(x, type = "[", size = "auto")
+
+parens(...)
 
 braces(x)
-
-brackets(x)
 
 math(x, inline = TRUE, dollar = FALSE)
 
@@ -33,6 +33,12 @@ texrow(x, newline = TRUE)
 }
 \arguments{
 \item{x}{character vector}
+
+\item{type}{Bracket type}
+
+\item{size}{Auto-size brackets using \verb{\\left} and \verb{\\right}.}
+
+\item{...}{passed to other functions}
 
 \item{inline}{In \code{math}, if \code{TRUE} wraps \code{x} in
 display math, e.g., \verb{\[x\]}. Otherwise, the it is returned

@@ -1,0 +1,141 @@
+brackets:
+  types:
+    "[":
+      - "\\["
+      - "\\]"
+    "(":
+      - "("
+      - ")"
+    "{": ["\\{", "\\}"]
+    "|": ["|", "|"]
+    "||": ["\\|", "\\|"]
+    "<": ["langle", "rangle"]
+    "floor": ["lfloor", "rceil"]
+    "ceil" = ["lceil", "rceil"]
+    "corner": ["ulcorner", "urcorner"]
+  sizes:
+    - "big"
+    - "Big"
+    - "bigg"
+    - "Bigg"
+
+fonts:
+  families:
+    rm:
+      description: serif (Roman)
+      command: textrm
+      switch: rmfamily
+    sf:
+      description: "sans serif"
+      command: textsf
+      switch: sffamily
+    tt:
+      description: "typewriter (Monospace)"
+      command: texttt
+      switch: ttfamily
+  styles:
+    md:
+      description: medium
+      command: textmd
+      switch: mdseries
+    bf:
+      description: bold
+      command: textbf
+      switch: bfseries
+    up:
+      description: upright
+      command: textup
+      switch: upshape
+    it:
+      description: italic
+      command: textit
+      switch: itshape
+    sl:
+      description: slanted
+      command: textsl
+      switch: slshape
+    sc:
+      description: small caps
+      command: textsc
+      shape: scshape
+  sizes:
+    - tiny
+    - scriptsize
+    - footnotesize
+    - small
+    - normalsize
+    - large
+    - Large
+    - LARGE
+    - huge
+    - Huge
+  math:
+    - mathrm
+    - mathit
+    - mathnormal
+    - mathcal
+
+# TeX catcodes
+# https://en.wikibooks.org/wiki/LaTeX/Plain_TeX
+catcodes:
+  0:
+    description: Escape character and control sequences
+    characters:
+      - "\\"
+  1:
+    description: Beginning of a group
+    characters:
+      - "{"
+  2:
+    description: End of a group
+    characters:
+      - "}"
+  3:
+    description: Math shift
+    characters:
+      - "$"
+  4:
+    description: Alignment tab
+    characters:
+      - "&"
+  5:
+    description: "End of line"
+    characters:
+      - "^^M"  # Ascii return
+  6:
+    description: "Macro parameter"
+    characters:
+      - "#"
+  7:
+    description: superscript
+    characters:
+      - "^"
+      - "^^K"
+  8:
+    description: subscript
+    characters:
+      - "_"
+      - "^^A"
+  9:
+    description: ignored character
+    characters:
+      - "^^@" # ascii null
+  10:
+    description: space
+    characters:
+      - " "
+      - "^^I" # Ascii horizontal tab
+  11:
+    description: letter
+    characters: "[A-Za-z]"
+  12:
+    description: other character. Everything not in the other catcodes
+  13:
+    description: active character
+    characters:
+      - "~"
+      - "^^L"
+  14:
+    description: comment character
+    characters:
+      - "%"
