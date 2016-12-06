@@ -1,3 +1,54 @@
+# Optionally named args
+# convert character vector to comma separated list,
+# in which unnamed elements are as-is, and named elements
+# are key=value pairs.
+# given c(k1="x1", "x2") return "k1=x1, x2"
+comma_sep_args <- function(x) {
+  optnames <- names(x)
+  named_args <- optnames != ""
+  optargs <- as.character(x)
+  optargs[named_args] <-
+    str_c(optargs[named_args], optnames[named_args],
+          sep = "=", collapse = ", ")
+}
+
+
+latex_arglist <- function(x, escape = TRUE, ...) {
+  structure(unname(latex(x, escape = escape, ...)),
+            class = c("latex_arglist", "character"))
+}
+
+
+# LaTeX arguments print as "{arg1}{arg2}{arg3}"
+as.character.latex_arglist <- function(x) {
+  str_c(str_c("{", x, "}"), collapse = "")
+}
+
+
+latex.latex_arglist <- function(x, ...) {
+  latex(as.character(x, ...), escape = FALSE)
+}
+
+
+latex_optargs <- function(x, escape = FALSE) {
+  if (escape) {
+    x <- setNames(latex(x, escape = escape), names(x))
+  }
+  structure(x, c("latex_optargs"))
+}
+
+
+# Latext Optargs print as "[name1=arg1, arg2, ...]"
+as.character.latex_optargs <- function(x) {
+  str_c("[", comma_sep_args(x), "]")
+}
+
+
+latex.latex_optargs <- function(x, ...) {
+  latex(as.character.latex_optargs(x))
+}
+
+
 #' LaTeX commands (macros)
 #'
 #' This returns text wrapped in a LaTeX macro:
@@ -41,49 +92,7 @@ texcmd_ <- function(command, args=NULL, ..., optargs=NULL) {
             class = "texcmd")
 }
 
-# Optionally named args
-# convert character vector to comma separated list,
-# in which unnamed elements are as-is, and named elements
-# are key=value pairs.
-# given c(k1="x1", "x2") return "k1=x1, x2"
-comma_sep_args <- function(x) {
-  optnames <- names(x)
-  named_args <- optnames != ""
-  optargs <- as.character(x)
-  optargs[named_args] <-
-    str_c(optargs[named_args], optnames[named_args],
-          sep = "=", collapse = ", ")
-}
 
-latex_arglist <- function(x, escape = TRUE) {
-  structure(unname(latex(x, escape = escape)),
-            c('latex_arglist', 'character'))
-}
-
-# LaTeX arguments print as "{arg1}{arg2}{arg3}"
-as.character.latex_arglist <- function(x, trailing = TRUE) {
-  str_c(braces(x), collapse = "")
-}
-
-latex.latex_arglist <- function(x, ...) {
-  latex(as.character(x))
-}
-
-latex_optargs <- function(x, escape = FALSE) {
-  if (escape) {
-    x <- setNames(latex(x, escape = escape), names(x))
-  }
-  structure(x, c('latex_optargs'))
-}
-
-# Latext Optargs print as "[name1=arg1, arg2, ...]"
-as.character.latex_optargs(x) {
-  str_c("[", comma_sep_args(x), "]")
-}
-
-latex.latex_optargs <- function(x, ...) {
-  latex(as.character.latex_optargs(x))
-}
 
 #' @rdname texcmd
 #' @param trailing If \code{TRUE}, then trailing brackets will be
@@ -91,9 +100,9 @@ latex.latex_optargs <- function(x, ...) {
 #' @export
 format.texcmd <- function(x, ..., trailing=TRUE) {
   assert_that(is.flag(trailing))
-  braces_str <- .args_to_character(x[["args"]], trailing)
-  brackets_str <- .optargs_to_character(x[["optargs"]])
-  str_c("\\", x[["command"]], brackets_str, braces_str)
+  args_str <- .args_to_character(x[["args"]], trailing)
+  optargs_str <- .optargs_to_character(x[["optargs"]])
+  str_c("\\", x[["command"]], optargs_str, args_str)
 }
 
 #' @export

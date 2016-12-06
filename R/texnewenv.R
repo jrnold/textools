@@ -66,20 +66,22 @@ texnewenv_ <- function(name,
             class = "texnewenv")
 }
 
+
 #' @export
 format.texnewenv <- function(x, ...) {
   argstr <- .newcommand_arg_strings(x[["nargs"]], x[["default"]])
   str_c("\\", x[["command"]],
         if (x[["starred"]]) "*" else "",
-        braces(x[["name"]]),
+        group(x[["name"]]),
         argstr[["nargs"]],
         argstr[["default"]],
-        braces(x[["begin_def"]]),
-        braces(x[["end_def"]]))
+        group(x[["begin_def"]]),
+        group(x[["end_def"]]))
 }
 
 #' @export
 as.character.texnewenv <- format.texnewenv
+
 
 #' @export
 print.texnewenv <- function(x, ...) {
@@ -87,6 +89,7 @@ print.texnewenv <- function(x, ...) {
   cat("Class ", sQuote(class(x)), ":\n", xstr)
   invisible(x)
 }
+
 
 #' @export
 #' @rdname texnewenv

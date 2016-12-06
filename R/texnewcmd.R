@@ -42,6 +42,7 @@ texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
             class = "texnewcmd")
 }
 
+
 .newcommand_arg_strings <- function(nargs, default) {
   if (nargs > 0) {
     nargs_str <- brackets(nargs)
@@ -58,30 +59,35 @@ texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
   list(nargs = nargs_str, default = default_str)
 }
 
+
 #' @export
 format.texnewcmd <- function(x, ...) {
   argstr <- .newcommand_arg_strings(x[["nargs"]], x[["default"]])
   str_c("\\", x[["command"]],
         if (x[["starred"]]) "*" else "",
-        braces(str_c("\\", x[["name"]])),
+        group(str_c("\\", x[["name"]])),
         argstr[["nargs"]],
         argstr[["default"]],
-        braces(x[["definition"]]))
+        group(x[["definition"]]))
 }
+
 
 #' @export
 as.character.texnewcmd <- format.texnewcmd
+
 
 #' @export
 latex.texnewcmd <- function(x, ...) {
   latex(as.character(x, ...), escape = FALSE)
 }
 
+
 #' @export
 print.texnewcmd <- function(x, ...) {
   cat(str_c("Class ", sQuote(class(x)), ": ", as.character(x)))
   invisible(x)
 }
+
 
 #' @export
 #' @rdname texnewcmd

@@ -18,12 +18,21 @@ BRACKETS <- list(
 #' Utility Functions
 #'
 #' Miscellaneous functions that are useful in latex.
-#' \code{brackets}, \code{braces}, and code \code{paren} wraps
-#' text in square brackets (\verb{[...]}), curly braces (\verb{\{...\}}),
-#' and parentheses (\verb{(...)}), respectively. The \code{math}
-#' function wraps text in LaTeX inline math,
+#'
+#' The function \code{brackets} wraps text in LaTeX brackets.
+#' By default it uses square brackets, \verb{[}, but recognizes
+#' multiple types, and will by default auto-size the brackets with
+#' \verb{\\left} and \verb{\\right}.
+#'
+#' The function \code{group} wraps text in curly braces, e.g. \verb{\{x\}},
+#' which is a LaTeX group.
+#'
+#' The \code{math} function wraps text in LaTeX inline math,
 #' \verb{$...$}, or display math, \verb{\[...\]}.
+#' The function \code{imath} is a shortcut for display math.
+#'
 #' \code{texcomment} comments out LaTeX text, \verb{\% ...}.
+#'
 #' \code{texrow} concates a character string with ampersands,
 #' \verb{x1 & x2 & x3 \\\\}.
 #'
@@ -42,8 +51,12 @@ BRACKETS <- list(
 #' @rdname utility-functions
 #' @examples
 #' parens("foo")
-#' braces("foo")
 #' brackets("foo")
+#' brackets("foo", type = "<")
+#' brackets("foo", type = "{")
+#' brackets("foo", size = NULL)
+#' brackets("foo", size = "\\bigg")
+#' group("foo")
 #' math("\\frac{1}{2}")
 #' math("\\frac{1}{2}", TRUE)
 #' imath("\\frac{1}{2}")
@@ -56,17 +69,22 @@ NULL
 #' @param type Bracket type
 #' @param size Auto-size brackets using \verb{\\left} and \verb{\\right}.
 #' @param ... passed to other functions
+#' @return character vector
 #' @export
 brackets <- function(x, type="[", size = "auto") {
-  bracks <- BRACKETS[type]
-  if (size == "auto") {
+  assert_that(is.null(size) || size == "auto" ||
+                (size == "character" && length(size) == 2L))
+  bracks <- BRACKETS[[type]]
+  if (is.null(size)) {
+    lsize <- rsize <- ""
+  } else if (size == "auto") {
     lsize <- "\\left"
     rsize <- "\\right"
   } else {
     lsize <- size[1]
     rsize <- size[2]
   }
-  latex(str_c("{", lsize, bracks[1], latex(x, TRUE), rsize, bracks[2], "}"))
+  str_c("{", lsize, bracks[1], x, rsize, bracks[2], "}")
 }
 
 
@@ -77,7 +95,7 @@ parens <- partial(brackets, type = "(")
 
 #' @rdname utility-functions
 #' @export
-braces <- function(x) str_c("{", x, "}")
+group <- function(x) str_c("{", x, "}")
 
 
 #' @rdname utility-functions
@@ -111,9 +129,11 @@ newline <- function(x = character()) {
   str_c(x, "\\\\\n", collapse = "")
 }
 
+
 #' @rdname utility-functions
 #' @export
 imath <- function(x) math(x, inline = TRUE)
+
 
 #' @rdname utility-functions
 #' @export
@@ -122,6 +142,7 @@ texcomment <- function(x, newline = TRUE) {
   nl <- if (newline) "\n" else ""
   str_c("% ", x, nl)
 }
+
 
 #' @export
 #' @param delim Delimiter to use for \code{verb}.
@@ -133,6 +154,7 @@ verb <- function(x, delim=c("|", "\"", "!", "=", "#", "^")) {
   str_c("\\verb", delim, x, delim)
 }
 
+
 #' @export
 #' @rdname utility-functions
 texrow <- function(x, newline = TRUE) {
@@ -143,6 +165,7 @@ texrow <- function(x, newline = TRUE) {
   ret
 }
 
+
 # Assertation to check for a valid LaTeX macro (command) names
 valid_tex_macroname <- function(x) {
   all(str_detect(x, "^[A-Za-z]+[*]?$"))
@@ -151,34 +174,6 @@ on_failure(valid_tex_macroname) <- function(call, env) {
   str_c(deparse(call$x), " includes invalid LaTeX command names.")
 }
 
-# Convert optional arguments to string
-# named elements become key=value pairs
-# multiple arguments are comma separated
-# if x is NULL, then it returns NA_character_
-.optargs_to_character <- function(x) {
-  if (length(x) > 0) {
-    if (!is.null(names(x))) {
-      x <- ifelse(str_length(names(x)) > 0,
-                  str_c(names(x), x, sep = "="),
-                  x)
-    }
-    brackets(str_c(x, collapse = ","))
-  } else {
-    ""
-  }
-}
-
-.args_to_character <- function(x, trailing) {
-  if (length(x) > 0) {
-    str_c(map_chr(x, braces), collapse = "")
-  } else {
-    if (trailing) {
-      "{}"
-    } else {
-      ""
-    }
-  }
-}
 
 # splits a string into chunks: with matches and nonmatches
 # of a regex
@@ -211,11 +206,13 @@ regex_chunker_ <- function(string, regex) {
   compact(parsed_str)
 }
 
+
 # splits each string in a character vector into a list
 # with matches (chunks) and non-matches of a character vector
 regex_chunker <- function(string, regex) {
   map(string, function(x) regex_chunker_(x, regex))
 }
+
 
 # For a list produced by regex_chunker,
 # apply functions to the matched and non-matched elements

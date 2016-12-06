@@ -16,16 +16,18 @@ latex <- function(x, ...) {
   UseMethod("latex")
 }
 
+
 #' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 #' @export
 #' @rdname latex
-latex.default <- function(x, escape = FALSE, ...) {
+latex.default <- function(x, escape = TRUE, ...) {
   x <- as.character(x)
   if (escape) {
     x <- escape_latex(x, ...)
   }
   structure(x, class = c("latex", "character"))
 }
+
 
 #' @export
 print.latex <- function(x, ...) {
@@ -34,12 +36,16 @@ print.latex <- function(x, ...) {
   invisible(x)
 }
 
+
 #' @export
-latex.latex <- function(x, ...) x
+latex.latex <- function(x, ...) { x }
+
 
 #' @export
 latex.list <- function(x, ..., collapse="\n") {
-  # recursively apply latex
+  # recursively apply latex, and collapse string
+  # I could return a list, but that's what map or lapply
+  # is for
   latex(str_c(map_chr(x, latex, ...), collapse = collapse),
         escape = FALSE)
 }
