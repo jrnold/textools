@@ -33,9 +33,56 @@ texcmd_ <- function(command, args=NULL, ..., optargs=NULL) {
   assert_that(is.null(optargs) || is.character(optargs))
   if (is.null(optargs)) optargs <- as.character(optargs)
   # if args is NULL then this becomes chr(0)
-  args <- unname(append(as.character(args), as.character(list(...))))
-  structure(list(command = command, args = args, optargs = optargs),
+  args <- unname(c(latex(.x, escape = TRUE),
+                   latex(.x, escape = TRUE)))
+  structure(list(command = command,
+                 args = map(args, ~ latex(.x), escape = TRUE),
+                 optargs = optargs),
             class = "texcmd")
+}
+
+# Optionally named args
+# convert character vector to comma separated list,
+# in which unnamed elements are as-is, and named elements
+# are key=value pairs.
+# given c(k1="x1", "x2") return "k1=x1, x2"
+comma_sep_args <- function(x) {
+  optnames <- names(x)
+  named_args <- optnames != ""
+  optargs <- as.character(x)
+  optargs[named_args] <-
+    str_c(optargs[named_args], optnames[named_args],
+          sep = "=", collapse = ", ")
+}
+
+latex_arglist <- function(x, escape = TRUE) {
+  structure(unname(latex(x, escape = escape)),
+            c('latex_arglist', 'character'))
+}
+
+# LaTeX arguments print as "{arg1}{arg2}{arg3}"
+as.character.latex_arglist <- function(x, trailing = TRUE) {
+  str_c(braces(x), collapse = "")
+}
+
+latex.latex_arglist <- function(x, ...) {
+  latex(as.character(x))
+}
+
+latex_optargs <- function(x, escape = FALSE) {
+  if (escape) {
+    x <- setNames(latex(x, escape = escape), names(x))
+  }
+  structure(x, c('latex_optargs'))
+}
+
+# Latext Optargs print as "[name1=arg1, arg2, ...]"
+as.character.latex_optargs(x) {
+  str_c("[", comma_sep_args(x), "]")
+}
+
+latex.latex_optargs <- function(x, ...) {
+  latex(as.character.latex_optargs(x))
 }
 
 #' @rdname texcmd
@@ -77,7 +124,6 @@ formals(texcmd) <- formals(texcmd_)
 latex.texcmd <- function(x, ...) {
   latex(format(x, ...), escape = FALSE)
 }
-
 
 #' @export
 print.texcmd <- function(x, ...) {
