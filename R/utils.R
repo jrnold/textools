@@ -52,25 +52,6 @@ BRACKETS <- list(
 NULL
 
 
-FONT_SIZES <- c("\\tiny", "\\scriptsize", "\\footnotesize",
-                "\\small", "\\normalsize", "\\large",
-                "\\Large", "\\LARGE", "\\huge", "\\Huge")
-
-FONT <-
-  c(families =
-      list("rm" = list(command = "\\textrm", switch = "\\rmfamily",
-                       description = "serif (Roman)"),
-           "sf" = list(command = "\\textsf", switch = "\\sffamily",
-                       description = "sans serif"),
-           "tt" = list(command = "\\texttt", switch = "\\ttfamily",
-                       description = "typewriter (monospace)")),
-    styles =
-      list(md = list(command = "\\textmd", switch = "\\mdseries",
-                     description = "medium"),
-
-
-
-
 #' @rdname utility-functions
 #' @param type Bracket type
 #' @param size Auto-size brackets using \verb{\\left} and \verb{\\right}.
