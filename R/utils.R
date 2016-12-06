@@ -51,7 +51,6 @@ BRACKETS <- list(
 #' texcomment("commented text")
 NULL
 
-BRACKET_SIZES <- c("\\big", "\\Big", "\\bigg", "\Bigg")
 
 FONT_SIZES <- c("\\tiny", "\\scriptsize", "\\footnotesize",
                 "\\small", "\\normalsize", "\\large",
