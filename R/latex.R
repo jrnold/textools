@@ -19,7 +19,7 @@ latex <- function(x, ...) {
 #' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 #' @export
 #' @rdname latex
-latex.default <- function(x, escape = TRUE, ...) {
+latex.default <- function(x, escape = FALSE, ...) {
   x <- as.character(x)
   if (escape) {
     x <- escape_latex(x, ...)
