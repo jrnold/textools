@@ -72,6 +72,11 @@ format.texargs <- function(x, ...) {
   str_c(str_c("{", str_replace_na(x, ""), "}"), collapse = "")
 }
 
+#' @export
+as.character.texargs <- function(x, ...) {
+  format(x, ...)
+}
+
 
 # LaTeX arguments print as "{arg1}{arg2}{arg3}"
 #' @export

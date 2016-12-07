@@ -1,7 +1,7 @@
 context("texargs")
 
 test_that("texargs() works", {
-  xargs <- c("a", "b", "c")
+  args <- c("a", "b", "c")
   x <- texargs(args)
   expect_is(x, "texargs")
   expect_equal(unclass(x), args)
@@ -9,16 +9,16 @@ test_that("texargs() works", {
 
 test_that("texargs() nargs option works when x = NULL", {
   args <- NULL
-  nargs <- 2
+  nargs <- 5
   x <- texargs(args, nargs = nargs)
   expect_is(x, "texargs")
-  expect_equal(unclass(x), rep("", 2))
+  expect_equal(unclass(x), rep("", nargs))
 })
 
 test_that("texargs() nargs option works when x is not NULL", {
   args <- c("a", "b")
   nargs <- 5
-  x <- texargs(NULL, nargs = nargs)
+  x <- texargs(args, nargs = nargs)
   expect_is(x, "texargs")
   expect_equal(unclass(x), c(args, rep("", 3)))
 })

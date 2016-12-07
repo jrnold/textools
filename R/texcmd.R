@@ -19,8 +19,6 @@
 #' @return \code{texcmd} returns an character vector.
 #'   \code{texcmd_} returns an object of class \code{"texcmd"}. This is a \code{list}
 #'   with elements \code{cmd}, \code{args}, and \code{opts}.
-#' @name texcmd
-#' @rdname texcmd
 #' @export
 #' @examples
 #' texcmd("textit", "Italic text")

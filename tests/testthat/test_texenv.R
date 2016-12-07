@@ -32,7 +32,7 @@ test_that("texenv throws error with an invalid LaTeX command name", {
 
 test_that("texenv_ throws error with non-character optargs", {
   expect_error(texenv("foo", "", opts = TRUE),
-               regexp = "is not TRUE")
+               regexp = "is not a character vector")
 })
 
 test_that("as.character method works with only required args", {
@@ -45,7 +45,7 @@ test_that("as.character method works with all args", {
   x <- texenv("foo", "bar", args = c("a1", "a2"),
               opts = c("a", "b" = "c", "d"))
   expect_equal(as.character(x),
-               "\\begin[a,b=c,d]{foo}{a1}{a2}bar\\end{foo}")
+               "\\begin{foo}[a, b=c, d]{a1}{a2}bar\\end{foo}")
 })
 
 test_that("as.character and format methods produce the same results", {

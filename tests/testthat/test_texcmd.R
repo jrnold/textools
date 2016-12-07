@@ -15,8 +15,8 @@ test_that("texcmd works with additional arguments", {
   expect_s3_class(x, "texcmd")
   expect_named(x, c("command", "args", "opts"))
   expect_equal(x[["command"]], "foo")
-  expect_equal(x[["args"]], c("arg1", "arg2", "arg3"))
-  expect_equal(x[["opts"]], c("a", b = "2"))
+  expect_equal(x[["args"]], texargs(c("arg1", "arg2", "arg3")))
+  expect_equal(x[["opts"]], texopts(c("a", b = "2")))
 })
 
 test_that("as.character method works", {

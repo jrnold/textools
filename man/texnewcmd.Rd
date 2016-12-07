@@ -5,11 +5,11 @@
 \alias{texnewcmd_}
 \title{LaTeX newcommand macro}
 \usage{
-texnewcmd_(name, definition, nargs = 0, default = NULL,
+texnewcmd(name, definition, nargs = 0, default = NULL,
   command = c("providecommand", "renewcommand", "newcommand"),
   starred = FALSE)
 
-texnewcmd(name, definition, nargs = 0, default = NULL,
+texnewcmd_(name, definition, nargs = 0, default = NULL,
   command = c("providecommand", "renewcommand", "newcommand"),
   starred = FALSE)
 }

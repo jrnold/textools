@@ -7,10 +7,10 @@ test_that("texnewenv works with only required arguments", {
                     "nargs", "default", "starred"))
   expect_equal(x[["command"]], "newenvironment")
   expect_equal(x[["name"]], "foo")
-  expect_equal(x[["begin_def"]], character())
-  expect_equal(x[["end_def"]], character())
+  expect_equal(x[["begin_def"]], latex(character()))
+  expect_equal(x[["end_def"]], latex(character()))
   expect_equal(x[["nargs"]], 0L)
-  expect_equal(x[["default"]], character())
+  expect_equal(x[["default"]], NULL)
   expect_equal(x[["starred"]], FALSE)
 })
 
@@ -19,7 +19,7 @@ test_that("texnewenv works with all arguments specified", {
                      "the beginning #1",
                      "the end #2",
                      nargs = 2,
-                     default = "hello",
+                     default = latex("hello"),
                      command = "renewenvironment",
                      starred = TRUE)
   expect_is(x, "texnewenv")
@@ -27,10 +27,10 @@ test_that("texnewenv works with all arguments specified", {
                     "nargs", "default", "starred"))
   expect_equal(x[["command"]], "renewenvironment")
   expect_equal(x[["name"]], "foo")
-  expect_equal(x[["begin_def"]], "the beginning #1")
-  expect_equal(x[["end_def"]], "the end #2")
+  expect_equal(x[["begin_def"]], latex("the beginning #1"))
+  expect_equal(x[["end_def"]], latex("the end #2"))
   expect_equal(x[["nargs"]], 2L)
-  expect_equal(x[["default"]], "hello")
+  expect_equal(x[["default"]], latex("hello"))
   expect_equal(x[["starred"]], TRUE)
 })
 

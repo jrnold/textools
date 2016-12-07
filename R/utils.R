@@ -9,7 +9,7 @@ BRACKETS <- list(
   "|" = c("|", "|"),
   "||" = c("\\|", "\\|"),
   "<" = c("langle", "rangle"),
-  "floor" = c("lfloor", "rceil"),
+  "floor" = c("lfloor", "rfloor"),
   "ceil" = c("lceil", "rceil"),
   "corner" = c("ulcorner", "urcorner")
 )
