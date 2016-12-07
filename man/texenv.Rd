@@ -5,9 +5,9 @@
 \alias{texenv_}
 \title{LaTeX Environment}
 \usage{
-texenv_(name, content, args = NULL, optargs = NULL)
+texenv(name, content, args = NULL, opts = NULL)
 
-texenv(name, content, args = NULL, optargs = NULL)
+texenv_(name, content, args = NULL, opts = NULL)
 }
 \arguments{
 \item{name}{Environment name}
@@ -16,7 +16,7 @@ texenv(name, content, args = NULL, optargs = NULL)
 
 \item{args}{Environment arguments}
 
-\item{optargs}{Optional environment arguments (argument inside brackets)}
+\item{opts}{Optional environment arguments (argument inside brackets)}
 
 \item{...}{Other arguments needed for method definitions}
 }

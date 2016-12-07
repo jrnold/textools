@@ -1,7 +1,8 @@
 context("Testing Utility Functions")
 
 test_that("brackets works as expected", {
-  expect_equal(brackets(c("ab", "c")), c("{\\left\\[ab\\right\\]}", "{\\left\\[c\\right\\]}"))
+  expect_equal(brackets(c("ab", "c")),
+               c("{\\left\\[ab\\right\\]}", "{\\left\\[c\\right\\]}"))
 })
 
 test_that("group works as expected", {
@@ -9,7 +10,8 @@ test_that("group works as expected", {
 })
 
 test_that("brackets works with different sizes", {
-  expect_equal(brackets(c("ab", "c"), size = NULL), c("{\\[ab\\]}", "{\\[c\\]}"))
+  expect_equal(brackets(c("ab", "c"), size = NULL),
+               c("{\\[ab\\]}", "{\\[c\\]}"))
   expect_equal(brackets(c("ab", "c"), size = ""), c("{\\[ab\\]}", "{\\[c\\]}"))
   expect_equal(brackets(c("ab", "c"), size = "\\big"),
                c("{\\big\\[ab\\big\\]}", "{\\big\\[c\\big\\]}"))

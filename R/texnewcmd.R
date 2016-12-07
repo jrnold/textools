@@ -31,11 +31,12 @@ texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
   nargs <- as.integer(nargs)
   command <- match.arg(command)
   assert_that(is.flag(starred))
-  # ensure definition is a single string
-  definition <- stringify(definition)
-  assert_that(is.null(default) || is.character(default))
+  if (!is.null(default)) {
+    default <- latex(default)
+  }
   structure(list(command = command,
-                 name = name, definition = definition,
+                 name = name,
+                 definition = latex(definition),
                  nargs = nargs,
                  default = default,
                  starred = starred),
@@ -43,32 +44,33 @@ texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
 }
 
 
-.newcommand_arg_strings <- function(nargs, default) {
+render_newcmd_args <- function(nargs, default) {
   if (nargs > 0) {
-    nargs_str <- brackets(nargs)
-    if (length(default) > 0) {
-      default_str <- .optargs_to_character(default)
-    } else {
+    nargs_str <- str_c("[", nargs, "]")
+    if (is.null(default)) {
       default_str <- ""
+    } else {
+      default_str <- str_c("[", default, "]")
     }
   } else {
     nargs_str <- ""
-    # If no arguments, then ignore defaults
     default_str <- ""
   }
-  list(nargs = nargs_str, default = default_str)
+  latex(str_c(nargs_str, default_str), escape = FALSE)
+}
+
+
+render_cmd <- function(name, starred) {
+  latex(str_c("\\", name, if (starred) "*" else ""))
 }
 
 
 #' @export
 format.texnewcmd <- function(x, ...) {
-  argstr <- .newcommand_arg_strings(x[["nargs"]], x[["default"]])
-  str_c("\\", x[["command"]],
-        if (x[["starred"]]) "*" else "",
-        group(str_c("\\", x[["name"]])),
-        argstr[["nargs"]],
-        argstr[["default"]],
-        group(x[["definition"]]))
+  str_c(render_cmd(x[["command"]], x[["starred"]]),
+        "{", str_c("\\", x[["name"]]), "}",
+        render_newcmd_args(x[["nargs"]], x[["default"]]),
+        "{", x[["definition"]], "}")
 }
 
 

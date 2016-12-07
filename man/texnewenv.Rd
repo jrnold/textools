@@ -5,13 +5,13 @@
 \alias{texnewenv_}
 \title{LaTeX New Environment}
 \usage{
-texnewenv_(name, begin_def = character(), end_def = character(),
-  nargs = 0, default = NULL, command = c("newenvironment",
-  "renewenvironment"), starred = FALSE)
-
 texnewenv(name, begin_def = character(), end_def = character(), nargs = 0,
   default = NULL, command = c("newenvironment", "renewenvironment"),
   starred = FALSE)
+
+texnewenv_(name, begin_def = character(), end_def = character(),
+  nargs = 0, default = NULL, command = c("newenvironment",
+  "renewenvironment"), starred = FALSE)
 }
 \arguments{
 \item{name}{LaTeX environment name}

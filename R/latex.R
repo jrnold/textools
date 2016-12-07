@@ -1,5 +1,8 @@
 #' Convert R object to LaTeX text
 #'
+#' Marks the given text as (La)TeX, which means functions will
+#' know not to perform escaping on it.
+#'
 #' @param x An R object to be converted to LaTeX.
 #' @param ... Arguments passed to methods.
 #' @return An object of class \code{c("latex", "character")}. The
@@ -20,12 +23,13 @@ latex <- function(x, ...) {
 #' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 #' @export
 #' @rdname latex
-latex.default <- function(x, escape = TRUE, ...) {
-  x <- as.character(x)
+latex.default <- function(x, ..., escape = TRUE) {
+  tex_text <- as.character(x)
   if (escape) {
-    x <- escape_latex(x, ...)
+    tex_text <- escape_latex(tex_text, ...)
   }
-  structure(x, class = c("latex", "character"))
+  attr(tex_text, "tex") <- TRUE
+  structure(x, class = c("tex", "character"))
 }
 
 
@@ -38,7 +42,9 @@ print.latex <- function(x, ...) {
 
 
 #' @export
-latex.latex <- function(x, ...) { x }
+latex.latex <- function(x, ...) {
+  x
+}
 
 
 #' @export

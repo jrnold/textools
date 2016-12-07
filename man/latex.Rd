@@ -7,7 +7,7 @@
 \usage{
 latex(x, ...)
 
-\method{latex}{default}(x, escape = TRUE, ...)
+\method{latex}{default}(x, ..., escape = TRUE)
 }
 \arguments{
 \item{x}{An R object to be converted to LaTeX.}
@@ -23,7 +23,8 @@ An object of class \code{c("latex", "character")}. The
   escape LaTeX special characters.
 }
 \description{
-Convert R object to LaTeX text
+Marks the given text as (La)TeX, which means functions will
+know not to perform escaping on it.
 }
 \examples{
 latex("Some non-escaped LaTeX code with special symbols like # and $.")

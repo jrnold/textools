@@ -283,12 +283,14 @@ expr2latex <- function(expr) {
   expr2latex_(substitute(expr))
 }
 
+
 #' @rdname expr2latex
 #' @export
 expr2latex_ <- function(expr) {
   expr <- as.expression(expr)
   map_chr(expr, ~ eval(.x, latex_env(.x)))
 }
+
 
 #' @export
 latex.expression <- function(x, ...) {

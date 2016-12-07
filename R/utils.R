@@ -237,7 +237,7 @@ chunk_replacer_ <- function(.x,
 chunk_replacer <- function(.x,
                            fun_match = identity,
                            fun_nonmatch = identity,
-                           collapse="") {
+                           collapse = "") {
   map_chr(.x,
           chunk_replacer_,
           fun_match = fun_match,

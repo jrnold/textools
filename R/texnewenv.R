@@ -38,7 +38,7 @@
 #'                 FALSE),
 #'           nargs = 1)
 #'
-texnewenv_ <- function(name,
+texnewenv <- function(name,
                       begin_def = character(),
                       end_def = character(),
                       nargs = 0,
@@ -51,17 +51,16 @@ texnewenv_ <- function(name,
   assert_that(nargs >= 0 && nargs < 10)
   nargs <- as.integer(nargs)
   command <- match.arg(command)
+  if (!is.null(default)) {
+    default <- latex(default)
+  }
   assert_that(is.flag(starred))
-  # ensure definition is a single string
-  begin_def <- stringify(begin_def) %||% character()
-  end_def <- stringify(end_def) %||% character()
-  assert_that(is.null(default) || is.character(default))
   structure(list(command = command,
                  name = name,
-                 begin_def = as.character(begin_def),
-                 end_def = as.character(end_def),
+                 begin_def = latex(begin_def),
+                 end_def = latex(end_def),
                  nargs = as.integer(nargs),
-                 default = as.character(default),
+                 default = default,
                  starred = starred),
             class = "texnewenv")
 }
@@ -69,18 +68,21 @@ texnewenv_ <- function(name,
 
 #' @export
 format.texnewenv <- function(x, ...) {
-  argstr <- .newcommand_arg_strings(x[["nargs"]], x[["default"]])
-  str_c("\\", x[["command"]],
-        if (x[["starred"]]) "*" else "",
-        group(x[["name"]]),
-        argstr[["nargs"]],
-        argstr[["default"]],
-        group(x[["begin_def"]]),
-        group(x[["end_def"]]))
+  str_c(render_cmd(x[["command"]], x[["starred"]]),
+        "{", x[["name"]], "}",
+        render_newcmd_args(x[["nargs"]], x[["default"]]),
+        "{", x[["begin_def"]], "}", "{", x[["end_def"]], "}")
 }
+
 
 #' @export
 as.character.texnewenv <- format.texnewenv
+
+
+#' @export
+latex.texnewenv <- function(x, ...) {
+  latex(format(x), FALSE)
+}
 
 
 #' @export
@@ -93,9 +95,9 @@ print.texnewenv <- function(x, ...) {
 
 #' @export
 #' @rdname texnewenv
-texnewenv <- function() {
+texnewenv_ <- function() {
   mc <- match.call()
   mc[[1L]] <- quote(texnewenv_)
   latex(eval(mc, parent.frame()), escape = FALSE)
 }
-formals(texnewenv) <- formals(texnewenv_)
+formals(texnewenv_) <- formals(texnewenv)

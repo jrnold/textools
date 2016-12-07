@@ -6,25 +6,25 @@
 \alias{texcmd_}
 \title{LaTeX commands (macros)}
 \usage{
-texcmd_(command, args = NULL, ..., optargs = NULL)
+texcmd(command, args = NULL, opts = NULL)
 
 \method{format}{texcmd}(x, ..., trailing = TRUE)
 
-texcmd(command, args = NULL, ..., optargs = NULL)
+texcmd_(command, args = NULL, opts = NULL)
 }
 \arguments{
 \item{command}{character Name of the LaTeX command}
 
 \item{args}{character vector.}
 
-\item{...}{Additional arguments in methods}
-
-\item{optargs}{character vector containing optional arguments which go in
+\item{opts}{character vector containing optional arguments which go in
 square brackets. Any named elments are converted to key=value
 pairs as is common in many macros. If \code{length(args) > 1},
 then arguments are comma separated.}
 
 \item{x}{In methods, the \code{texcmd} object.}
+
+\item{...}{Additional arguments in methods}
 
 \item{trailing}{If \code{TRUE}, then trailing brackets will be
 added to the macro even if there are no arguments.}
@@ -32,15 +32,15 @@ added to the macro even if there are no arguments.}
 \value{
 \code{texcmd} returns an character vector.
   \code{texcmd_} returns an object of class \code{"texcmd"}. This is a \code{list}
-  with elements \code{cmd}, \code{args}, and \code{optargs}.
+  with elements \code{cmd}, \code{args}, and \code{opts}.
 }
 \description{
 This returns text wrapped in a LaTeX macro:
 \verb{\\cmd[optional]\{arg[1]\}\{arg[2]\}}.
 }
 \details{
-The function \code{texcmd_} returns a list with the elements
-in the LaTeX macro, while the function \code{texcmd} returns
+The function \code{texcmd} returns a list with the elements
+in the LaTeX macro, while the function \code{texcmd_} returns
 the rendered LaTeX string as a character vector;
 executing \code{texcmd(x)} is equivalent to \code{format(texcmd_(x))}.
 }
