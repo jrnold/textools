@@ -16,37 +16,38 @@
 #' @examples
 #' texenv("figure",
 #'        texcmd("includegraphics", "figure.png"),
-#'        optargs=c("h"))
+#'        opts = c("h"))
 #' texenv("center", "Centered text")
 #' texenv("enumerate",
 #'        latex(paste(c("\\item First item", "\\item Second item"),
 #'                      collapse = "\n"),
 #'              escape = FALSE))
-texenv <- function(name, content, args = NULL, opts = NULL) {
+texenv <- function(name, content = character(), args = NULL, opts = NULL) {
   assert_that(is.string(name))
-  assert_that(valid_tex_macroname(name))
+  assert_that(is_tex_command(name))
   if (!is.null(args)) {
     args <- texargs(args)
   }
   if (!is.null(opts)) {
     opts <- texopts(opts)
   }
-  structure(list(name = name, content = latex(content),
+  structure(list(name = name,
+                 content = latex(str_c(latex(content), collapse = "\n")),
                  args = args, opts = opts),
             class = "texenv")
 }
 
 # Allow someone to write texenv(x, content, args)[opts]
-`[.texenv` <- function(x, i, j, ...) {
-  x[["opts"]] <- texopts(c(list(i, j), list(...)))
-  x
-}
+# this does the same as texcmd
+#' @export
+`[.texenv` <- `[.texcmd`
 
 
 #' @export
 format.texenv <- function(x, ...) {
   str_c("\\begin{", x[["name"]], "}",
-        render_texopts(x[["opts"]]), render_texargs(x[["args"]]),
+        render_texopts(x[["opts"]]),
+        render_texargs(x[["args"]]),
         x[["content"]],
         "\\end{", x[["name"]], "}")
 }

@@ -2,8 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{utility-functions}
 \alias{brackets}
+\alias{dmath}
 \alias{group}
-\alias{imath}
 \alias{math}
 \alias{newline}
 \alias{parens}
@@ -23,7 +23,7 @@ math(x, inline = TRUE, dollar = FALSE)
 
 newline(x = character())
 
-imath(x)
+dmath(x)
 
 texcomment(x, newline = TRUE)
 
@@ -71,7 +71,8 @@ which is a LaTeX group.
 
 The \code{math} function wraps text in LaTeX inline math,
 \verb{$...$}, or display math, \verb{\[...\]}.
-The function \code{imath} is a shortcut for display math.
+The function \code{dmath} is a shortcut for display math, i.e.
+\code{math(x, inline=FALSE)}.
 
 \code{texcomment} comments out LaTeX text, \verb{\% ...}.
 

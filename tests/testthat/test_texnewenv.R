@@ -1,7 +1,7 @@
 context("texnewenv")
 
-test_that("texnewenv_ works with only required arguments", {
-  x <- texnewenv_("foo")
+test_that("texnewenv works with only required arguments", {
+  x <- texnewenv("foo")
   expect_is(x, "texnewenv")
   expect_named(x, c("command", "name", "begin_def", "end_def",
                     "nargs", "default", "starred"))
@@ -14,8 +14,8 @@ test_that("texnewenv_ works with only required arguments", {
   expect_equal(x[["starred"]], FALSE)
 })
 
-test_that("texnewenv_ works with all arguments specified", {
-  x <- texnewenv_("foo",
+test_that("texnewenv works with all arguments specified", {
+  x <- texnewenv("foo",
                      "the beginning #1",
                      "the end #2",
                      nargs = 2,
@@ -35,12 +35,12 @@ test_that("texnewenv_ works with all arguments specified", {
 })
 
 test_that("as.character method works with only required args", {
-  expect_equal(as.character(texnewenv_("foo")),
+  expect_equal(as.character(texnewenv("foo")),
                "\\newenvironment{foo}{}{}")
 })
 
 test_that("as.character method works with all args specified", {
-  expect_equal(as.character(texnewenv_("foo",
+  expect_equal(as.character(texnewenv("foo",
                                       "bar #1",
                                       "baz #2",
                                       nargs = 2,
@@ -51,7 +51,7 @@ test_that("as.character method works with all args specified", {
 })
 
 test_that("format and as.character methods are equivalent", {
-  x <- texnewenv_("foo", "bar #1", "baz #2",
+  x <- texnewenv("foo", "bar #1", "baz #2",
                                       nargs = 2,
                                       default = "hello",
                                       command = "renewenvironment",
@@ -60,7 +60,7 @@ test_that("format and as.character methods are equivalent", {
 })
 
 test_that("texnewenv works as expected", {
-  x <- texnewenv("foo", "bar", "baz")
+  x <- texnewenv_("foo", "bar", "baz")
   expect_is(x, "latex")
   expect_equal(as.character(x),
                "\\newenvironment{foo}{bar}{baz}")

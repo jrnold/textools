@@ -46,7 +46,7 @@ executing \code{texcmd(x)} is equivalent to \code{format(texcmd_(x))}.
 }
 \examples{
 texcmd("textit", "Italic text")
-texcmd("includegraphics", optargs=c("width"="8cm"), "path/to/figure.pdf")
+texcmd("includegraphics", opts=c("width"="8cm"), "path/to/figure.pdf")
 texcmd("centering")
 }
 

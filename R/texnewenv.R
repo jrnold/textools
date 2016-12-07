@@ -46,9 +46,8 @@ texnewenv <- function(name,
                       command = c("newenvironment", "renewenvironment"),
                       starred = FALSE) {
   assert_that(is.string(name))
-  assert_that(valid_tex_macroname(name))
-  assert_that(is.number(nargs))
-  assert_that(nargs >= 0 && nargs < 10)
+  assert_that(is_tex_command(name))
+  assert_that(is_tex_nargs(nargs))
   nargs <- as.integer(nargs)
   command <- match.arg(command)
   if (!is.null(default)) {
@@ -64,6 +63,10 @@ texnewenv <- function(name,
                  starred = starred),
             class = "texnewenv")
 }
+
+
+#' @export
+`[.texnewenv` <- `[.texnewcmd`
 
 
 #' @export

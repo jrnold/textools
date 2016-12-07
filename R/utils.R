@@ -29,7 +29,8 @@ BRACKETS <- list(
 #'
 #' The \code{math} function wraps text in LaTeX inline math,
 #' \verb{$...$}, or display math, \verb{\[...\]}.
-#' The function \code{imath} is a shortcut for display math.
+#' The function \code{dmath} is a shortcut for display math, i.e.
+#' \code{math(x, inline=FALSE)}.
 #'
 #' \code{texcomment} comments out LaTeX text, \verb{\% ...}.
 #'
@@ -72,8 +73,7 @@ NULL
 #' @return character vector
 #' @export
 brackets <- function(x, type="[", size = "auto") {
-  assert_that(is.null(size) || size == "auto" ||
-                (size == "character" && length(size) == 2L))
+  assert_that(is.null(size) || size == "auto" || is.string(size))
   bracks <- BRACKETS[[type]]
   if (is.null(size)) {
     lsize <- rsize <- ""
@@ -84,7 +84,8 @@ brackets <- function(x, type="[", size = "auto") {
     lsize <- size[1]
     rsize <- size[2]
   }
-  str_c("{", lsize, bracks[1], x, rsize, bracks[2], "}")
+  latex(str_c("{", lsize, bracks[1], x, rsize, bracks[2], "}"),
+        FALSE)
 }
 
 
@@ -95,7 +96,7 @@ parens <- partial(brackets, type = "(")
 
 #' @rdname utility-functions
 #' @export
-group <- function(x) str_c("{", x, "}")
+group <- function(x) latex(str_c("{", x, "}"))
 
 
 #' @rdname utility-functions
@@ -105,17 +106,18 @@ math <- function(x, inline = TRUE, dollar = FALSE) {
   assert_that(is.flag(dollar))
   if (inline) {
     if (dollar) {
-      str_c("$", x, "$")
+      text <- str_c("$", x, "$")
     } else {
-      str_c("\\(", x, "\\)")
+      text <- str_c("\\(", x, "\\)")
     }
   } else {
     if (dollar) {
-      str_c("$$\n", x, "\n$$")
+      text <- str_c("$$\n", x, "\n$$")
     } else {
-      str_c("\\[\n", x, "\n\\]")
+      text <- str_c("\\[\n", x, "\n\\]")
     }
   }
+  latex(text)
 }
 
 
@@ -126,13 +128,13 @@ newline <- function(x = character()) {
   # TODO: could add opts for \newline, \\*, \break, \hfill\break, and \linebreak[number]
   # do all of these: https://www.sharelatex.com/learn/Line_breaks_and_blank_spaces
   # nolint end
-  str_c(x, "\\\\\n", collapse = "")
+  latex(str_c(x, "\\\\\n", collapse = ""))
 }
 
 
 #' @rdname utility-functions
 #' @export
-imath <- function(x) math(x, inline = TRUE)
+dmath <- function(x) math(x, inline = FALSE)
 
 
 #' @rdname utility-functions
@@ -140,7 +142,7 @@ imath <- function(x) math(x, inline = TRUE)
 texcomment <- function(x, newline = TRUE) {
   assert_that(is.flag(newline))
   nl <- if (newline) "\n" else ""
-  str_c("% ", x, nl)
+  latex(str_c("% ", x, nl))
 }
 
 
@@ -151,7 +153,7 @@ texcomment <- function(x, newline = TRUE) {
 verb <- function(x, delim=c("|", "\"", "!", "=", "#", "^")) {
   # TODO: automatically choose delimiter that doesn't match.
   delim <- match.arg(delim)
-  str_c("\\verb", delim, x, delim)
+  latex(str_c("\\verb", delim, x, delim))
 }
 
 
@@ -167,11 +169,23 @@ texrow <- function(x, newline = TRUE) {
 
 
 # Assertation to check for a valid LaTeX macro (command) names
-valid_tex_macroname <- function(x) {
+is_tex_command <- function(x) {
   all(str_detect(x, "^[A-Za-z]+[*]?$"))
 }
-on_failure(valid_tex_macroname) <- function(call, env) {
-  str_c(deparse(call$x), " includes invalid LaTeX command names.")
+on_failure(is_tex_command) <- function(call, env) {
+  str_c(deparse(call$x), " includes invalid LaTeX command names.\n",
+        "LaTeX command names can include only letters.")
+}
+
+# Tex macro args should be between 1--9
+is_tex_nargs <- function(x) {
+  assert_that(is.number(x))
+  assert_that(x >= 0 && x < 10)
+}
+on_failure(is_tex_nargs) <- function(call, env) {
+  str_c(deparse(call$x),
+        " is not a valid value for LaTeX number of arguments.\n",
+        "Use an integer 1--9.")
 }
 
 

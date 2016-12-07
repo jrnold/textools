@@ -5,9 +5,9 @@
 \alias{texenv_}
 \title{LaTeX Environment}
 \usage{
-texenv(name, content, args = NULL, opts = NULL)
+texenv(name, content = character(), args = NULL, opts = NULL)
 
-texenv_(name, content, args = NULL, opts = NULL)
+texenv_(name, content = character(), args = NULL, opts = NULL)
 }
 \arguments{
 \item{name}{Environment name}
@@ -31,7 +31,7 @@ to a LaTeX environment.
 \examples{
 texenv("figure",
        texcmd("includegraphics", "figure.png"),
-       optargs=c("h"))
+       opts = c("h"))
 texenv("center", "Centered text")
 texenv("enumerate",
        latex(paste(c("\\\\item First item", "\\\\item Second item"),

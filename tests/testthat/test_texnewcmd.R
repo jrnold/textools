@@ -1,7 +1,7 @@
 context("texnewcmd")
 
 test_that("texnewcmd_ works with only required arguments", {
-  x <- texnewcmd_("foo", "bar")
+  x <- texnewcmd("foo", "bar")
   expect_is(x, "texnewcmd")
   expect_named(x, c("command", "name", "definition",
                     "nargs", "default", "starred"))
@@ -15,7 +15,7 @@ test_that("texnewcmd_ works with only required arguments", {
 
 test_that("texnewcmd_ works with all arguments specified", {
   # nolint start
-  x <- texnewcmd_("foo", "bar #1 #2", nargs = 2, default = "hello",
+  x <- texnewcmd("foo", "bar #1 #2", nargs = 2, default = "hello",
                      command = "newcommand", starred = TRUE)
   # nolint end
   expect_is(x, "texnewcmd")
@@ -36,7 +36,7 @@ test_that("as.character.texnewcmd works with only required args", {
 
 # nolint start
 test_that("as.character.texnewcmd works with all args specified", {
-  expect_equal(as.character(texnewcmd_("foo", "bar #1 #2",
+  expect_equal(as.character(texnewcmd("foo", "bar #1 #2",
                                           nargs = 2,
                                           default = "hello",
                                           command = "newcommand",
@@ -45,7 +45,7 @@ test_that("as.character.texnewcmd works with all args specified", {
 })
 # nolint end
 test_that("format and as.character methods are equivalent", {
-  x <- texnewcmd_("foo", "bar #1 #2",
+  x <- texnewcmd("foo", "bar #1 #2",
                       nargs = 2,
                       default = "hello",
                       command = "newcommand",
@@ -53,8 +53,8 @@ test_that("format and as.character methods are equivalent", {
   expect_equal(as.character(x), format(x))
 })
 
-test_that("texnewcmd works as expected", {
-  x <- texnewcmd("foo", "bar")
+test_that("texnewcmd_ works as expected", {
+  x <- texnewcmd_("foo", "bar")
   expect_is(x, "latex")
   expect_equal(as.character(x), "\\providecommand{\\foo}{bar}")
 })

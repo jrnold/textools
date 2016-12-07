@@ -27,7 +27,7 @@
 list_to_macros <- function(x, prefix="", collapse = NULL, ...) {
   assert_that(!is.null(names(x)))
   macronames <- str_c(prefix, names(x))
-  assert_that(valid_tex_macroname(macronames))
+  assert_that(is_tex_command(macronames))
 
   f <- function(name, val, ...) {
     description <- latex(val, ...)

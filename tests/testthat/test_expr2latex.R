@@ -46,3 +46,11 @@ test_that("examples from plotmath() work", {
   expect_equal(expr2latex("cos" * phi), "cos * \\phi")
   expect_equal(expr2latex(paste("Phase Angle", phi)), "Phase Angle \\phi")
 })
+
+test_that("expr2latex_ handles expressions, calls, names, and others", {
+  expect_equal(expr2latex_(quote(x)), "x")
+  expect_equal(expr2latex_(quote(x + y)), "x + y")
+  expect_equal(expr2latex_(expression(x + y / 2)), "x + y / 2")
+  expect_equal(expr2latex_("alpha"), "alpha")
+  expect_equal(expr2latex_(1L), "1")
+})

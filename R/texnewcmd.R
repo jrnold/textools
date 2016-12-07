@@ -19,18 +19,16 @@
 #' texnewcmd("absval",
 #'           texcmd("ensuremath", latex("\\lvert#1\\rvert", FALSE)),
 #'           nargs = 1)
-texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
+texnewcmd <- function(name, definition, nargs=0, default=NULL,
                           command = c("providecommand",
                                       "renewcommand",
                                       "newcommand"),
                           starred = FALSE) {
-  assert_that(is.string(name))
-  assert_that(valid_tex_macroname(name))
-  assert_that(is.number(nargs))
-  assert_that(nargs >= 0 && nargs < 10)
+  assert_that(is_tex_command(name))
+  assert_that(is_tex_nargs(nargs))
+  assert_that(is.flag(starred))
   nargs <- as.integer(nargs)
   command <- match.arg(command)
-  assert_that(is.flag(starred))
   if (!is.null(default)) {
     default <- latex(default)
   }
@@ -41,6 +39,20 @@ texnewcmd_ <- function(name, definition, nargs=0, default=NULL,
                  default = default,
                  starred = starred),
             class = "texnewcmd")
+}
+
+
+
+# update bracket args using brackets like LaTeX
+#' @export
+`[.texnewcmd` <- function(x, i, j, ...) {
+
+  i <- as.integer(i)
+  x[["nargs"]] <- as.integer(i)
+  if (!missing(j) | !is.null(j)) {
+    x[["default"]] <- latex(j, ...)
+  }
+  x
 }
 
 
@@ -93,9 +105,9 @@ print.texnewcmd <- function(x, ...) {
 
 #' @export
 #' @rdname texnewcmd
-texnewcmd <- function() {
+texnewcmd_ <- function() {
   mc <- match.call()
   mc[[1L]] <- quote(texnewcmd_)
   latex(eval(mc, parent.frame()), escape = FALSE)
 }
-formals(texnewcmd) <- formals(texnewcmd_)
+formals(texnewcmd_) <- formals(texnewcmd)

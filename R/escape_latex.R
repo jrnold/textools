@@ -121,7 +121,9 @@ escape_latex <- function(x, url=TRUE, ellipses=TRUE, textbar=TRUE) {
   assert_that(is.flag(ellipses))
   if (url) {
     chunk_replacer(regex_chunker(x, URL_REGEX),
-                   fun_match = function(x) texcmd("url", x),
+                   fun_match = function(x) {
+                     str_c("\\url{", x, "}")
+                   },
                    fun_nonmatch = function(x) {
                      escape_latex_(x, ellipses = ellipses,
                                    textbar = textbar)

@@ -7,7 +7,7 @@
 \usage{
 latex(x, ...)
 
-\method{latex}{default}(x, ..., escape = TRUE)
+\method{latex}{default}(x, ..., escape = FALSE)
 }
 \arguments{
 \item{x}{An R object to be converted to LaTeX.}

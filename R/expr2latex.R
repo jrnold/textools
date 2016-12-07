@@ -210,8 +210,7 @@ OTHER_FUNCTIONS <- list(
            paste0(x, " * ", y))
   },
   "symbol" = function(x) {
-    # \includepackage{psnfsse}
-    paste0("\\Pisymbol{", x, "}")
+    stop("symbol() is not supported")
   }
 )
 for (i in names(OTHER_FUNCTIONS)) {
@@ -295,4 +294,14 @@ expr2latex_ <- function(expr) {
 #' @export
 latex.expression <- function(x, ...) {
   latex(expr2latex(x), escape = FALSE)
+}
+
+#' @export
+latex.call <- function(x, ...) {
+  latex(as.expression(x), escape = FALSE)
+}
+
+#' @export
+latex.name <- function(x, ...) {
+  latex(as.expression(x), escape = FALSE)
 }
