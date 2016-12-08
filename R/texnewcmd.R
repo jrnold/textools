@@ -10,14 +10,14 @@
 #' @return The function \code{texnewcmd_} returns an object of class \code{"texnewcmd"},
 #'    while is a list with elements \code{name}, \code{definition}, \code{nargs},
 #'    \code{default}, \code{command}, and \code{starred}.
-#'    The function \code{texnewcmd} returns an object of class \code{"latex"} with
+#'    The function \code{texnewcmd} returns an object of class \code{"tex"} with
 #'    the LaTeX string.
 #' @name texnewcmd
 #' @rdname texnewcmd
 #' @export
 #' @examples
 #' texnewcmd("absval",
-#'           texcmd("ensuremath", latex("\\lvert#1\\rvert", FALSE)),
+#'           texcmd("ensuremath", tex("\\lvert#1\\rvert", FALSE)),
 #'           nargs = 1)
 texnewcmd <- function(name, definition, nargs=0, default=NULL,
                           command = c("providecommand",
@@ -30,11 +30,11 @@ texnewcmd <- function(name, definition, nargs=0, default=NULL,
   nargs <- as.integer(nargs)
   command <- match.arg(command)
   if (!is.null(default)) {
-    default <- latex(default)
+    default <- tex(default)
   }
   structure(list(command = command,
                  name = name,
-                 definition = latex(definition),
+                 definition = tex(definition),
                  nargs = nargs,
                  default = default,
                  starred = starred),
@@ -50,7 +50,7 @@ texnewcmd <- function(name, definition, nargs=0, default=NULL,
   i <- as.integer(i)
   x[["nargs"]] <- as.integer(i)
   if (!missing(j) | !is.null(j)) {
-    x[["default"]] <- latex(j, ...)
+    x[["default"]] <- tex(j, ...)
   }
   x
 }
@@ -68,12 +68,12 @@ render_newcmd_args <- function(nargs, default) {
     nargs_str <- ""
     default_str <- ""
   }
-  latex(str_c(nargs_str, default_str), escape = FALSE)
+  tex(str_c(nargs_str, default_str), escape = FALSE)
 }
 
 
 render_cmd <- function(name, starred) {
-  latex(str_c("\\", name, if (starred) "*" else ""))
+  tex(str_c("\\", name, if (starred) "*" else ""))
 }
 
 
@@ -91,8 +91,8 @@ as.character.texnewcmd <- format.texnewcmd
 
 
 #' @export
-latex.texnewcmd <- function(x, ...) {
-  latex(as.character(x, ...), escape = FALSE)
+as.tex.texnewcmd <- function(x, ...) {
+  tex(as.character(x, ...))
 }
 
 
@@ -108,6 +108,6 @@ print.texnewcmd <- function(x, ...) {
 texnewcmd_ <- function() {
   mc <- match.call()
   mc[[1L]] <- quote(texnewcmd_)
-  latex(eval(mc, parent.frame()), escape = FALSE)
+  tex(eval(mc, parent.frame()), escape = FALSE)
 }
 formals(texnewcmd_) <- formals(texnewcmd)

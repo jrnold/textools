@@ -34,7 +34,7 @@ test_that("format and as.character methods produce the same result", {
 
 test_that("texcmd works as expected", {
   x <- texcmd_("foo")
-  expect_is(x, "latex")
+  expect_is(x, "tex")
   expect_is(x, "character")
   expect_equivalent(as.character(x), "\\foo{}")
 })

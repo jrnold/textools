@@ -52,7 +52,7 @@ render_texopts <- function(x) {
   } else {
     text <- format(x)
   }
-  latex(text)
+  tex(text)
 }
 
 #' @rdname texcmd
@@ -79,14 +79,14 @@ texcmd_ <- function() {
   # autocompletion
   mc <- match.call()
   mc[[1L]] <- quote(texcmd_)
-  latex(eval(mc, parent.frame()), escape = FALSE)
+  tex(eval(mc, parent.frame()), escape = FALSE)
 }
 formals(texcmd_) <- formals(texcmd)
 
 
 #' @export
-latex.texcmd <- function(x, ...) {
-  latex(format(x, ...), escape = FALSE)
+as.tex.texcmd <- function(x, ...) {
+  tex(format(x, ...))
 }
 
 

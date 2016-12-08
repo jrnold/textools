@@ -5,7 +5,7 @@ test_that("texenv works with only required args", {
   expect_is(x, "texenv")
   expect_named(x, c("name", "content", "args", "opts"))
   expect_equal(x[["name"]], "foo")
-  expect_equal(x[["content"]], latex("bar"))
+  expect_equal(x[["content"]], tex("bar"))
   expect_equal(x[["args"]], NULL)
   expect_equal(x[["opts"]], NULL)
 })
@@ -16,7 +16,7 @@ test_that("texenv_ works with all args", {
   expect_is(x, "texenv")
   expect_named(x, c("name", "content", "args", "opts"))
   expect_equal(x[["name"]], "foo")
-  expect_equal(x[["content"]], latex("bar\nbaz\nqux"))
+  expect_equal(x[["content"]], tex("bar\nbaz\nqux"))
   expect_equal(x[["args"]], texargs(c("a1", "a2")))
   expect_equal(x[["opts"]], texopts(c("a", "b" = "c", "d")))
 })
@@ -56,7 +56,7 @@ test_that("as.character and format methods produce the same results", {
 
 test_that("texenv_ function works", {
   x <- texenv_("foo", "bar")
-  expect_is(x, "latex")
+  expect_is(x, "tex")
   expect_equal(as.character(x),
                "\\begin{foo}bar\\end{foo}")
 })

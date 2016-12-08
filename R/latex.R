@@ -6,65 +6,47 @@
 #' @param x An R object to be converted to LaTeX.
 #' @param ... Arguments passed to methods.
 #' @return An object of class \code{c("latex", "character")}. The
-#'   \code{"latex"} class is primarily used by other functions in this
+#'   \code{"tex"} class is primarily used by other functions in this
 #'   package to identify text that is already LaTeX, so it knows not to
 #'   escape LaTeX special characters.
 #' @seealso \code{\link[utils]{toLatex}}
 #' @export
 #' @examples
-#' latex("Some non-escaped LaTeX code with special symbols like # and $.")
-#' latex("Already \\textit{formatted} \\LaTeX text.", escape = FALSE)
-#'
-latex <- function(x, ...) {
-  UseMethod("latex")
+#' tex("Already \\textit{formatted} \\LaTeX text.")
+tex <- function(x, ...) {
+  text <- c(x, as.character(list(...)))
+  structure(text, class = c("tex", "character"))
+}
+
+as.tags <- function(x, ...) {
+  UseMethod("as.tags")
 }
 
 
 #' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 #' @export
-#' @rdname latex
-latex.default <- function(x, ..., escape = FALSE) {
+#' @rdname tex
+as.tex.default <- function(x, ..., escape = TRUE) {
   tex_text <- as.character(x)
   if (escape) {
-    tex_text <- escape_latex(tex_text, ...)
+    tex_text <- escape_latex(tex_text)
   }
-  attr(tex_text, "tex") <- TRUE
-  structure(tex_text, class = c("latex", "character"))
+  tex(tex_text)
 }
 
 
 #' @export
-print.latex <- function(x, ...) {
+print.tex <- function(x, ...) {
   cat(x)
   invisible(x)
 }
 
 
 #' @export
-latex.latex <- function(x, ...) {
+as.tex.tex <- function(x, ...) {
   x
 }
 
-
-#' @export
-latex.list <- function(x, name = "itemize", args = NULL, opts = NULL, ...) {
-  item_names <- names(x)
-  if (is.null(item_names)) {
-    item_names <- rep("", length(x))
-  }
-  item_names[is.na(item_names)] <- ""
-  if (!is.null(item_names)) {
-    items <- map_chr(item_names, function(.) {
-      latex(texcmd("item", .))
-    })
-  }
-  latex(texenv(name,
-         latex(str_c("\n",
-                     str_c(items, map_chr(x, latex, ...),
-                           sep = " ", collapse = "\n"),
-                     "\n"), escape = FALSE),
-         args = args, opts = opts))
-}
 
 #' Convert decimal integer to arbitrary base
 #'

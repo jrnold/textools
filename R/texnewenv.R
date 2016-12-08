@@ -25,12 +25,12 @@
 #' # Example environment from
 #' # https://www.sharelatex.com/learn/Environments
 #' texnewenv("boxed",
-#'           latex(paste(c("begin{center}",
+#'           tex(paste(c("begin{center}",
 #'                         "#1\\\\[1ex]\n",
 #'                         "\\begin{tabular}{|p{0.9\\textwidth}|}",
 #'                         "\\hline\\\\"), collapse = "\n"),
 #'                 FALSE),
-#'           latex(paste(c(rep(newline(""), 2),
+#'           tex(paste(c(rep(newline(""), 2),
 #'                         texcmd("hline"),
 #'                         "\\end{tabular}",
 #'                         "\\end{center}"),
@@ -51,13 +51,13 @@ texnewenv <- function(name,
   nargs <- as.integer(nargs)
   command <- match.arg(command)
   if (!is.null(default)) {
-    default <- latex(default)
+    default <- tex(default)
   }
   assert_that(is.flag(starred))
   structure(list(command = command,
                  name = name,
-                 begin_def = latex(begin_def),
-                 end_def = latex(end_def),
+                 begin_def = tex(begin_def),
+                 end_def = tex(end_def),
                  nargs = as.integer(nargs),
                  default = default,
                  starred = starred),
@@ -83,8 +83,8 @@ as.character.texnewenv <- format.texnewenv
 
 
 #' @export
-latex.texnewenv <- function(x, ...) {
-  latex(format(x), FALSE)
+as.tex.texnewenv <- function(x, ...) {
+  tex(format(x), FALSE)
 }
 
 
@@ -101,6 +101,6 @@ print.texnewenv <- function(x, ...) {
 texnewenv_ <- function() {
   mc <- match.call()
   mc[[1L]] <- quote(texnewenv_)
-  latex(eval(mc, parent.frame()), escape = FALSE)
+  tex(eval(mc, parent.frame()), escape = FALSE)
 }
 formals(texnewenv_) <- formals(texnewenv)

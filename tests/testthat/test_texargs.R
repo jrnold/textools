@@ -32,6 +32,6 @@ test_that("as.character.texargs method works", {
                "{ab}{c}{}")
 })
 
-test_that("latex.texargs method works", {
-  expect_equal(latex(texargs(c("ab", "c"), nargs = 3)), latex("{ab}{c}{}"))
+test_that("as.tex.texargs method works", {
+  expect_equal(as.tex(texargs(c("ab", "c"), nargs = 3)), tex("{ab}{c}{}"))
 })

@@ -84,8 +84,7 @@ brackets <- function(x, type="[", size = "auto") {
     lsize <- size[1]
     rsize <- size[2]
   }
-  latex(str_c("{", lsize, bracks[1], x, rsize, bracks[2], "}"),
-        FALSE)
+  tex(str_c("{", lsize, bracks[1], x, rsize, bracks[2], "}"))
 }
 
 
@@ -96,7 +95,7 @@ parens <- partial(brackets, type = "(")
 
 #' @rdname utility-functions
 #' @export
-group <- function(x) latex(str_c("{", x, "}"))
+group <- function(x) tex(str_c("{", x, "}"))
 
 
 #' @rdname utility-functions
@@ -117,7 +116,7 @@ math <- function(x, inline = TRUE, dollar = FALSE) {
       text <- str_c("\\[\n", x, "\n\\]")
     }
   }
-  latex(text)
+  tex(text)
 }
 
 
@@ -128,7 +127,7 @@ newline <- function(x = character()) {
   # TODO: could add opts for \newline, \\*, \break, \hfill\break, and \linebreak[number]
   # do all of these: https://www.sharelatex.com/learn/Line_breaks_and_blank_spaces
   # nolint end
-  latex(str_c(x, "\\\\\n", collapse = ""))
+  tex(str_c(x, "\\\\\n", collapse = ""))
 }
 
 
@@ -142,7 +141,7 @@ dmath <- function(x) math(x, inline = FALSE)
 texcomment <- function(x, newline = TRUE) {
   assert_that(is.flag(newline))
   nl <- if (newline) "\n" else ""
-  latex(str_c("% ", x, nl))
+  tex(str_c("% ", x, nl))
 }
 
 
@@ -153,14 +152,14 @@ texcomment <- function(x, newline = TRUE) {
 verb <- function(x, delim=c("|", "\"", "!", "=", "#", "^")) {
   # TODO: automatically choose delimiter that doesn't match.
   delim <- match.arg(delim)
-  latex(str_c("\\verb", delim, x, delim))
+  tex(str_c("\\verb", delim, x, delim))
 }
 
 
 #' @export
 #' @rdname utility-functions
 texrow <- function(x, newline = TRUE) {
-  ret <- str_c(latex(x, escape = TRUE), collapse = " & ")
+  ret <- str_c(tex(x, escape = TRUE), collapse = " & ")
   if (newline) {
     ret <- str_c(ret, newline(), collapse = " ")
   }

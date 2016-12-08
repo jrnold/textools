@@ -25,13 +25,13 @@ comma_sep_args <- function(x) {
 #' and to initialize empty arguments.
 #'
 #' @param x A list or character object. All elements in \code{x} are
-#'   passed to \code{latex} to convert to valid LaTeX.
+#'   passed to \code{tex} to convert to valid LaTeX.
 #' @param nargs If \code{x} is \code{NULL} or has a length shorter than
 #'   \code{nargs}, extra empty arguments are added. If \code{nargs} is less
 #'   than the length of \code{x}, then it is ignored. This is to make it easy
 #'   to generate empty argument lists list \verb{\{\}\{\}\{\}}.
 #' @param escape If \code{TRUE}, then \code{x} will be LaTeX escaped.
-#' @param ... Arguments passed to \code{latex}
+#' @param ... Arguments passed to \code{tex}
 #'    when converting elements of \code{x}.
 #' @export
 #' @examples
@@ -57,9 +57,9 @@ texargs <- function(x, nargs = NULL, escape = TRUE, ...) {
   x <- unname(x)
   if (!is.null(x)) {
     if (is.atomic(x)) {
-      args[seq_along(x)] <- latex(x, escape = escape, ...)
+      args[seq_along(x)] <- tex(x, escape = escape, ...)
     } else {
-      args[seq_along(x)] <- map_chr(x, latex, escape = escape, ...)
+      args[seq_along(x)] <- map_chr(x, tex, escape = escape, ...)
     }
   }
   structure(args, class = "texargs")
@@ -80,8 +80,8 @@ as.character.texargs <- function(x, ...) {
 
 # LaTeX arguments print as "{arg1}{arg2}{arg3}"
 #' @export
-latex.texargs <- function(x, ...) {
-  latex(format(x), escape = FALSE)
+as.tex.texargs <- function(x, ...) {
+  tex(format(x))
 }
 
 
@@ -99,7 +99,7 @@ render_texargs <- function(x, trailing = FALSE) {
   } else {
     text <- format(x)
   }
-  latex(text, escape = FALSE)
+  tex(text)
 }
 
 
@@ -117,18 +117,17 @@ render_texargs <- function(x, trailing = FALSE) {
 #' string like \code{"[opta=val1, optb, ...]"}.
 #'
 #' @param x A list or character vector.
-#' @param escape If \code{TRUE}, then the values of x are
-#'   latex escaped.
-#' @param ... Arguments passed to \code{\link{latex}} when
+#' @param escape If \code{TRUE}, then the values of x are escaped.
+#' @param ... Arguments passed to \code{\link{as.tex}} when
 #'   converting elements in \code{x}.
 #' @return An object of class \code{"texopts"}.
 #' @export
 texopts <- function(x, ..., escape = TRUE) {
   assert_that(is.list(x) || is.character(x))
   if (is.list(x)) {
-    opts <- map(x, latex, escape = escape, ...)
+    opts <- map(x, as.tex, escape = escape, ...)
   } else {
-    opts <- latex(x, escape = escape, ...)
+    opts <- as.tex(x, escape = escape, ...)
   }
   names(opts) <- names(x)
   structure(opts, class = "texopts")
@@ -145,8 +144,8 @@ format.texopts <- function(x, brackets = TRUE, ...) {
 
 
 #' @export
-latex.texopts <- function(x, ...) {
-  latex(format(x), escape = FALSE)
+as.tex.texopts <- function(x, ...) {
+  tex(format(x))
 }
 
 #' @export

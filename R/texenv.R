@@ -19,9 +19,9 @@
 #'        opts = c("h"))
 #' texenv("center", "Centered text")
 #' texenv("enumerate",
-#'        latex(paste(c("\\item First item", "\\item Second item"),
-#'                      collapse = "\n"),
-#'              escape = FALSE))
+#'        tex(paste(c("\\item First item", "\\item Second item"),
+#'                      collapse = "\n")))
+#'
 texenv <- function(name, content = character(), args = NULL, opts = NULL) {
   assert_that(is.string(name))
   assert_that(is_tex_command(name))
@@ -32,7 +32,7 @@ texenv <- function(name, content = character(), args = NULL, opts = NULL) {
     opts <- texopts(opts)
   }
   structure(list(name = name,
-                 content = latex(str_c(latex(content), collapse = "\n")),
+                 content = tex(str_c(tex(content), collapse = "\n")),
                  args = args, opts = opts),
             class = "texenv")
 }
@@ -58,8 +58,8 @@ as.character.texenv <- format.texenv
 
 
 #' @export
-latex.texenv <- function(x, ...) {
-  latex(format(x), escape = FALSE)
+as.tex.texenv <- function(x, ...) {
+  tex(format(x))
 }
 
 
@@ -75,6 +75,6 @@ print.texenv <- function(x, ...) {
 texenv_ <- function() {
   mc <- match.call()
   mc[[1L]] <- quote(texenv_)
-  latex(eval(mc, parent.frame()), escape = FALSE)
+  tex(eval(mc, parent.frame()), escape = FALSE)
 }
 formals(texenv_) <- formals(texenv)

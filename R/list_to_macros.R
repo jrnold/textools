@@ -1,9 +1,3 @@
-# TODO: automatically set to_latex to use toLatex methods or
-# define to_latex = toLatex
-
-# TODO: use knitr_print() in some way
-# TODO: convert Markdown to LaTeX in some way.
-
 #' Convert a list to LaTeX macros
 #'
 #' For a list or vector. For elements with non-missing names,
@@ -30,10 +24,10 @@ list_to_macros <- function(x, prefix="", collapse = NULL, ...) {
   assert_that(is_tex_command(macronames))
 
   f <- function(name, val, ...) {
-    description <- latex(val, ...)
+    description <- tex(val, ...)
     as.character(texnewcmd(name, description))
   }
 
-  latex(str_c(map2_chr(macronames, unname(x), f, ...),
-              collapse = collapse), escape = FALSE)
+  tex(str_c(map2_chr(macronames, unname(x), f, ...),
+            collapse = collapse))
 }
