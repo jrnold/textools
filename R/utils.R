@@ -2,17 +2,43 @@ stringify <- function(x, ...) {
   str_c(x, ..., sep = "", collapse = "")
 }
 
+left_right <- function(x, cap = FALSE) {
+  str_c("\\", if (cap) c("l", "r") else c("L", "R"), x)
+}
+
+
 BRACKETS <- list(
-  "[" = c("\\[", "\\]"),
   "(" = c("(", ")"),
+  "paren" = c("\\lparen", "\\rparen"),
+  "[" = c("\\[", "\\]"),
+  "brack" = c("\\lbrack", "\\rbrack"),
   "{" = c("\\{", "\\}"),
+  "brace" = c("\\lbrace", "\\rbrace"),
+  "floor" = c("\\lfloor", "\\rfloor"),
+  "ceil" = c("\\lceil", "\\rceil"),
+  "ucorner" = c("\\ulcorner", "\\urcorner"),
+  "lcorner" = c("\\llcorner", "\\lrcorner"),
+  "moustach" = c("\\lmoustach", "\\rmoustache"),
+  "brbrak" = c("\\lbrbrak", "\\rbrbrak"),
+  "bag" = c("\\lbag", "\\rbag"),
+  "<" = c("\\langle", "\\rangle"),
+  "angle" = c("\\langle", "\\rangle"),
   "|" = c("|", "|"),
   "||" = c("\\|", "\\|"),
-  "<" = c("langle", "rangle"),
-  "floor" = c("lfloor", "rfloor"),
-  "ceil" = c("lceil", "rceil"),
-  "corner" = c("ulcorner", "urcorner")
+  "\\" = rep("\\backslash", 2),
+  "/" = rep("/", 2),
+  "downarrow" = rep("\\downarrow", 2),
+  "Downarrow" = rep("\\Downarrow", 2),
+  "uparrow" = rep("\\uparrow", 2),
+  "Uparrow" = rep("\\Uparrow", 2),
+  "updownarrow" = rep("\\Updownarrow", 2),
+  "Updownarrow" = rep("\\Updownarrow", 2)
 )
+
+PCH_SYMBOLS = {
+  0 = "\\square", # amssymb
+  15 = "\\blacksquare", #blacksquareins
+}
 
 
 #' Utility Functions

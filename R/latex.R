@@ -106,6 +106,9 @@ dec2base <- function(x, base, drop_leading = TRUE, width = 1L) {
   # string length
   maxpower <- trunc(log(max(x, 1), base = base)) + 1L
   powers <- base ^ ( (maxpower - 1):0)
+  # Originally I had used outer() to do this, but
+  # since I'd usually need to chop off the leading digits
+  # and do rowwise computations, it seemed easier to use map
   xstr <- map_chr(x, function(x) {
     digits <- floor( (x %% (base * powers) / powers))
     if (drop_leading) {
