@@ -14,6 +14,29 @@ BRACKETS <- list(
   "corner" = c("ulcorner", "urcorner")
 )
 
+# For common wrapping
+texdelim <- function(text, delim = "{") {
+  delimiters <- c("{" = c("{", "}"),
+                  "[" = c("[", "]"),
+                  "(" = c("(", ")"))
+  assert_that(is.character(delim) & length(delim) %in% 0:2)
+  if (length(delim) == 1L) {
+    delim <- delimiters[delim]
+  } else if (length(delim) == 0L) {
+    delim <- rep("", 2)
+  }
+  str_c(delim[1], text, delim[2])
+}
+
+"%(%" <- function(x, y) {
+  # switch order because "{" %(% "foo" seems more
+  # natural than "foo" %(% "{"
+  texdelim(y, x)
+}
+
+texopt <- function(x) {
+  list(x, "[")
+}
 
 #' Utility Functions
 #'

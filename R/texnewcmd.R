@@ -1,3 +1,7 @@
+texmacro <- function(x, star = FALSE) {
+  tex(str_c("\\", x, if (star) "*" else ""))
+}
+
 #' LaTeX newcommand macro
 #'
 #' @param name Command name
@@ -20,24 +24,22 @@
 #'           texcmd("ensuremath", tex("\\lvert#1\\rvert", FALSE)),
 #'           nargs = 1)
 texnewcmd <- function(name, definition, nargs=0, default=NULL,
-                          command = c("providecommand",
-                                      "renewcommand",
-                                      "newcommand"),
-                          starred = FALSE) {
+                      command = c("providecommand",
+                                  "renewcommand",
+                                  "newcommand"),
+                      starred = FALSE,
+                      escape = FALSE) {
   assert_that(is_tex_command(name))
   assert_that(is_tex_nargs(nargs))
   assert_that(is.flag(starred))
-  nargs <- as.integer(nargs)
-  command <- match.arg(command)
-  if (!is.null(default)) {
-    default <- tex(default)
-  }
+  nargs <- as.tex(as.integer(nargs))
+  command <- tex_macro(match.arg(command), starred)
+  default <- as.tex(default, escape = escape)
   structure(list(command = command,
                  name = name,
-                 definition = tex(definition),
+                 definition = as.tex(definition),
                  nargs = nargs,
                  default = default,
-                 starred = starred),
             class = "texnewcmd")
 }
 
@@ -46,34 +48,12 @@ texnewcmd <- function(name, definition, nargs=0, default=NULL,
 # update bracket args using brackets like LaTeX
 #' @export
 `[.texnewcmd` <- function(x, i, j, ...) {
-
   i <- as.integer(i)
   x[["nargs"]] <- as.integer(i)
   if (!missing(j) | !is.null(j)) {
     x[["default"]] <- tex(j, ...)
   }
   x
-}
-
-
-render_newcmd_args <- function(nargs, default) {
-  if (nargs > 0) {
-    nargs_str <- str_c("[", nargs, "]")
-    if (is.null(default)) {
-      default_str <- ""
-    } else {
-      default_str <- str_c("[", default, "]")
-    }
-  } else {
-    nargs_str <- ""
-    default_str <- ""
-  }
-  tex(str_c(nargs_str, default_str), escape = FALSE)
-}
-
-
-render_cmd <- function(name, starred) {
-  tex(str_c("\\", name, if (starred) "*" else ""))
 }
 
 

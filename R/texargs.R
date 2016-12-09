@@ -3,7 +3,8 @@
 # in which unnamed elements are as-is, and named elements
 # are key=value pairs.
 # given c(k1="x1", "x2") return "k1=x1, x2"
-comma_sep_args <- function(x) {
+tex_kv <- function(x, ...) {
+  x <- c(as.list(x), list(...))
   xnames <- names(x)
   if (is.null(xnames)) {
     named_args <- FALSE
@@ -24,8 +25,7 @@ comma_sep_args <- function(x) {
 #' to easily print to the argument list to the proper LaTeX form
 #' and to initialize empty arguments.
 #'
-#' @param x A list or character object. All elements in \code{x} are
-#'   passed to \code{tex} to convert to valid LaTeX.
+#' @param x A list or character object.
 #' @param nargs If \code{x} is \code{NULL} or has a length shorter than
 #'   \code{nargs}, extra empty arguments are added. If \code{nargs} is less
 #'   than the length of \code{x}, then it is ignored. This is to make it easy
@@ -41,36 +41,39 @@ comma_sep_args <- function(x) {
 #' texargs(c("a"), nargs = 2)
 #' # three empty arguments
 #' texargs(nargs = 3)
-texargs <- function(x, nargs = NULL, escape = TRUE, ...) {
-  assert_that(!(is.null(x) && is.null(nargs)))
-  assert_that(is.null(nargs) || is_tex_nargs(nargs))
-  # TeX args can only be 1--10 in length. But should I check it here?
-  assert_that(is.null(x) || (length(x) < 10))
-  if (is.null(nargs)) {
-    nargs <- length(x)
-  } else {
-    nargs <- max(length(x), nargs)
-  }
+texargs <- function(x = NULL, ..., nargs = 0L, escape = TRUE) {
+  x <- unname(c(as.list(x), list(...)))
+  nargs <- max(length(x), nargs)
   # initial empty values
-  args <- rep("", nargs)
-  # Args have no names
-  x <- unname(x)
-  if (!is.null(x)) {
-    if (is.atomic(x)) {
-      args[seq_along(x)] <- tex(x, escape = escape, ...)
-    } else {
-      args[seq_along(x)] <- map_chr(x, tex, escape = escape, ...)
-    }
+  args <- as.list(rep("", nargs))
+  for (i in seq_along(x)) {
+    # do it this way instead of map because it is easier to preallocate
+    # empty args and assign, than do with map and handle afterwards
+    argi <- str_c(as.tex(x[[i]], escape = escape), collapse = "")
+    args[[i]] <- str_replace_na(argi, "")
   }
   structure(args, class = "texargs")
 }
 
 
 #' @export
-format.texargs <- function(x, ...) {
+format.texargs <- function(x, ..., trailing = TRUE) {
   # Treat NA's as empty strings
-  str_c(str_c("{", str_replace_na(x, ""), "}"), collapse = "")
+  if (length(x) > 0) {
+    ret <- str_c(str_c("{", x, "}"), collapse = "")
+  } else {
+    ret <- if (trailing) "{}"
+      else ""
+  }
+  tex(ret)
 }
+
+
+`+.texargs` <- function(x, y) {
+  assert_that(inherits(y, "texargs"))
+  texargs(c(as.list(x), as.list(y)), escape = FALSE)
+}
+
 
 #' @export
 as.character.texargs <- function(x, ...) {
@@ -92,15 +95,7 @@ print.texargs <- function(x, ...) {
 }
 
 
-# Handle case or arguments being NULL or texargs object
-render_texargs <- function(x, trailing = FALSE) {
-  if (is.null(x)) {
-    text <- if (trailing) "{}" else ""
-  } else {
-    text <- format(x)
-  }
-  tex(text)
-}
+
 
 
 #' LaTeX Option List
@@ -116,20 +111,16 @@ render_texargs <- function(x, trailing = FALSE) {
 #' with optionally named elements and produce a character
 #' string like \code{"[opta=val1, optb, ...]"}.
 #'
-#' @param x A list or character vector.
+#' @param x A list or character vector. It it is a character vector,
+#'   it is processed as single optional argument. If it is a list,
+#'   each element is converted to
 #' @param escape If \code{TRUE}, then the values of x are escaped.
 #' @param ... Arguments passed to \code{\link{as.tex}} when
 #'   converting elements in \code{x}.
 #' @return An object of class \code{"texopts"}.
 #' @export
-texopts <- function(x, ..., escape = TRUE) {
-  assert_that(is.list(x) || is.character(x))
-  if (is.list(x)) {
-    opts <- map(x, as.tex, escape = escape, ...)
-  } else {
-    opts <- as.tex(x, escape = escape, ...)
-  }
-  names(opts) <- names(x)
+texopts <- function(x = NULL, ..., escape = TRUE) {
+  opts <- map(append(list(...), x, 0), as.tex, escape = escape)
   structure(opts, class = "texopts")
 }
 
@@ -137,16 +128,34 @@ texopts <- function(x, ..., escape = TRUE) {
 # print as "[name1=arg1, arg2, ...]"
 #' @export
 format.texopts <- function(x, brackets = TRUE, ...) {
-  optstr <- comma_sep_args(x)
-  if (brackets) optstr <- str_c("[", optstr, "]")
-  optstr
+  if (length(x) > 0) {
+    str_c("[", x, "]", collapse = "")
+  } else {
+    ""
+  }
 }
 
+# this makes for more LaTeX like writing, even if it isn't
+# idiomatic R, which should use [<-
+#' @export
+`[.texopts` <- function(x, i, j, ..., escape = TRUE) {
+  if (is.null(i)) {
+    texopts()
+  } else {
+    x + append(list(...), i, 0L)
+  }
+}
+
+#' @export
+`+.texopts` <- function(x, y) {
+  texopts(as.list(x), y)
+}
 
 #' @export
 as.tex.texopts <- function(x, ...) {
   tex(format(x))
 }
+
 
 #' @export
 print.texopts <- function(x, ...) {

@@ -8,7 +8,7 @@ texargs(x, nargs = NULL, escape = TRUE, ...)
 }
 \arguments{
 \item{x}{A list or character object. All elements in \code{x} are
-passed to \code{latex} to convert to valid LaTeX.}
+passed to \code{tex} to convert to valid LaTeX.}
 
 \item{nargs}{If \code{x} is \code{NULL} or has a length shorter than
 \code{nargs}, extra empty arguments are added. If \code{nargs} is less
@@ -17,7 +17,7 @@ to generate empty argument lists list \verb{\{\}\{\}\{\}}.}
 
 \item{escape}{If \code{TRUE}, then \code{x} will be LaTeX escaped.}
 
-\item{...}{Arguments passed to \code{latex}
+\item{...}{Arguments passed to \code{tex}
 when converting elements of \code{x}.}
 }
 \description{

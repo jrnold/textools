@@ -36,7 +36,7 @@ test_that("escaping ... works", {
   expect_equivalent(escape_latex(" ... ", ellipses = FALSE), " ... ")
 })
 
-test_that("escaping ... does no work when not three dots exactly", {
+test_that("escaping ... does not work when not three dots exactly", {
   expect_equivalent(escape_latex("..", ellipses = TRUE), "..")
   expect_equivalent(escape_latex("....", ellipses = TRUE), "....")
 })
@@ -44,4 +44,10 @@ test_that("escaping ... does no work when not three dots exactly", {
 test_that("escape textbar works", {
   expect_equivalent(escape_latex("|", textbar = TRUE), "\\textbar{}")
   expect_equivalent(escape_latex("|", textbar = FALSE), "|")
+})
+
+test_that("escape_latex() escapes URLs", {
+  orig <- "The http://cran.r-project.org/ is escaped."
+  expected <- "The \\url{http://cran.r-project.org/} is escaped."
+  expect_equivalent(escape_latex(orig), expected)
 })

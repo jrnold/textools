@@ -18,20 +18,22 @@ tex <- function(x, ...) {
   structure(text, class = c("tex", "character"))
 }
 
-as.tags <- function(x, ...) {
-  UseMethod("as.tags")
+as.tex <- function(x, ...) {
+  UseMethod("as.tex")
 }
 
+as.tex.character <- function(x, ..., escape = TRUE) {
+  if (escape) {
+    x <- escape_latex(x)
+  }
+  tex(x)
+}
 
 #' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 #' @export
 #' @rdname tex
 as.tex.default <- function(x, ..., escape = TRUE) {
-  tex_text <- as.character(x)
-  if (escape) {
-    tex_text <- escape_latex(tex_text)
-  }
-  tex(tex_text)
+  as.tex(as.character(x))
 }
 
 

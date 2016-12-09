@@ -45,25 +45,14 @@ texcmd <- function(command, args = NULL, opts = NULL) {
   x
 }
 
-# format case of options NULL or object texopts
-render_texopts <- function(x) {
-  if (is.null(x)) {
-    text <- ""
-  } else {
-    text <- format(x)
-  }
-  tex(text)
-}
-
 #' @rdname texcmd
 #' @param trailing If \code{TRUE}, then trailing brackets will be
 #'    added to the macro even if there are no arguments.
 #' @export
 format.texcmd <- function(x, ..., trailing=TRUE) {
   assert_that(is.flag(trailing))
-  str_c("\\", x[["command"]],
-        render_texopts(x[["opts"]]),
-        render_texargs(x[["args"]], trailing))
+  str_c("\\", x[["command"]], x[["opts"]],
+        as.character(x[["args"]], trailing))
 }
 
 

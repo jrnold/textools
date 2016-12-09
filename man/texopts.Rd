@@ -9,11 +9,10 @@ texopts(x, ..., escape = TRUE)
 \arguments{
 \item{x}{A list or character vector.}
 
-\item{...}{Arguments passed to \code{\link{latex}} when
+\item{...}{Arguments passed to \code{\link{as.tex}} when
 converting elements in \code{x}.}
 
-\item{escape}{If \code{TRUE}, then the values of x are
-latex escaped.}
+\item{escape}{If \code{TRUE}, then the values of x are escaped.}
 }
 \value{
 An object of class \code{"texopts"}.
