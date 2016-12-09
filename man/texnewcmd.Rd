@@ -7,11 +7,11 @@
 \usage{
 texnewcmd(name, definition, nargs = 0, default = NULL,
   command = c("providecommand", "renewcommand", "newcommand"),
-  starred = FALSE)
+  starred = FALSE, escape = FALSE)
 
 texnewcmd_(name, definition, nargs = 0, default = NULL,
   command = c("providecommand", "renewcommand", "newcommand"),
-  starred = FALSE)
+  starred = FALSE, escape = FALSE)
 }
 \arguments{
 \item{name}{Command name}
@@ -31,7 +31,7 @@ commands, e.g. \verb{\\\\providecommand*}.}
 The function \code{texnewcmd_} returns an object of class \code{"texnewcmd"},
    while is a list with elements \code{name}, \code{definition}, \code{nargs},
    \code{default}, \code{command}, and \code{starred}.
-   The function \code{texnewcmd} returns an object of class \code{"latex"} with
+   The function \code{texnewcmd} returns an object of class \code{"tex"} with
    the LaTeX string.
 }
 \description{
@@ -39,7 +39,7 @@ LaTeX newcommand macro
 }
 \examples{
 texnewcmd("absval",
-          texcmd("ensuremath", latex("\\\\lvert#1\\\\rvert", FALSE)),
+          texcmd("ensuremath", tex("\\\\lvert#1\\\\rvert", FALSE)),
           nargs = 1)
 }
 

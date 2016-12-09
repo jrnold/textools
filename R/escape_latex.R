@@ -119,16 +119,18 @@ smartypants <- function(x, ...) {
 escape_latex <- function(x, url=TRUE, ellipses=TRUE, textbar=TRUE) {
   assert_that(is.flag(url))
   assert_that(is.flag(ellipses))
+  assert_that(is.flag(textbar))
   if (url) {
-    chunk_replacer(regex_chunker(x, URL_REGEX),
+    ret <- chunk_replacer(regex_chunker(x, URL_REGEX),
                    fun_match = function(x) {
                      str_c("\\url{", x, "}")
                    },
                    fun_nonmatch = function(x) {
-                     escape_latex_(x, ellipses = ellipses,
-                                   textbar = textbar)
+                     escape_latex_(x, ellipses = ellipses, textbar = textbar)
                    })
   } else {
-    escape_latex_(x, ellipses = ellipses, textbar = textbar)
+    ret <- escape_latex_(x, ellipses = ellipses, textbar = textbar)
   }
+  attr(ret, "tex") <- TRUE
+  ret
 }

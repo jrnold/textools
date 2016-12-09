@@ -293,15 +293,15 @@ expr2latex_ <- function(expr) {
 
 #' @export
 latex.expression <- function(x, ...) {
-  latex(expr2latex(x), escape = FALSE)
+  tex(expr2latex(x))
 }
 
 #' @export
 latex.call <- function(x, ...) {
-  latex(as.expression(x), escape = FALSE)
+  tex(as.expression(x))
 }
 
 #' @export
 latex.name <- function(x, ...) {
-  latex(as.expression(x), escape = FALSE)
+  tex(as.expression(x))
 }

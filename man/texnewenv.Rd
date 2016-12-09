@@ -47,12 +47,12 @@ LaTeX command
 # Example environment from
 # https://www.sharelatex.com/learn/Environments
 texnewenv("boxed",
-          latex(paste(c("begin{center}",
+          tex(paste(c("begin{center}",
                         "#1\\\\\\\\[1ex]\\n",
                         "\\\\begin{tabular}{|p{0.9\\\\textwidth}|}",
                         "\\\\hline\\\\\\\\"), collapse = "\\n"),
                 FALSE),
-          latex(paste(c(rep(newline(""), 2),
+          tex(paste(c(rep(newline(""), 2),
                         texcmd("hline"),
                         "\\\\end{tabular}",
                         "\\\\end{center}"),

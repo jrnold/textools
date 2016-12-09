@@ -34,8 +34,8 @@ texenv("figure",
        opts = c("h"))
 texenv("center", "Centered text")
 texenv("enumerate",
-       latex(paste(c("\\\\item First item", "\\\\item Second item"),
-                     collapse = "\\n"),
-             escape = FALSE))
+       tex(paste(c("\\\\item First item", "\\\\item Second item"),
+                     collapse = "\\n")))
+
 }
 
