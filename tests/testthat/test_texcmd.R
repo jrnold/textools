@@ -3,20 +3,18 @@ context("texcmd")
 test_that("texcmd works", {
   x <- texcmd("foo")
   expect_s3_class(x, "texcmd")
-  expect_named(x, c("command", "args", "opts"))
-  expect_equal(x[["command"]], "foo")
-  expect_equal(x[["args"]], NULL)
-  expect_equal(x[["opts"]], NULL)
+  expect_named(x, c("name", "args"))
+  expect_equal(x[["name"]], "foo")
+  expect_equal(x[["args"]], texargs())
 })
 
 test_that("texcmd works with additional arguments", {
-  x <- texcmd("foo", c("arg1", "arg2", "arg3"),
+  x <- texcmd("foo", list("arg1", "arg2"), "arg3"
               opts = c("a", b = "2"))
   expect_s3_class(x, "texcmd")
-  expect_named(x, c("command", "args", "opts"))
-  expect_equal(x[["command"]], "foo")
-  expect_equal(x[["args"]], texargs(c("arg1", "arg2", "arg3")))
-  expect_equal(x[["opts"]], texopts(c("a", b = "2")))
+  expect_named(x, c("name", "args"))
+  expect_equal(x[["name"]], "foo")
+  expect_equal(x[["args"]], texargs("arg1", "arg2", "arg3")))
 })
 
 test_that("as.character method works", {

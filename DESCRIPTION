@@ -12,11 +12,13 @@ Imports:
   purrr,
   stringr
 Suggests:
-  lintr
+    knitr,
+    rmarkdown,
+    testthat
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
-Suggests: testthat
 URL: https://github.com/jrnold/textools
 BugReports: https://github.com/jrnold/textools/issues
+VignetteBuilder: knitr

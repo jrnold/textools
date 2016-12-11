@@ -9,23 +9,17 @@
 #'    a single string with \code{collapse} as a seperator.
 #' @param ... Arguments passed to \code{\link{texnewcmd}}.
 #' @export
-#' @examples
-#' x <- list(Pval = ".001",
-#'           Figure = texcmd("includegraphics", "figure.png"))
-#' macros <- list_to_macros(x, prefix="MyProj", collapse="\n")
-#' \dontrun{
-#' cat(macros, file="macros.tex")
-#' }
-#' # Then \include{macros.tex} to use them in a TeX document
-#'
-list_to_macros <- function(x, prefix="", collapse = NULL, ...) {
-  assert_that(!is.null(names(x)))
-  macronames <- str_c(prefix, names(x))
+list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
+  xnames <- names2(x)
+  if (any(xnames == "")) {
+    stop("All elements of x must be named.")
+  }
+  macronames <- str_c(prefix, xnames)
   assert_that(is_tex_command(macronames))
 
   f <- function(name, val, ...) {
-    description <- tex(val, ...)
-    as.character(texnewcmd(name, description))
+    description <- tex(str_c(as.tex(val, ...), collapse = ""))
+    as.character(texcmd("providecommand", name, description))
   }
 
   tex(str_c(map2_chr(macronames, unname(x), f, ...),

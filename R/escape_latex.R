@@ -131,6 +131,6 @@ escape_latex <- function(x, url=TRUE, ellipses=TRUE, textbar=TRUE) {
   } else {
     ret <- escape_latex_(x, ellipses = ellipses, textbar = textbar)
   }
-  attr(ret, "tex") <- TRUE
+  # attr(ret, "tex") <- TRUE
   ret
 }

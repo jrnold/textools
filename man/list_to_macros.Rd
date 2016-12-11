@@ -4,7 +4,7 @@
 \alias{list_to_macros}
 \title{Convert a list to LaTeX macros}
 \usage{
-list_to_macros(x, prefix = "", collapse = NULL, ...)
+list_to_macros(x, prefix = "", collapse = "\\n", ...)
 }
 \arguments{
 \item{x}{A list or vector}
@@ -19,15 +19,5 @@ a single string with \code{collapse} as a seperator.}
 \description{
 For a list or vector. For elements with non-missing names,
 the elements are converted to a string and t
-}
-\examples{
-x <- list(Pval = ".001",
-          Figure = texcmd("includegraphics", "figure.png"))
-macros <- list_to_macros(x, prefix="MyProj", collapse="\\n")
-\dontrun{
-cat(macros, file="macros.tex")
-}
-# Then \\include{macros.tex} to use them in a TeX document
-
 }
 

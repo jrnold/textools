@@ -1,3 +1,55 @@
+# Assertation to check for a valid LaTeX macro (command) names
+is_tex_command <- function(x) {
+  all(str_detect(x, "^[A-Za-z]+[*]?$"))
+}
+on_failure(is_tex_command) <- function(call, env) {
+  str_c(deparse(call$x), " includes invalid LaTeX command names.\n",
+        "LaTeX command names can include only letters.")
+}
+
+
+# Tex macro args should be between 1--9
+is_tex_nargs <- function(x) {
+  assert_that(is.number(x))
+  assert_that(x >= 0 && x < 10)
+}
+on_failure(is_tex_nargs) <- function(call, env) {
+  str_c(deparse(call$x),
+        " is not a valid value for LaTeX number of arguments.\n",
+        "Use an integer 1--9.")
+}
+
+# From dplyr
+names2 <- function(x) {
+  names(x) %||% rep("", length(x))
+}
+
+#' Key-value argument list
+#'
+#' Create an argument list of comma separated options and key-value pairs
+#' as is often seen in LaTeX commands.
+#' For example, "arg1, arg2=value2, arg3, ...".
+#'
+#' @param x A character vector or list. Elements are converted to tex objects
+#'   via \code{\link{as.tex}}.
+#' @param ... Additional possibly named arguments
+#' @param .escape Whether to LaTeX escape the string values.
+#' @return A \code{\link{tex}} object.
+#' @export
+texkv <- function(x, ..., .escape = FALSE) {
+  args <- c(as.list(x), list(...))
+  argnames <- names2(args)
+  f <- function(k, v) {
+    force(.escape)
+    v <- as.tex(v, escape = .escape)
+    if (k == "") v
+    else str_c(k, v, sep = "=")
+  }
+  # I could do this wit
+  tex(str_c(map2_chr(argnames, args, f), collapse = ","))
+}
+
+
 #' Convert R object to LaTeX text
 #'
 #' Marks the given text as (La)TeX, which means functions will
@@ -13,114 +65,61 @@
 #' @export
 #' @examples
 #' tex("Already \\textit{formatted} \\LaTeX text.")
-tex <- function(x, ...) {
-  text <- c(x, as.character(list(...)))
-  structure(text, class = c("tex", "character"))
+tex <- function(x) {
+  structure(x, class = c("tex"))
 }
 
+# I'm not sure whether x should be forced to be a string or not.
+#' @export
+as.character.tex <- function(x, ...) {
+  x
+}
+
+#' @export
+print.tex <- function(x, ...) {
+  cat(str_c(x, collapse = "\n"))
+  invisible(x)
+}
+
+
+#' Convert objects to LaTeX
+#'
+#' This is the preferred method to convert objects to a
+#' \code{tex} object. It is a generic function, so it can be defined for
+#' different classes. The default is to convert an object to a character vector
+#' and use \code{escape_latex} to escape special LaTeX symbols.
+#'
+#' @param x The object to convert
+#' @param ... Other arguments used by methods
+#' @return An object of class \code{"tex"}.
+#' @seealso \code{\link{tex}} for a description of code \code{"tex"} objects.
+#' @export
 as.tex <- function(x, ...) {
   UseMethod("as.tex")
 }
 
+
+#' @export
+#' @describeIn as.tex This converts a character vector to a \code{tex} object.
+#'    Unlike \code{\link{tex}}, it can, and by default, escapes special LaTeX
+#'    characters.
+#' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 as.tex.character <- function(x, ..., escape = TRUE) {
+  assert_that(is.flag(escape))
   if (escape) {
     x <- escape_latex(x)
   }
   tex(x)
 }
 
-#' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
 #' @export
-#' @rdname tex
-as.tex.default <- function(x, ..., escape = TRUE) {
-  as.tex(as.character(x))
+#' @describeIn as.tex The default method converts \code{x} to a character vector
+#'  and then calls \code{as.tex.character}.
+as.tex.default <- function(x, ...) {
+  as.tex(as.character(x), ...)
 }
 
-
 #' @export
-print.tex <- function(x, ...) {
-  cat(x)
-  invisible(x)
-}
-
-
-#' @export
-as.tex.tex <- function(x, ...) {
-  x
-}
-
-
-#' Convert decimal integer to arbitrary base
-#'
-#' Convert a non-negative decimal integer to an arbitrary base with
-#' arbitrary symbols.
-#'
-#' @param x Vector of non-negative integers to convert
-#' @param base Either a positive integer specifying the base number or
-#'  a character string of the symbols to use for the base. If \code{base}
-#'  is a number, then the default symbols are: 0, ..., 9, A, ..., Z.
-#' @param drop_leading If \code{TRUE}, for positive numbers, any leading zeros are dropped.
-#' @param width Minimum width of the strings,
-#'   they will be padded with zeros to at least that length.
-#' @return A character vector of the integers in the new base
-#' @export
-dec2base <- function(x, base, drop_leading = TRUE, width = 1L) {
-  default_symbols <- c(0:9, LETTERS)
-  assert_that( (is.number(base) && base > 0) ||
-                (is.character(base) && length(base) > 0))
-  assert_that(is.flag(drop_leading))
-  if (is.numeric(base)) {
-    base <- as.integer(base)
-    symbols <- default_symbols
-    if (base > length(symbols)) {
-      stop(str_c("For values of base > ", length(symbols),
-                 " you need to provide a character vector with symbols"))
-    }
-  } else {
-    # If a single string "0123", then split into c("0", "1", "2", "3"))
-    if (length(base) == 1 && str_length(base) > 1) {
-      base <- str_split(base, "")[[1]]
-    }
-    # there shouldn't be any duplicates, better to have an error
-    # than go on in ignorance
-    assert_that(!any(duplicated(base)))
-    symbols <- base
-    base <- length(base)
-  }
-  # string length
-  maxpower <- trunc(log(max(x, 1), base = base)) + 1L
-  powers <- base ^ ( (maxpower - 1):0)
-  xstr <- map_chr(x, function(x) {
-    digits <- floor( (x %% (base * powers) / powers))
-    if (drop_leading) {
-      if (sum(digits) == 0) {
-        # exact zero
-        digits <- 0L
-      } else {
-        # remove any leading zeros if > 0
-        digits <- digits[min(which(digits > 0)):length(digits)]
-      }
-    }
-    str_c(symbols[digits + 1L], collapse = "")
-  })
-  if (width > 1) {
-    xstr <- str_pad(xstr, width, symbols[1], side = "left")
-  }
-  xstr
-}
-
-#' @describeIn dec2base Since LaTeX doesn't support numbers in command names,
-#'  encode numbers in base 26 with letters A-Z, or base 52 using both upper and
-#'  lowercase letters. Note that this means that A=0, B=1, ... .
-#'  An alternative is to use Roman numerals instead; see \code{\link[utils]{as.roman}}.
-#' @param lower If \code{TRUE}, use lower case letters as well as upper case letters.
-#' @param ... Arguments passed to \code{dec2base}.
-#' @export
-dec2alpha <- function(x, lower = FALSE, ...) {
-  if (lower) {
-    base <- c(base::LETTERS, base::letters)
-  } else {
-    base <- base::LETTERS
-  }
-  dec2base(x, base, ...)
-}
+#' @describeIn as.tex This simply returns \code{x}, so it will not escape already
+#'   escaped text.
+as.tex.tex <- function(x, ...) x
