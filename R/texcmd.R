@@ -83,8 +83,6 @@ as.tex.texarg <- function(x, ...) {
 #' @describeIn texarg \code{texargs} creates a list of \code{texarg} objects.
 #'   This is largely used for easy of printing.
 #' @param args Either a single argument or a list of arguments
-#' @param kv Arguments are converted to a comma-seperated option
-#'   and key-value list.
 #' @param optargs Optional arguments for a LaTeX command. These are enclosed in
 #'   in square brackets and placed before any of the arguments in \code{args}
 #'   or \code{...}.
@@ -125,7 +123,8 @@ print.texargs <- function(x, ...) {
 }
 
 
-#' @rdname utility-functions
+#' @describeIn texcmd texmacro returns the string for a LaTeX symbol,
+#'   i.e. a command without arguments.
 #' @param trailing Include trailing curly brackets
 #' @param starred Make the macro starred
 #' @export
@@ -153,7 +152,7 @@ texmacro <- function(name, trailing = FALSE, starred = FALSE) {
 #'   function. By default arguments are assumed to be mandatory. Use the
 #'   \code{texopt} function to create optional args.
 #' @export
-texcmd <- function(name, ..., .kv = TRUE) {
+texcmd <- function(name, ...) {
   assert_that(is.string(name))
   ret <- list(name = name, args = texargs(...))
   class(ret) <- "texcmd"

@@ -14,7 +14,7 @@ list_to_macros(x, prefix = "", collapse = "\\n", ...)
 \item{collapse}{If not \code{NULL}, then macros are collapsed to
 a single string with \code{collapse} as a seperator.}
 
-\item{...}{Arguments passed to \code{\link{texnewcmd}}.}
+\item{...}{Arguments passed to \code{\link{as.tex}}.}
 }
 \description{
 For a list or vector. For elements with non-missing names,

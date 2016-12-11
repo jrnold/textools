@@ -34,9 +34,6 @@ key-value pairs using \code{\link{texkv}}.}
 \item{optargs}{Optional arguments for a LaTeX command. These are enclosed in
 in square brackets and placed before any of the arguments in \code{args}
 or \code{...}.}
-
-\item{kv}{Arguments are converted to a comma-seperated option
-and key-value list.}
 }
 \value{
 An object of class \code{"texarg"}. This is character vector

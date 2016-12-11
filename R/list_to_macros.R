@@ -7,7 +7,7 @@
 #' @param prefix Prefix added to names
 #' @param collapse If not \code{NULL}, then macros are collapsed to
 #'    a single string with \code{collapse} as a seperator.
-#' @param ... Arguments passed to \code{\link{texnewcmd}}.
+#' @param ... Arguments passed to \code{\link{as.tex}}.
 #' @export
 list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
   xnames <- names2(x)
