@@ -160,25 +160,6 @@ texcmd <- function(name, ..., .kv = TRUE) {
   ret
 }
 
-# appendarg <- function(x, arg, ...) {
-#   x[["args"]] <- c(x[["args"]], arg)
-#   x
-# }
-#
-# #' @export
-# `[.texcmd` <- function(x, i, ...) {
-#   appendarg(x, texarg(i, ...))
-# }
-#
-# #' @export
-# `[[.texcmd` <- function(x, i, ...) {
-#   appendarg(x, texopt(i, ...))
-# }
-#
-# #' @export
-# `$.texcmd` <- function(x, name) {
-#   appendarg(x, texarg(as.character(name)))
-# }
 
 #' @export
 as.character.texcmd <- function(x, ..., trailing = TRUE) {
@@ -197,15 +178,6 @@ texenv <- function(name, body = "", args = list(), optargs = list(), ...) {
                  args = texargs(c(args, optargs = optargs))),
             class = "texenv")
 }
-
-# #' @export
-# `[.texenv` <- `[.texcmd`
-#
-# #' @export
-# `[[.texenv` <- `[[.texcmd`
-#
-# #' @export
-# `$.texenv` <- `$.texcmd`
 
 #' @export
 as.character.texenv <- function(x, ..., trailing = TRUE) {

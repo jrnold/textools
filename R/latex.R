@@ -99,11 +99,11 @@ as.tex <- function(x, ...) {
 }
 
 
-#' @export
 #' @describeIn as.tex This converts a character vector to a \code{tex} object.
 #'    Unlike \code{\link{tex}}, it can, and by default, escapes special LaTeX
 #'    characters.
 #' @param escape Escape LaTeX using the function \code{\link{escape_latex}}.
+#' @export
 as.tex.character <- function(x, ..., escape = TRUE) {
   assert_that(is.flag(escape))
   if (escape) {
