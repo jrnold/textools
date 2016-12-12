@@ -22,6 +22,6 @@ list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
     as.character(texcmd("providecommand", name, description))
   }
 
-  tex(str_c(map2_chr(macronames, unname(x), f, ...),
+  tex(str_c(map2_chr(str_c("\\", macronames), unname(x), f, ...),
             collapse = collapse))
 }
