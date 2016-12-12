@@ -72,7 +72,7 @@ tex <- function(x) {
 # I'm not sure whether x should be forced to be a string or not.
 #' @export
 as.character.tex <- function(x, ...) {
-  x
+  unclass(x)
 }
 
 #' @export
@@ -123,3 +123,27 @@ as.tex.default <- function(x, ...) {
 #' @describeIn as.tex This simply returns \code{x}, so it will not escape already
 #'   escaped text.
 as.tex.tex <- function(x, ...) x
+
+# as.tex.matrix <- function(x, env = "matrix", ...) {
+#   body <- tex(str_c(map_chr(array_branch(x, 1),
+#                             texrow, newline = FALSE),
+#                     collapse = "\n"))
+#   texenv(env, body, ...)
+# }
+
+# as.tex.list <- function(x, env = "itemize", ...) {
+#   items <- str_c(texmacro("item"),
+#                  map_chr(x, as.tex),
+#                  sep = " ", collapse = "\n")
+#   texenv(env, body, ...)
+# }
+
+# as.tex.data.frame <- function(x, env = "tabular",
+#                               pos = NULL, align = NULL, ...) {
+#   astex_args <- list(...)
+#   f <- function(.x) {
+#     force(astex_args)
+#     as.row(invoke(as.tex, astex_args), newline = FALSE)
+#   }
+#   texenv(env, map(x, f))
+# }

@@ -1,0 +1,4 @@
+linters: with_defaults(
+  spaces_left_parentheses_lint = NULL,
+  commented_code_linter = NULL
+ )

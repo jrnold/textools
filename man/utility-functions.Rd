@@ -5,9 +5,9 @@
 \alias{dmath}
 \alias{group}
 \alias{math}
-\alias{newline}
 \alias{parens}
 \alias{texcomment}
+\alias{texnl}
 \alias{texrow}
 \alias{utility-functions}
 \alias{verb}
@@ -21,7 +21,7 @@ group(x, ...)
 
 math(x, inline = TRUE, dollar = FALSE, ...)
 
-newline(x = character(), ...)
+texnl(x = character())
 
 dmath(...)
 

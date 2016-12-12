@@ -37,7 +37,7 @@ dec2base <- function(x, base, drop_leading = TRUE, width = 1L) {
   }
   # string length
   maxpower <- trunc(log(max(x, 1), base = base)) + 1L
-  powers <- base ^ ((maxpower - 1):0)
+  powers <- base ^ ( (maxpower - 1):0)
   xstr <- map_chr(x, function(x) {
     digits <- floor( (x %% (base * powers) / powers))
     if (drop_leading) {

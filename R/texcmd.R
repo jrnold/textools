@@ -195,4 +195,3 @@ print.texenv <- function(x, ...) {
   cat(as.character(x))
   invisible(x)
 }
-
