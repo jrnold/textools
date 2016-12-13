@@ -47,10 +47,33 @@ test_that("examples from plotmath() work", {
   expect_equal(expr2latex(paste("Phase Angle", phi)), "Phase Angle \\phi")
 })
 
-test_that("expr2latex_ handles expressions, calls, names, and others", {
+test_that("expr2latex handles multiple expressions", {
+  expect_equal(expr2latex(x + y, alpha ^ beta, x[i]),
+               c("x + y", "\\alpha^\\beta", "x_i"))
+})
+
+test_that("expr2latex_ handles name objects", {
   expect_equal(expr2latex_(quote(x)), "x")
+  expect_equal(expr2latex_(quote(alpha)), "\\alpha")
+})
+
+test_that("expr2latex_ handles call objects", {
   expect_equal(expr2latex_(quote(x + y)), "x + y")
-  expect_equal(expr2latex_(expression(x + y / 2)), "x + y / 2")
-  expect_equal(expr2latex_("alpha"), "alpha")
-  expect_equal(expr2latex_(1L), "1")
+})
+
+test_that("expr2latex_ handles expression objects", {
+  expect_equal(expr2latex_(expression(x + y / 2, alpha ^ beta)),
+             c("x + y / 2", "\\alpha^\\beta"))
+})
+
+test_that("expr2latex_ handles atomic objects", {
+  expect_equal(expr2latex_(c("alpha", "beta")), c("alpha", "beta"))
+
+  expect_equal(expr2latex_(c(1L, 2L)), c("1", "2"))
+})
+
+test_that("expr2latex_ handles lists", {
+  expect_equal(expr2latex_(list("alpha", as.name("beta"),
+                                expression(gamma, x + y))),
+                           c("alpha", "\\beta", "\\gamma", "x + y"))
 })

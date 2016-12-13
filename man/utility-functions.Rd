@@ -92,7 +92,7 @@ brackets("foo", size = "\\\\bigg")
 group("foo")
 math("\\\\frac{1}{2}")
 math("\\\\frac{1}{2}", TRUE)
-imath("\\\\frac{1}{2}")
+dmath("\\\\frac{1}{2}")
 math("\\\\frac{1}{2}", dollar = TRUE)
 texcomment("commented text")
 }

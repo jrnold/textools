@@ -3,7 +3,9 @@ Type: Package
 Title: Functions for working with LaTeX
 Version: 0.1.0
 Authors@R: c(person("Jeffrey", "Arnold", role=c("aut", "cre"),
-    email="jeffrey.arnold@gmail.com"))
+    email="jeffrey.arnold@gmail.com"),
+             person("Hadley", "Wickham", role=c("cph"),
+             comment="Some code from expr2latex is taken from Advanced R Programming"))
 Description: Some functions for generating and manipulating LaTeX.
 Depends:
   R (>= 3.1.2)

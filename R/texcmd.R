@@ -171,6 +171,21 @@ print.texcmd <- function(x, ...) {
   invisible(x)
 }
 
+#' LaTeX Environments
+#'
+#' Create an object representing text enclosed in a LaTeX environment.
+#'
+#' @param name Environment name
+#' @param body Text content of the macro
+#' @param args Arguments to the environment. See \code{\link{texarg}}.
+#' @param optargs Optional arguments for the environment. These are arguments
+#'   what will be enclosed in square brackets \code{[]}, and preceed arguments in
+#'   \code{args}.
+#' @param ... Arguments passed to \code{\link{as.tex}} to coerce
+#'   \code{body} into a \code{tex} object.
+#' @return An object of class \code{"texenv"}, which is a list with
+#'  named elements: \code{name} (\code{"character"}),
+#'  \code{body} (\code{"character")}), \code{"args"} (\code{"texargs"}).
 #' @export
 texenv <- function(name, body = "", args = list(), optargs = list(), ...) {
   structure(list(name = name, body = as.tex(body, ...),

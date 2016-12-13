@@ -210,12 +210,34 @@ OTHER_FUNCTIONS <- list(
            paste0(x, " * ", y))
   },
   "symbol" = function(x) {
-    stop("symbol() is not supported")
+    assert_that(is.string(x) | is.number(x))
+    # if string it is octal
+    if (is.string(x)) {
+      if (str_detect(x, "^\\\\[0-7]+$")) {
+        # octal
+        x <- strtoi(str_sub(x, 2), 8)
+      } else if (str_detect(x, regex("^\\\\x[0-F]+$", ignore_case = TRUE))) {
+        # hex
+        x <- strtoi(str_sub(x, 3), 16)
+      } else if (str_detect(x, regex("^[0-9]+"))) {
+        # decimal
+        x <- as.integer(x)
+      } else {
+        stop(sQuote(x), " is an invalid number.")
+      }
+    } else {
+      x <- as.integer(x)
+    }
+    # if number assumed to be digits
+    # Pisymbol requires the pifont package to use the
+    # Adobe Symbols font (psy)
+    sprintf("\\Pisymbol{psy}{%d}", x)
   }
 )
 for (i in names(OTHER_FUNCTIONS)) {
   f_env[[i]] <- OTHER_FUNCTIONS[[i]]
 }
+
 
 # Extract all calls: functions and apply
 all_calls <- function(x) {
@@ -270,7 +292,13 @@ latex_env <- function(expr) {
 #' \href{http://adv-r.had.co.nz/dsl.html}{R for Data Science},
 #' "Domain Specific Languages".
 #'
-#' @param expr An expression
+#' The \code{symbol} function uses the \verb{\Pisymbol} command
+#' from the \verb{pifont} package. You will need to load it in
+#' in any code that uses these commands.
+#'
+#' @param ... Unquoted expressions
+#' @param expr Language objects, atomic values, or lists. If \code{expr} is a list,
+#'    it will recursively call \code{expr2latex_} on each element.
 #' @return A character vector with the LaTeX version of the
 #'    expression.
 #'
@@ -278,16 +306,21 @@ latex_env <- function(expr) {
 #' @references http://adv-r.had.co.nz/dsl.html
 #' @author Hadley Wickham
 #' @export
-expr2latex <- function(expr) {
-  expr2latex_(substitute(expr))
+expr2latex <- function(...) {
+  expr2latex_(eval(substitute(alist(...))))
 }
 
 
 #' @rdname expr2latex
 #' @export
 expr2latex_ <- function(expr) {
-  expr <- as.expression(expr)
-  map_chr(expr, ~ eval(.x, latex_env(.x)))
+  # this will try to recuse through lists.
+  # this may or may not handle all cases.
+  if (is.list(expr)) {
+    flatten_chr(map(expr, expr2latex_))
+  } else {
+    flatten_chr(map(as.expression(expr), ~ eval(.x, latex_env(.x))))
+  }
 }
 
 

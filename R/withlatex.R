@@ -1,3 +1,8 @@
+#' LaTeX Builder Functions
+#'
+#' The \code{latex} environment contains some convenience functions
+#' for creating LaTeX.
+#'
 #' @export
 latex <- list()
 
@@ -50,6 +55,9 @@ latex[["%l%"]] <- function(x, y) tex(str_c(x, y, sep = "\\\\\n"))
 latex[["% %"]] <- function(x, y) tex(str_c(x, y, sep = " "))
 latex[["%~%"]] <- function(x, y) tex(str_c(x, y, sep = "~"))
 
+#' Evaluate an expression using \code{latex}
+#'
+#' @param code Code to evaluate with the \code{\link{latex}} environment.
 #' @export
 with_latex <- function(code) {
   eval(substitute(code), envir = as.list(latex), enclos = parent.frame())
