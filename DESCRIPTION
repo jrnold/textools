@@ -12,7 +12,8 @@ Depends:
 Imports:
   assertthat,
   purrr,
-  stringr
+  stringr,
+  R6
 Suggests:
     knitr,
     rmarkdown,

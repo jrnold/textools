@@ -2,6 +2,7 @@
 #' @import purrr
 #' @import assertthat
 #' @importFrom stats setNames
+#' @import R6
 NULL
 
 #' TeXtools Package
