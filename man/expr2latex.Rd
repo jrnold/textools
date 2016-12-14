@@ -5,12 +5,15 @@
 \alias{expr2latex_}
 \title{Convert Expression to LaTeX}
 \usage{
-expr2latex(expr)
+expr2latex(...)
 
 expr2latex_(expr)
 }
 \arguments{
-\item{expr}{An expression}
+\item{...}{Unquoted expressions}
+
+\item{expr}{Language objects, atomic values, or lists. If \code{expr} is a list,
+it will recursively call \code{expr2latex_} on each element.}
 }
 \value{
 A character vector with the LaTeX version of the
@@ -23,6 +26,10 @@ Convert an R expression to a LaTeX mathematical equation.
 Most of the code from this function adapted from the example in
 \href{http://adv-r.had.co.nz/dsl.html}{R for Data Science},
 "Domain Specific Languages".
+
+The \code{symbol} function uses the \verb{\Pisymbol} command
+from the \verb{pifont} package. You will need to load it in
+in any code that uses these commands.
 }
 \author{
 Hadley Wickham

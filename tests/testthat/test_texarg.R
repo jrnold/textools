@@ -49,5 +49,5 @@ test_that("as.character.texarg is equivalent to format.texarg", {
 
 test_that("texargs.character works", {
   expect_equal(format(texargs(texopt("baz"), texarg("foo"), texarg("bar"))),
-               tex("[baz]{foo}{bar}"))
+               "[baz]{foo}{bar}")
 })

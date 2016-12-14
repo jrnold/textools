@@ -43,7 +43,7 @@ texdelim <- function(text, delim = "{") {
   } else if (length(delim) == 0L) {
     delim <- rep("", 2)
   }
-  str_c(delim[1], text, delim[2])
+  tex(str_c(delim[1], text, delim[2]))
 }
 
 
@@ -92,7 +92,7 @@ texdelim <- function(text, delim = "{") {
 #' group("foo")
 #' math("\\frac{1}{2}")
 #' math("\\frac{1}{2}", TRUE)
-#' imath("\\frac{1}{2}")
+#' dmath("\\frac{1}{2}")
 #' math("\\frac{1}{2}", dollar = TRUE)
 #' texcomment("commented text")
 NULL
@@ -113,10 +113,13 @@ brackets <- function(x, type="[", size = "auto", ...) {
     lsize <- "\\left"
     rsize <- "\\right"
   } else {
+    if (length(size) == 1) {
+      size <- rep(size, 2)
+    }
     lsize <- size[1]
     rsize <- size[2]
   }
-  tex(str_c("{", lsize, bracks[1], as.tex(x, ...), rsize, bracks[2], "}"))
+  tex(str_c("{", lsize, bracks[1], x, rsize, bracks[2], "}"))
 }
 
 
@@ -128,7 +131,7 @@ parens <- partial(brackets, type = "(")
 #' @rdname utility-functions
 #' @export
 group <- function(x, ...) {
-  tex(str_c("{", as.tex(x, ...), "}"))
+  tex(str_c("{", x, "}"))
 }
 
 
@@ -147,18 +150,18 @@ math <- function(x, inline = TRUE, dollar = FALSE, ...) {
       delim <- c("\\[\n", "\n\\]")
     }
   }
-  tex(str_c(delim[1], as.tex(x, ...), delim[2]))
+  tex(str_c(delim[1], x, delim[2]))
 }
 
 
 #' @rdname utility-functions
 #' @export
-newline <- function(x = character(), ...) {
+texnl <- function(x = character()) {
   # nolint start
   # TODO: could add opts for \newline, \\*, \break, \hfill\break, and \linebreak[number]
   # do all of these: https://www.sharelatex.com/learn/Line_breaks_and_blank_spaces
   # nolint end
-  tex(str_c(as.tex(x, ...), "\\\\\n", collapse = ""))
+  tex(str_c(x, "\\\\\n"))
 }
 
 
@@ -190,9 +193,9 @@ verb <- function(x, delim="|") {
 #' @export
 #' @rdname utility-functions
 texrow <- function(x, newline = TRUE, ...) {
-  ret <- str_c(as.tex(x, ...), collapse = " & ")
+  ret <- str_c(x, collapse = " & ")
   if (newline) {
-    ret <- str_c(ret, newline(), collapse = " ")
+    ret <- texnl(ret)
   }
   tex(ret)
 }

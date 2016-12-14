@@ -3,7 +3,6 @@ context("tex")
 test_that("tex() works with default args", {
   x <- tex(c("foo", "\\foo"))
   expect_is(x, "tex")
-  expect_is(x, "character")
   expect_equal(as.character(x), c("foo", "\\foo"))
 })
 

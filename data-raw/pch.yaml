@@ -1,0 +1,66 @@
+pch:
+  0:
+    unicode: "\u25A1"
+    latex: "\\mdwhtsquare"
+    name: "White Square"
+  1:
+    unicode: "\u25CB"
+    name: "White circle"
+  2:
+    unicode: "\u25B3"
+    name: "White Up-pointing triangle"
+  3:
+    unicode: "\uFF0B"
+    latex: "\\mathplus"
+    name: Full-width plus
+  4:
+    unicode: "\u2715"
+    latex: "\\times"
+    name: Multiplication X
+  5:
+    unicode: "\u25C7"
+    name: "White diamond"
+    latex: "\\mdwhtdiamong"
+  6:
+    unicode: "\u25BD"
+    name: "White Down-pointing triangle"
+    latex: "\\triangledown"
+  7:
+    #unicode: "\u22A0"
+    unicode: "\u25A1\u200D\u2715"
+    latex: "\\boxtimes"
+    comment: square and times
+  8:
+    unicode:
+    comment: plus and minus
+  10:
+    unicode: "\u2A01"
+    latex: "\\oplus"
+    name: Circled plus
+  13:
+    unicode: "\u2297"
+    latex: "\\otimes"
+  15:
+    unicode: "\u25A0"
+    name: "Black square"
+    latex: "\\mdblacksquare"
+  16:
+    unicode: "\u25CF"
+    name: "Black circle"
+    latex: "\\mdblackcircle"
+  17:
+    unicode: "\u25B2"
+    name: "Black Up-pointing triangle"
+    name: "\\blacktriangle"
+  18:
+    unicode: "\u25C6"
+    name: "Black diamond"
+    latex: "\\mdblkdiamond"
+  19:
+    comment: large solide circle
+    unicode: "U+02B24"
+    latex: "\\lgblkcircle"
+  20:
+    unicode: "\u2022"
+    latex: "\\smblkcircle"
+    comment: bullet

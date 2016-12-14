@@ -5,9 +5,9 @@
 \alias{dmath}
 \alias{group}
 \alias{math}
-\alias{newline}
 \alias{parens}
 \alias{texcomment}
+\alias{texnl}
 \alias{texrow}
 \alias{utility-functions}
 \alias{verb}
@@ -21,7 +21,7 @@ group(x, ...)
 
 math(x, inline = TRUE, dollar = FALSE, ...)
 
-newline(x = character(), ...)
+texnl(x = character())
 
 dmath(...)
 
@@ -92,7 +92,7 @@ brackets("foo", size = "\\\\bigg")
 group("foo")
 math("\\\\frac{1}{2}")
 math("\\\\frac{1}{2}", TRUE)
-imath("\\\\frac{1}{2}")
+dmath("\\\\frac{1}{2}")
 math("\\\\frac{1}{2}", dollar = TRUE)
 texcomment("commented text")
 }
