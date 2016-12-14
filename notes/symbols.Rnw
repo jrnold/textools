@@ -1,0 +1,42 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+%\usepackage{amsfonts}
+%\usepackage{stix}
+\usepackage{fdsymbol}
+\usepackage{mathtools}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\begin{tabular}{lllllll}
+pch & description & \LaTeX &  & Unicode & & \\
+\hline
+0 & White square & $\mdlgwhtsquare$, $\square$ \\
+1 & White circle & $\mdlgwhtcircle$, \\
+2 & White triangle & $\triangle$ \\
+3 & Plus sign & $\plus$ \\
+4 & Times & $\times$ \\
+5 & White Diamond & $\Diamond$ \\
+6 & White triangle down & $\triangledown$ \\
+7 & Square and times & $\mathrlap{\mdlgwhtsquare}\times$ \\
+8 & Plus sign and times & $\mathrlap{\plus}\times$ \\
+9 & Diamond and plus sign & $\diamondplus$ \\
+10 & Circle and plus sign & $\oplus$ \\
+11 & White triangle up and white triangle down & $\mathrlap{\triangle}\triangledown$ \\
+12 & Square and plus sign & $\mathrlap{\mdlgwhtsquare}\plus$ \\
+13 & Circle and times & $\otimes$ \\
+14 & Triangle down and square & $\mathrlap{\mdlgwhtsquare}\smalltriangledown$ \\
+15 & Black square & $\mdlgblksquare$ \\
+16 & Black circle & $\mdlgblkcircle$ \\
+17 & Black triangle & $\blacktriangle$ \\
+18 & Black diamond & $\mdlgblkdiamond$ \\
+19 & Large black circle & $\largeblackcircle$ \\
+20 & Small black circle & $\bullet$ \\
+\hline
+\end{tabular}
+
+The difference between 16 and 19 is that 19 uses a border.
+21 is a smaller solid circle (2/3 the size of 19).
+
+\end{document}
