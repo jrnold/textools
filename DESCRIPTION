@@ -1,7 +1,7 @@
 Package: textools
 Type: Package
 Title: Functions for working with LaTeX
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(person("Jeffrey", "Arnold", role=c("aut", "cre"),
     email="jeffrey.arnold@gmail.com"),
              person("Hadley", "Wickham", role=c("cph"),
