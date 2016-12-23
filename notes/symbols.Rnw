@@ -1,42 +1,59 @@
 \documentclass{article}
 
 \usepackage{amssymb}
-%\usepackage{amsfonts}
+\usepackage{amsfonts}
+%\usepackage{mathabx}
+%usepackage{mathtools}
 %\usepackage{stix}
-\usepackage{fdsymbol}
-\usepackage{mathtools}
+%\usepackage{fdsymbol}
+
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 
+
+\section{PCH Plot points}
+
+
+<<"points",fig.height=1>>=
+par(mar = rep(0,4))
+plot(c(-1, 26), 0:1, type = "n", axes = FALSE)
+text(0:25, 0.6, 0:25, cex = 0.5)
+points(0:25, rep(0.3, 26), pch = 0:25, bg = "grey")
+@
+
+
 \begin{tabular}{lllllll}
-pch & description & \LaTeX &  & Unicode & & \\
+pch & description & \LaTeX &  & package & \\
 \hline
-0 & White square & $\mdlgwhtsquare$, $\square$ \\
-1 & White circle & $\mdlgwhtcircle$, \\
+0 & White square & $\square$ & \verb|\square| \\
+1 & White circle & $\bigcirc$ &  \\
 2 & White triangle & $\triangle$ \\
-3 & Plus sign & $\plus$ \\
+3 & Plus sign & $+$ \\
 4 & Times & $\times$ \\
 5 & White Diamond & $\Diamond$ \\
 6 & White triangle down & $\triangledown$ \\
-7 & Square and times & $\mathrlap{\mdlgwhtsquare}\times$ \\
-8 & Plus sign and times & $\mathrlap{\plus}\times$ \\
-9 & Diamond and plus sign & $\diamondplus$ \\
-10 & Circle and plus sign & $\oplus$ \\
-11 & White triangle up and white triangle down & $\mathrlap{\triangle}\triangledown$ \\
-12 & Square and plus sign & $\mathrlap{\mdlgwhtsquare}\plus$ \\
-13 & Circle and times & $\otimes$ \\
-14 & Triangle down and square & $\mathrlap{\mdlgwhtsquare}\smalltriangledown$ \\
-15 & Black square & $\mdlgblksquare$ \\
-16 & Black circle & $\mdlgblkcircle$ \\
-17 & Black triangle & $\blacktriangle$ \\
-18 & Black diamond & $\mdlgblkdiamond$ \\
-19 & Large black circle & $\largeblackcircle$ \\
-20 & Small black circle & $\bullet$ \\
-\hline
 \end{tabular}
+% 7 & Square and times & $\mathrlap{\mdlgwhtsquare}\times$ \\
+% 8 & Plus sign and times & $\mathrlap{\plus}\times$ \\
+% 9 & Diamond and plus sign & $\diamondplus$ \\
+% 10 & Circle and plus sign & $\oplus$ \\
+% 11 & White triangle up and white triangle down & $\mathrlap{\triangle}\triangledown$ \\
+% 12 & Square and plus sign & $\mathrlap{\mdlgwhtsquare}\plus$ \\
+% 13 & Circle and times & $\otimes$ \\
+% 14 & Triangle down and square & $\mathrlap{\mdlgwhtsquare}\smalltriangledown$ \\
+% 15 & Black square & $\mdlgblksquare$ \\
+% 16 & Black circle & $\mdlgblkcircle$ \\
+% 17 & Black triangle & $\blacktriangle$ \\
+% 18 & Black diamond & $\mdlgblkdiamond$ \\
+% 19 & Large black circle & $\largeblackcircle$ \\
+% 20 & Small black circle & $\bullet$ \\
+%\hline
+%\end{tabular}
 
 The difference between 16 and 19 is that 19 uses a border.
 21 is a smaller solid circle (2/3 the size of 19).
+
+Points 21-25
 
 \end{document}

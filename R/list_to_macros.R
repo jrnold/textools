@@ -10,6 +10,9 @@
 #' @param ... Arguments passed to \code{\link{as.tex}}.
 #' @export
 list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
+  if (length(x) == 0) {
+    return("")
+  }
   xnames <- names2(x)
   if (any(xnames == "")) {
     stop("All elements of x must be named.")
@@ -36,8 +39,9 @@ list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
 LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
   public = list(
     data = list(),
-    initialize = function(`_data`, ...) {
-      self$add_all(`_data`, ...)
+    prefix = "",
+    initialize = function(prefix = "") {
+      self$prefix = prefix
     },
     add_all = function(`_data`, ...) {
       newdata <- splice(`_data`, list(...))

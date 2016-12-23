@@ -1,3 +1,8 @@
 .Rproj.user
 .Rhistory
 inst/doc
+notes/*-concordance.tex
+notes/*.log
+notes/*.synctex.gz
+notes/*.tex
+Rplots.pdf
