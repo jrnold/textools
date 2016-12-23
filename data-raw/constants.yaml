@@ -74,6 +74,8 @@ fonts:
     - mathit
     - mathnormal
     - mathcal
+    - mathfrak
+    - mathbb
 
 # TeX catcodes
 # https://en.wikibooks.org/wiki/LaTeX/Plain_TeX
