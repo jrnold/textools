@@ -63,7 +63,7 @@ LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
       invisible(self)
     },
     to_macros = function() {
-      list_to_macros(self$data)
+      list_to_macros(self$data, prefix = self$prefix)
     },
     format = function() {
       self$to_macros()
