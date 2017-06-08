@@ -1,8 +1,11 @@
 ---
 title: "Introduction to textools"
-author: "Jeffrey Arnold"
+author: 
+  - "Jeffrey Arnold"
+  - "Aaron Erlich"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+bibliography: textools.bib
 vignette: >
   %\VignetteIndexEntry{Introduction to textools}
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,21 +15,69 @@ vignette: >
 ```{r head, include=FALSE}
 library("tidyverse")
 library("textools")
+
 ```
 
+#Introduction
+The replicable research movement has highlighted the need for researchers to produce numeric and graphical displays of quantitative information directly from code. Many tools exist to output both figures and tables into LaTeX from R. 
+However, papers also reference many quantitative (or qualitative) pieces of information throughot the descriptive prose. This text lies outside `\figure` or `\table` environment. We provide a suite of tools to easily manage all of the quantitative pieces of information for a research paper or presentation in \LaTeX. To do so we leverage \LaTeX`s macro functionality. 
 
-## LaTeX environment
+To create a set of macros for \LaTex we use R's list functionality to create these macros. The simplest way to use `textools` is to use `list_to_macros`. `list_to_macros` requires a `list` object in which the researcher gives each item in the list a name and then exports this list to `.tex` file by providing `list_to_macros` with a prefix for the macro and file to export the macros. 
+
+## Export data to .text file with `list_to_macros`
+```{r}
+data(mtcars)
+
+#create the file where you will store the macro
+MACROS_TEX <- "./vignette_macros.tex"
+
+#create an empty list to store the macro
+MACROS <- list()
+
+#careful not use underscores. We recommend camelCase in this situation
+MACROS$meanCyl <- round(mean(mtcars$cyl), 2)
+MACROS$medianCyl <- median(mtcars$cyl)
+MACROS$sdCyl <- round(sd(mtcars$cyl), 2)
+
+cat(list_to_macros(MACROS, prefix = "carSumStat"), file = MACROS_TEX)
+
+  
+#dplyr::select(mtcars, cyl) %>% dplyr::summarise(mean(cyl))
+
+
+```
+The researcher then includes this set of macros in their main \LaTeX file and can call each macro from within the paper. Such a method allows researchers to easily put all of the evidence 
+
+[@eubank_embrace_2016]
+### LaTeX environment
 
 
 ```{r}
-with_latex({
-  begin("center", {
-    c("This is a paragraph of text")
-  }) %n%
-  C("this is commented") %l%
-    "newline" %n%
-    M("1" %/% "2") %n%
-    m(.("alpha") %/% .("gamma") %^% 2)
-}) %>% cat
+#doesn't work
+
+# with_latex( {
+#   begin("center", {
+#     c("We report on summary statistics from the textttmtcars dataset The mean number of cylinders is carSumStatmeanCyl, the median is carSumStatmedianCyl and the standard deviation is carSumStatsdCyl")
+#     } ) #%n%
+#   }) %>% cat
 ```
 
+## Using R6 Classes
+
+```{r}
+
+# with_latex( {
+#   "\include{./stats/descriptive_macros}"
+#   begin("document", {
+#     begin("center", {
+#       c("We report on summary statistics from the \\texttt{mtcars} dataset")
+#       }) %n%
+#   C("this is commented") %l%
+#     "newline" %n%
+#     M("1" %/% "2") %n%
+#     m(.("alpha") %/% .("gamma") %^% 2)
+# } ) } ) %>% cat
+
+```
+
+## Writing small snippets of LaTeX code in R with `with_latex`
