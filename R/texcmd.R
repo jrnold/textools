@@ -18,7 +18,7 @@
 #'  square brackets are used for optional arguments.
 #' @return An object of class \code{"texarg"}. This is character vector
 #'   with a single element, with attributes \code{"open"} and \code{"close"}
-#'   for the opening and closing delimeters for the argument.
+#'   for the opening and closing delimiters for the argument.
 #' @export
 texarg <- function(x, delim = "{", kv = TRUE) {
   delimiters <- list("{" = c("{", "}"),
