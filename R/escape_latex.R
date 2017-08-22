@@ -181,6 +181,7 @@ smartypants <- function(x, ...) {
 #'     package.
 #' @param ellipses If \code{TRUE}, replace ellipses, \verb{...}.
 #' @param textbar If \code{TRUE}, replace the vertical bar character, \verb{|}.
+#' @param ... Other arguments passed to methods
 #' @return A character vector with all LaTeX special characters escaped.
 #' @export
 #' @examples
@@ -188,7 +189,13 @@ smartypants <- function(x, ...) {
 #'                      "{ } # $ & _ % \\ ~ ^ ... | "),
 #'                     collapse = ""))
 #' escape_latex("By default so are URLs like https://cran.r-project.org")
-escape_latex <- function(x, url=TRUE, ellipses=TRUE, textbar=TRUE) {
+escape_latex <- function(x, ...) {
+  UseMethod("escape_latex")
+}
+
+#' @rdname escape_latex
+#' @export
+escape_latex.character <- function(x, url = TRUE, ellipses = TRUE, textbar = TRUE, ...) {
   assert_that(is.flag(url))
   assert_that(is.flag(ellipses))
   assert_that(is.flag(textbar))
@@ -205,3 +212,13 @@ escape_latex <- function(x, url=TRUE, ellipses=TRUE, textbar=TRUE) {
   }
   ret
 }
+
+#' @rdname escape_latex
+#' @export
+escape_latex.default <- function(x, ...) {
+  escape_latex.character(as.character(x))
+}
+
+#' @rdname escape_latex
+#' @export
+escape_latex.tex <- function(x, ...) x

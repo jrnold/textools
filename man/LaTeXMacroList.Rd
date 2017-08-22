@@ -9,7 +9,7 @@
 LaTeXMacroList
 }
 \description{
-This is an R6 object which simplifies using \code{\link{list_to_macros}}
+This is an R6 object which simplifies using \code{\link{write_latex_commands}}
 for writing R objects to LaTeX macros. These objects have simple methods
 for adding and dropping elements in the list, and to write macros.
 }

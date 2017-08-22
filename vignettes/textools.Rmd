@@ -47,15 +47,13 @@ MACROS$meanCyl <- round(mean(mtcars$cyl), 2)
 MACROS$medianCyl <- median(mtcars$cyl)
 MACROS$sdCyl <- round(sd(mtcars$cyl), 2)
 
-cat(list_to_macros(MACROS, prefix = "carSumStat"), file = MACROS_TEX)
+#cat(list_to_macros(MACROS, prefix = "carSumStat"), file = MACROS_TEX)
 ```
 
-<<<<<<< HEAD
-=======
 The contents of the `.tex` file will then look like the following
 
 ```{r echo=FALSE, comment=NA}
-print(list_to_macros(MACROS, prefix = "carSumStat"))
+#print(list_to_macros(MACROS, prefix = "carSumStat"))
 ```
 
 The researcher then includes this set of macros in their main \LaTeX file and can call each macro from within the paper. Such a method allows researchers to easily put all of the evidence 
@@ -68,29 +66,7 @@ We could then write our article using our custom macros to reference our individ
 ```{r echo = FALSE, comment=NA}
 #doesn't work
 
-with_latex(
-    "We report on summary statistics from the \\texttt{mtcars} dataset The mean number of cylinders is \\carSumStatmeanCyl, the median is \\carSumStatmedianCyl and the standard deviation is \\carSumStatsdCyl")  %>% cat %>% print
+# with_latex(
+#     "We report on summary statistics from the \\texttt{mtcars} dataset The mean number of cylinders is \\carSumStatmeanCyl, the median is \\carSumStatmedianCyl and the standard deviation is \\carSumStatsdCyl")  %>% cat %>% print
 ```
 
-## Using R6 Classes
-
-```{r}
-
-with_latex( {
-  "\\include{./vignette_macros}"
-  begin("document", {
-    begin("center", {
-      "We report on summary statistics from the \texttt{mtcars} dataset"
-      }) }) } ) %>% cat
-    
-    %n%
-  C("this is commented") %l%
-    "newline" %n%
-    M("1" %/% "2") %n%
-    m(.("alpha") %/% .("gamma") %^% 2)
-} ) } ) %>% cat
-
-```
-
-## Writing small snippets of LaTeX code in R with `with_latex`
->>>>>>> 29662b13475c4d74cbafc9adc0d0cc8050f5287f

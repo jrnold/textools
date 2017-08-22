@@ -2,14 +2,11 @@
 % Please edit documentation in R/latex.R
 \name{as.tex}
 \alias{as.tex}
-\alias{as.tex.character}
 \alias{as.tex.default}
 \alias{as.tex.tex}
 \title{Convert objects to LaTeX}
 \usage{
 as.tex(x, ...)
-
-\method{as.tex}{character}(x, ..., escape = TRUE)
 
 \method{as.tex}{default}(x, ...)
 
@@ -19,8 +16,6 @@ as.tex(x, ...)
 \item{x}{The object to convert}
 
 \item{...}{Other arguments used by methods}
-
-\item{escape}{Escape LaTeX using the function \code{\link{escape_latex}}.}
 }
 \value{
 An object of class \code{"tex"}.
@@ -33,12 +28,9 @@ and use \code{escape_latex} to escape special LaTeX symbols.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{character}: This converts a character vector to a \code{tex} object.
+\item \code{default}: This converts a character vector to a \code{tex} object.
 Unlike \code{\link{tex}}, it can, and by default, escapes special LaTeX
 characters.
-
-\item \code{default}: The default method converts \code{x} to a character vector
-and then calls \code{as.tex.character}.
 
 \item \code{tex}: This simply returns \code{x}, so it will not escape already
 escaped text.

@@ -1,3 +1,7 @@
+.providecommand <- function(x) {
+  tex(sprintf("\\providecommand{\\%s}{%s}", names(x), as.tex(x)))
+}
+
 #' Convert a list to LaTeX macros
 #'
 #' For a list or vector. For elements with non-missing names,
@@ -5,11 +9,15 @@
 #'
 #' @param x A list or vector
 #' @param prefix Prefix added to names
-#' @param collapse If not \code{NULL}, then macros are collapsed to
-#'    a single string with \code{collapse} as a seperator.
 #' @param ... Arguments passed to \code{\link{as.tex}}.
 #' @export
-list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
+write_latex_commands <- function(x, ...) {
+  UseMethod("write_latex_commands")
+}
+
+#' @rdname write_latex_commands
+#' @export
+write_latex_commands.default <- function(x, prefix="", ...) {
   if (length(x) == 0) {
     return("")
   }
@@ -19,19 +27,13 @@ list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
   }
   macronames <- str_c(prefix, xnames)
   assert_that(all(is_tex_command(macronames)))
-
-  f <- function(name, val, ...) {
-    description <- tex(str_c(as.tex(val, ...), collapse = ""))
-    str_c("\\providecommand{\\", name, "}{", description, "}")
-  }
-
-  tex(str_c(map2_chr(str_c("\\", macronames), unname(x), f, ...),
-            collapse = collapse))
+  .providecommand(set_names(x, macronames))
 }
+
 
 #' Create and Write LaTeX Macro Lists
 #'
-#' This is an R6 object which simplifies using \code{\link{list_to_macros}}
+#' This is an R6 object which simplifies using \code{\link{write_latex_commands}}
 #' for writing R objects to LaTeX macros. These objects have simple methods
 #' for adding and dropping elements in the list, and to write macros.
 #'
@@ -62,7 +64,7 @@ LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
       invisible(self)
     },
     to_macros = function() {
-      list_to_macros(self$data, prefix = self$prefix)
+     write_latex_macros(self$data, prefix = self$prefix)
     },
     format = function() {
       self$to_macros()

@@ -21,10 +21,6 @@ test_that("as.tex.character escapes by default", {
   expect_equal(as.tex("$1.00"), tex("\\$1.00"))
 })
 
-test_that("as.tex.character escape=FALSE does not escape TeX", {
-  expect_equal(as.tex("#1", escape = FALSE), tex("#1"))
-})
-
 test_that("as.tex.default works", {
   expect_equal(as.tex(1), tex("1"))
 })
