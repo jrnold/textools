@@ -20,4 +20,3 @@ a single string with \code{collapse} as a seperator.}
 For a list or vector. For elements with non-missing names,
 the elements are converted to a string and t
 }
-

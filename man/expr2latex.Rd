@@ -31,13 +31,12 @@ The \code{symbol} function uses the \verb{\Pisymbol} command
 from the \verb{pifont} package. You will need to load it in
 in any code that uses these commands.
 }
-\author{
-Hadley Wickham
-}
 \references{
 http://adv-r.had.co.nz/dsl.html
 }
 \seealso{
 \code{\link{plotmath}}
 }
-
+\author{
+Hadley Wickham
+}

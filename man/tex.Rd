@@ -27,4 +27,3 @@ tex("Already \\\\textit{formatted} \\\\LaTeX text.")
 \seealso{
 \code{\link[utils]{toLatex}}
 }
-

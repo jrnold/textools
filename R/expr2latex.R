@@ -1,5 +1,3 @@
-library("testthat")
-
 # Symbols converted into LaTeX
 # Both Greek letters and others
 

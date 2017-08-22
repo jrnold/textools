@@ -18,11 +18,11 @@ list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
     stop("All elements of x must be named.")
   }
   macronames <- str_c(prefix, xnames)
-  assert_that(is_tex_command(macronames))
+  assert_that(all(is_tex_command(macronames)))
 
   f <- function(name, val, ...) {
     description <- tex(str_c(as.tex(val, ...), collapse = ""))
-    as.character(texcmd("providecommand", name, description))
+    str_c("\\providecommand{\\", name, "}{", description, "}")
   }
 
   tex(str_c(map2_chr(str_c("\\", macronames), unname(x), f, ...),
@@ -38,28 +38,27 @@ list_to_macros <- function(x, prefix="", collapse = "\n", ...) {
 #' @export
 LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
   public = list(
-    data = list(),
+    data = rlang::new_environment(),
     prefix = "",
     initialize = function(prefix = "") {
       self$prefix = prefix
     },
-    add_all = function(`_data`, ...) {
-      newdata <- splice(`_data`, list(...))
-      for (i in seq_along(`_data`)) {
-        self$add(names(newdata)[i], newdata[[i]])
-      }
+    add_all = function(...) {
+      env_bind(self$data, UQS(dots_splice(...)))
       invisible(self)
     },
-    add = function(key, value, ...) {
-      self$data[[key]] <- as.tex(value, ...)
-      invisible(self)
+    add = function(value, key, ...) {
+      # put value first and return value to make it easier to use in a %>%
+      assert_that(is_tex_command(key))
+      env_bind(key, as.tex(value, ...))
+      invisible(value)
     },
     drop = function(key) {
       self$data[[key]] <- NULL
       invisible(self)
     },
-    drop_all = function(key) {
-      self$data <- list()
+    drop_all = function() {
+      self$data <- new
       invisible(self)
     },
     to_macros = function() {
@@ -77,3 +76,9 @@ LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
     }
   )
 })
+
+coerce_tex_name <- function(x) {
+  trailing_star <- str_detect("[*]^", x)
+  out <- str_replace(str_to_title(str_replace("[^A-Za-z]", " ")), " +", "")
+  str_c(out, if_else(trailing_star, "*", ""))
+}

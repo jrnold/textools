@@ -14,4 +14,3 @@ for writing R objects to LaTeX macros. These objects have simple methods
 for adding and dropping elements in the list, and to write macros.
 }
 \keyword{datasets}
-

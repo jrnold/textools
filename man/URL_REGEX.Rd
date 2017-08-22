@@ -13,9 +13,6 @@ Regular expression for URL validation from Diego Pierri
 from this \href{gist}{https://gist.github.com/dperini/729294}.
 This is used by the \code{\link{escape_latex}} function to escape URLs.
 }
-\author{
-Diego Pierri. MIT License.
-}
 \references{
 \itemize{
 \item \url{https://gist.github.com/dperini/729294}
@@ -25,5 +22,7 @@ Diego Pierri. MIT License.
 \seealso{
 \code{\link{escape_latex}}
 }
+\author{
+Diego Pierri. MIT License.
+}
 \keyword{datasets}
-

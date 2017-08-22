@@ -1,54 +1,29 @@
-# Assertation to check for a valid LaTeX macro (command) names
-is_tex_command <- function(x) {
-  all(str_detect(x, "^[A-Za-z]+[*]?$"))
-}
-on_failure(is_tex_command) <- function(call, env) {
-  str_c(deparse(call$x), " includes invalid LaTeX command names.\n",
-        "LaTeX command names can include only letters.")
-}
-
-
-# Tex macro args should be between 1--9
-is_tex_nargs <- function(x) {
-  assert_that(is.number(x))
-  assert_that(x >= 0 && x < 10)
-}
-on_failure(is_tex_nargs) <- function(call, env) {
-  str_c(deparse(call$x),
-        " is not a valid value for LaTeX number of arguments.\n",
-        "Use an integer 1--9.")
-}
-
-# From dplyr
 names2 <- function(x) {
   names(x) %||% rep("", length(x))
 }
 
-#' Key-value argument list
+
+#' Check that string is a valid TeX command name
 #'
-#' Create an argument list of comma separated options and key-value pairs
-#' as is often seen in LaTeX commands.
-#' For example, "arg1, arg2=value2, arg3, ...".
+#' @param x character vector
+#' @return A logical vector indicating which elements elements of the vector
+#'   contain valid TeX command names.
 #'
-#' @param x A character vector or list. Elements are converted to tex objects
-#'   via \code{\link{as.tex}}.
-#' @param ... Additional possibly named arguments
-#' @param .escape Whether to LaTeX escape the string values.
-#' @return A \code{\link{tex}} object.
-#' @export
-texkv <- function(x, ..., .escape = FALSE) {
-  args <- c(as.list(x), list(...))
-  argnames <- names2(args)
-  f <- function(k, v) {
-    force(.escape)
-    v <- as.tex(v, escape = .escape)
-    if (k == "") v
-    else str_c(k, v, sep = "=")
-  }
-  # I could do this wit
-  tex(str_c(map2_chr(argnames, args, f), collapse = ","))
+#' Without resorting to changing the category codes of characters, valid
+#' LaTeX commands can only contain letters.
+#'
+#' Assertation to check for a valid LaTeX macro (command) names
+is_tex_command <- function(x) {
+  str_detect(x, "^[A-Za-z]+[*]?$")
 }
 
+# is_tex_command <- function(x) {
+#   str_detect(x, "^[A-Za-z]+[*]?$")
+# }
+# on_failure(is_tex_command) <- function(call, env) {
+#   str_c(deparse(call$x), " includes invalid LaTeX command names.\n",
+#         "LaTeX command names can include only letters.")
+# }
 
 #' Convert R object to LaTeX text
 #'
@@ -124,26 +99,3 @@ as.tex.default <- function(x, ...) {
 #'   escaped text.
 as.tex.tex <- function(x, ...) x
 
-# as.tex.matrix <- function(x, env = "matrix", ...) {
-#   body <- tex(str_c(map_chr(array_branch(x, 1),
-#                             texrow, newline = FALSE),
-#                     collapse = "\n"))
-#   texenv(env, body, ...)
-# }
-
-# as.tex.list <- function(x, env = "itemize", ...) {
-#   items <- str_c(texmacro("item"),
-#                  map_chr(x, as.tex),
-#                  sep = " ", collapse = "\n")
-#   texenv(env, body, ...)
-# }
-
-# as.tex.data.frame <- function(x, env = "tabular",
-#                               pos = NULL, align = NULL, ...) {
-#   astex_args <- list(...)
-#   f <- function(.x) {
-#     force(astex_args)
-#     as.row(invoke(as.tex, astex_args), newline = FALSE)
-#   }
-#   texenv(env, map(x, f))
-# }

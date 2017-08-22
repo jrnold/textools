@@ -43,7 +43,7 @@ and then calls \code{as.tex.character}.
 \item \code{tex}: This simply returns \code{x}, so it will not escape already
 escaped text.
 }}
+
 \seealso{
 \code{\link{tex}} for a description of code \code{"tex"} objects.
 }
-

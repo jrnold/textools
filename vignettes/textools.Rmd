@@ -14,19 +14,3 @@ library("tidyverse")
 library("textools")
 ```
 
-
-## LaTeX environment
-
-
-```{r}
-with_latex({
-  begin("center", {
-    c("This is a paragraph of text")
-  }) %n%
-  C("this is commented") %l%
-    "newline" %n%
-    M("1" %/% "2") %n%
-    m(.("alpha") %/% .("gamma") %^% 2)
-}) %>% cat
-```
-

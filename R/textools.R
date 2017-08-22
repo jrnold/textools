@@ -2,7 +2,9 @@
 #' @import purrr
 #' @import assertthat
 #' @importFrom stats setNames
+#' @importFrom dplyr if_else
 #' @import R6
+#' @importFrom rlang new_environment UQS
 NULL
 
 #' TeXtools Package

@@ -50,4 +50,3 @@ escape_latex(paste(c("These characters will be escaped",
                     collapse = ""))
 escape_latex("By default so are URLs like https://cran.r-project.org")
 }
-
