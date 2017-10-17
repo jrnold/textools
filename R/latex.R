@@ -52,6 +52,7 @@ as.character.tex <- function(x, ...) {
 
 #' @export
 print.tex <- function(x, ...) {
+  cat("<tex>\n")
   cat(str_c(x, collapse = "\n"))
   invisible(x)
 }
@@ -73,7 +74,6 @@ as.tex <- function(x, ...) {
   UseMethod("as.tex")
 }
 
-
 #' @describeIn as.tex This converts a character vector to a \code{tex} object.
 #'    Unlike \code{\link{tex}}, it can, and by default, escapes special LaTeX
 #'    characters.
@@ -87,3 +87,6 @@ as.tex.default <- function(x, ...) {
 #'   escaped text.
 as.tex.tex <- function(x, ...) x
 
+#' @export
+#' @describeIn as.tex This returns ""
+as.text.NULL <- function(x, ...) tex("")

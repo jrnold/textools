@@ -42,17 +42,34 @@ LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
   public = list(
     data = rlang::new_environment(),
     prefix = "",
+    allow_null = FALSE,
+    allow_na = FALSE,
+    strings_only = TRUE,
+    # function to validate macro input
+    # this is useful to catch unexpected bugs in code that could
+    # perpetuate to output
+    validate = function(x) {
+      if (!self$allow_null && is.null(x)) {
+        stop("Macro value cannot be null", call. = FALSE)
+      } else if (!self$allow_na && any(is.na(x))) {
+        stop("NA values are not allowed")
+      } else if (strings_only & !is_string(x)) {
+        stop("Only character vectors of length one are allowed")
+      }
+      TRUE
+    },
     initialize = function(prefix = "") {
       self$prefix = prefix
     },
     add_all = function(...) {
-      env_bind(self$data, UQS(dots_splice(...)))
+      args <- dots_splice(...)
+      walk2(args, names(args), self$add)
       invisible(self)
     },
     add = function(value, key, ...) {
       # put value first and return value to make it easier to use in a %>%
       assert_that(is_tex_command(key))
-      env_bind(key, as.tex(value, ...))
+      self$data[[key]] <- as.tex(value, ...)
       invisible(value)
     },
     drop = function(key) {
@@ -63,14 +80,14 @@ LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
       self$data <- new
       invisible(self)
     },
-    to_macros = function() {
-     write_latex_macros(self$data, prefix = self$prefix)
+    to_latex = function() {
+     write_latex_commands(self$data, prefix = self$prefix)
     },
     format = function() {
       self$to_macros()
     },
     write = function(file = "", append = FALSE) {
-      cat(self$to_macros(), file = file, append = append)
+      cat(self$to_latex(), file = file, append = append)
       invisible(self)
     },
     print = function() {
