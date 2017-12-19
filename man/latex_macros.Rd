@@ -2,12 +2,14 @@
 % Please edit documentation in R/macro.R
 \name{latex_macros}
 \alias{latex_macros}
-\alias{[[<-.latex_macros}
 \title{Create and Write LaTeX Macro Lists}
 \usage{
 latex_macros(...)
-
-\method{[[}{latex_macros}(x, i) <- value
+}
+\arguments{
+\item{...}{For \code{latex_macros}, named arguments in which the argument
+name is the name of LaTeX command the expression is converted to a string
+using \code{\link{as_tex}}.  The dots are evaluated using [explicit splicing][dots_list].}
 }
 \value{
 An object of class \code{latex_macros} which extends
@@ -16,9 +18,3 @@ An object of class \code{latex_macros} which extends
 \description{
 Create and Write LaTeX Macro Lists
 }
-\section{Methods (by generic)}{
-\itemize{
-\item \code{[[<-}: This checks for the validity `i` before
-adding it.
-}}
-

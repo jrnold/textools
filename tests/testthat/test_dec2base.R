@@ -31,10 +31,6 @@ test_that("dec2base throws error if base is a zero-length character vector", {
   expect_error(dec2base(5, character()))
 })
 
-test_that("dec2base throws error if base is integer and greater than 62", {
-
-})
-
 test_that("dec2base works when drop_leading=FALSE", {
   expect_equal(dec2base(0:10, 3, drop_leading = FALSE),
                 c("000", "001", "002", "010", "011", "012", "020", "021", "022",

@@ -121,25 +121,26 @@ URL_REGEX <- str_c(
 # http://emailregex.com/
 # EMAIL_REGEX <- "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
-escape_latex_ <- function(x, ellipses = TRUE, textbar = TRUE) {
-  # TODO: escape URLS:
-  # e.g. http://stackoverflow.com/questions/26496538/extract-urls-with-regex-into-a-new-data-frame-column # nolint
-  special_char <- c("{", "}", "#", "$", "&", "_", "%")
-  special_char_pattern <-  str_c("[", str_c(special_char, collapse = ""), "]")
-  x <- str_replace_all(x, str_c("(", special_char_pattern, ")"), "\\\\\\1")
-  # backslashes that are not escaping special characters
-  x <- str_replace_all(x, str_c("\\\\", "(?!", special_char_pattern, ")"),
-                       "\\\\textbackslash{}") # nolint
-  x <- str_replace_all(x, fixed("~"), "\\textasciitilde{}")
-  x <- str_replace_all(x, fixed("^"), "\\textasciicircum{}")
-  if (ellipses) {
-    # Only replace ellipses when ... exactly
-    x <- str_replace_all(x, "(?<!\\.)[.]{3}(?!\\.)", "\\\\dots") # nolint
-  }
-  if (textbar) {
-    x <- str_replace_all(x, fixed("|"), "\\textbar{}")
-  }
-  x
+LATEX_SPECIAL_CHARS <- c(
+  # backslash
+  "\\" = "\\textbackslash{}",
+  "{" = "\\{",
+  "}" = "\\}",
+  "#" = "\\#",
+  "$" = "\\$",
+  "_" = "\\_",
+  "%" = "\\%",
+  "&" = "\\&",
+  # literal ^
+  "^" = "\\textasciicircum{}",
+  "~" = "\\textasciitilde{}"
+)
+
+escape_latex_ <- function(x) {
+  # the main issue is the order to escape {} and \
+  # using a replacement function replaces all matches at once and avoids
+  # this ordering problem
+  str_replace_all(x, "[{}#$_%^~&\\x{5c}]", function(m) LATEX_SPECIAL_CHARS[m])
 }
 
 # Convert dumb quotes to smart quotes
@@ -179,8 +180,6 @@ escape_latex_ <- function(x, ellipses = TRUE, textbar = TRUE) {
 #'     The \verb{\\url} command is from the
 #'     \href{https://www.ctan.org/pkg/hyperref}{hyperref}
 #'     package.
-#' @param ellipses If \code{TRUE}, replace ellipses, \verb{...}.
-#' @param textbar If \code{TRUE}, replace the vertical bar character, \verb{|}.
 #' @param ... Other arguments passed to methods
 #' @return A character vector with all LaTeX special characters escaped.
 #' @export
@@ -195,22 +194,20 @@ escape_latex <- function(x, ...) {
 
 #' @rdname escape_latex
 #' @export
-escape_latex.character <- function(x, url = TRUE, ellipses = TRUE, textbar = TRUE, ...) {
+escape_latex.character <- function(x, url = TRUE, ...) {
   assert_that(is.flag(url))
-  assert_that(is.flag(ellipses))
-  assert_that(is.flag(textbar))
   if (url) {
     ret <- chunk_replacer(regex_chunker(x, URL_REGEX),
                    fun_match = function(x) {
                      str_c("\\url{", x, "}")
                    },
                    fun_nonmatch = function(x) {
-                     escape_latex_(x, ellipses = ellipses, textbar = textbar)
+                     escape_latex_(x)
                    })
   } else {
-    ret <- escape_latex_(x, ellipses = ellipses, textbar = textbar)
+    ret <- escape_latex_(x)
   }
-  ret
+  tex(ret)
 }
 
 #' @rdname escape_latex

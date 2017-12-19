@@ -9,8 +9,7 @@
 \usage{
 escape_latex(x, ...)
 
-\method{escape_latex}{character}(x, url = TRUE, ellipses = TRUE,
-  textbar = TRUE, ...)
+\method{escape_latex}{character}(x, url = TRUE, ...)
 
 \method{escape_latex}{default}(x, ...)
 
@@ -25,10 +24,6 @@ escape_latex(x, ...)
 The \verb{\\url} command is from the
 \href{https://www.ctan.org/pkg/hyperref}{hyperref}
 package.}
-
-\item{ellipses}{If \code{TRUE}, replace ellipses, \verb{...}.}
-
-\item{textbar}{If \code{TRUE}, replace the vertical bar character, \verb{|}.}
 }
 \value{
 A character vector with all LaTeX special characters escaped.
