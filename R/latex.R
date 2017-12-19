@@ -1,8 +1,3 @@
-names2 <- function(x) {
-  names(x) %||% rep("", length(x))
-}
-
-
 #' Check that string is a valid TeX command name
 #'
 #' @param x character vector
@@ -70,23 +65,23 @@ print.tex <- function(x, ...) {
 #' @return An object of class \code{"tex"}.
 #' @seealso \code{\link{tex}} for a description of code \code{"tex"} objects.
 #' @export
-as.tex <- function(x, ...) {
-  UseMethod("as.tex")
+as_tex <- function(x, ...) {
+  UseMethod("as_tex")
 }
 
-#' @describeIn as.tex This converts a character vector to a \code{tex} object.
+#' @describeIn as_tex This converts a character vector to a \code{tex} object.
 #'    Unlike \code{\link{tex}}, it can, and by default, escapes special LaTeX
 #'    characters.
 #' @export
-as.tex.default <- function(x, ...) {
+as_tex.default <- function(x, ...) {
   tex(escape_latex(x))
 }
 
 #' @export
-#' @describeIn as.tex This simply returns \code{x}, so it will not escape already
+#' @describeIn as_tex This simply returns \code{x}, so it will not escape already
 #'   escaped text.
-as.tex.tex <- function(x, ...) x
+as_tex.tex <- function(x, ...) x
 
 #' @export
-#' @describeIn as.tex This returns ""
-as.text.NULL <- function(x, ...) tex("")
+#' @describeIn as_tex This returns ""
+as_tex.NULL <- function(x, ...) tex("")

@@ -12,6 +12,7 @@ Depends:
 Imports:
   assertthat,
   dplyr,
+  glue,
   purrr,
   rlang,
   stringr,
