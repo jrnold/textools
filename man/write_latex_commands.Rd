@@ -5,9 +5,9 @@
 \alias{write_latex_commands.default}
 \title{Convert a list to LaTeX macros}
 \usage{
-write_latex_commands(x, ...)
+write_latex_commands(x, path = NULL, ...)
 
-\method{write_latex_commands}{default}(x, prefix = "", ...)
+\method{write_latex_commands}{default}(x, path = NULL, prefix = "", ...)
 }
 \arguments{
 \item{x}{A list or vector}

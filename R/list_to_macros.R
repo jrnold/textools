@@ -2,33 +2,8 @@
   tex(sprintf("\\providecommand{\\%s}{%s}", names(x), as.tex(x)))
 }
 
-#' Convert a list to LaTeX macros
-#'
-#' For a list or vector. For elements with non-missing names,
-#' the elements are converted to a string and t
-#'
-#' @param x A list or vector
-#' @param prefix Prefix added to names
-#' @param ... Arguments passed to \code{\link{as.tex}}.
-#' @export
-write_latex_commands <- function(x, ...) {
-  UseMethod("write_latex_commands")
-}
-
 #' @rdname write_latex_commands
 #' @export
-write_latex_commands.default <- function(x, prefix="", ...) {
-  if (length(x) == 0) {
-    return("")
-  }
-  xnames <- names2(x)
-  if (any(xnames == "")) {
-    stop("All elements of x must be named.")
-  }
-  macronames <- str_c(prefix, xnames)
-  assert_that(all(is_tex_command(macronames)))
-  .providecommand(set_names(x, macronames))
-}
 
 
 #' Create and Write LaTeX Macro Lists
@@ -38,46 +13,40 @@ write_latex_commands.default <- function(x, prefix="", ...) {
 #' for adding and dropping elements in the list, and to write macros.
 #'
 #' @export
-LaTeXMacroList <- R6::R6Class("LaTeXMacroList", {
-  public = list(
-    data = rlang::new_environment(),
-    prefix = "",
-    initialize = function(prefix = "") {
-      self$prefix = prefix
-    },
-    add_all = function(...) {
-      env_bind(self$data, UQS(dots_splice(...)))
-      invisible(self)
-    },
-    add = function(value, key, ...) {
-      # put value first and return value to make it easier to use in a %>%
-      assert_that(is_tex_command(key))
-      env_bind(key, as.tex(value, ...))
-      invisible(value)
-    },
-    drop = function(key) {
-      self$data[[key]] <- NULL
-      invisible(self)
-    },
-    drop_all = function() {
-      self$data <- new
-      invisible(self)
-    },
-    to_macros = function() {
-     write_latex_macros(self$data, prefix = self$prefix)
-    },
-    format = function() {
-      self$to_macros()
-    },
-    write = function(file = "", append = FALSE) {
-      cat(self$to_macros(), file = file, append = append)
-      invisible(self)
-    },
-    print = function() {
-      self$write()
-    }
-  )
-})
+macrolist <- function(check_keys = TRUE, allow_missing = TRUE) {
+  out <- rlang::new_environment()
+  attr(out, "check_keys") <- check_keys
+  attr(out, "allow_missing") <- allow_missing
+  class(out) <- c("macrolist", class(out))
+  out
+}
+
+
+#' @export
+`[[<-.macrolist` <- function(x, i, value) {
+  if (attr("check_keys") && !is_text_command(i)) {
+    stop(glue("`{i}` is not a valid key.", call. = FALSE))
+  }
+  if (attr("allow_missing") & !is.null(value)) {
+    stop(glue("value cannot be `NULL`.", call. = FALSE))
+  }
+  assign(i, as_tex(value), envir = x)
+  x
+}
+
+
+#' @export
+format.macrolist <- function(x, prefix = "", ...) {
+  x <- as.list(x)
+  str_c(.providecommand(set_names(x, str_c(prefix, names(x)))),
+        collapse = "\n")
+}
+
+#' @export
+print.macrolist <- function(x, prefix = "", ...) {
+  cat(format(x, prefix = prefix))
+
+}
 
 coerce_tex_name <- function(x) {
   trailing_star <- str_detect("[*]^", x)
