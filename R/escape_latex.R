@@ -147,8 +147,8 @@ escape_latex_ <- function(x, ellipses = TRUE, textbar = TRUE) {
 # of the Markdown smartypants
 # Only the quotes are relevant. LaTeX already recognizes -- and ---, so don't need
 # to convert those, and latex uses ``'' so don't convert those.
-smartypants <- function(x, ...) {
-}
+# smartypants <- function(x, ...) {
+# }
 
 
 #' Escape LaTeX special characters
