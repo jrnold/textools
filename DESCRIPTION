@@ -15,8 +15,7 @@ Imports:
   glue,
   purrr,
   rlang,
-  stringr,
-  R6
+  stringr
 Suggests:
     knitr,
     rmarkdown,
