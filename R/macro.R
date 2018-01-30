@@ -15,21 +15,7 @@
 #' @export
 #' @importFrom rlang as_env names2 dots_list empty_env as_env
 #' @importFrom purrr detect negate
-#' @example
-#' macros <- latex_macros(a = "1", b = "foo")
-#' macros
-#' # Assign new macros
-#' macros$c <- 2 + 2
-#' macros$d <- str_c(letters, " ")
-#' macros
-#' # By default, LaTeX special characters are escaped
-#' macros$e <- "$ 2 ^ 3 $"
-#' macros$e
-#' # use tex() to avoid escaping
-#' macros$e <- tex("$ 2 ^ 3 $")
-#' macros$e
-#' # format() returns a string with LaTeX commands
-#' format(macros)
+#' @example examples/ex-macros.R
 latex_macros <- function(...) {
   #
   x <- dots_list(...)
