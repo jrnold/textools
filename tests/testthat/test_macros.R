@@ -26,14 +26,14 @@ test_that("latex_macros requires valid names", {
 
 test_that("format.latex_macros works", {
   out <- format(latex_macros(a = 1, b = "2 \\ 3", c = "% $"))
-  expected <- tex("\\providecommand{c}{\\% \\$}\n\\providecommand{b}{2 \\textbackslash  3}\n\\providecommand{a}{1}")
+  expected <- LaTeX("\\providecommand{\\c}{\\% \\$}\n\\providecommand{\\b}{2 \\textbackslash  3}\n\\providecommand{\\a}{1}")
   expect_equal(out, expected)
 })
 
 test_that("[[<-.latex_macros works", {
   x <- latex_macros(a = 1)
   x[["b"]] <- "foo"
-  expect_equal(x[["b"]], as_tex("foo"))
+  expect_equal(x[["b"]], as_latex("foo"))
 })
 
 test_that("[[<-.latex_macros with NULL deletes values", {
@@ -45,6 +45,6 @@ test_that("[[<-.latex_macros with NULL deletes values", {
 test_that("[[<-.latex_macros checks validity of names", {
   x <- latex_macros(a = 1)
   x[["b"]] <- "foo"
-  expect_equal(x[["b"]], as_tex("foo"))
+  expect_equal(x[["b"]], as_latex("foo"))
 })
 

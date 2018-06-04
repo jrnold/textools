@@ -207,7 +207,7 @@ escape_latex.character <- function(x, url = TRUE, ...) {
   } else {
     ret <- escape_latex_(x)
   }
-  tex(ret)
+  LaTeX(ret)
 }
 
 #' @rdname escape_latex

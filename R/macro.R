@@ -7,7 +7,7 @@
 #'
 #' @param ... For \code{latex_macros}, named arguments in which the argument
 #'   name is the name of LaTeX command the expression is converted to a string
-#'   using \code{\link{as_tex}}.  The dots are evaluated using [explicit splicing][dots_list].
+#'   using \code{\link{as_latex}}.  The dots are evaluated using [explicit splicing][dots_list].
 #'
 #' @return An object of class \code{latex_macros} which extends
 #'  \code{environment}.
@@ -22,14 +22,14 @@ latex_macros <- function(...) {
   if (length(x) && any(names2(x) == "")) {
     stop("All arguments must be named", call. = FALSE)
   }
-  badnames <- discard(names(x), is_tex_name)
+  badnames <- discard(names(x), is_latex_name)
   if (length(badnames) > 0) {
     stop("All names must be valid LaTeX command names. ",
          "The following names are invalid: ",
          str_c("`", badnames, "`"),
          call. = FALSE)
   }
-  x <- as_env(map(x, as_tex), parent = empty_env())
+  x <- as_env(map(x, as_latex), parent = empty_env())
   class(x) <- c("latex_macros", class(x))
   x
 }
@@ -38,13 +38,13 @@ latex_macros <- function(...) {
 #' @export
 #' @importFrom glue glue
 `[[<-.latex_macros` <- function(x, i, value) {
-  if (!is_tex_name(i)) {
+  if (!is_latex_name(i)) {
     stop(glue("`{i}` is not a valid key.", call. = FALSE))
   }
   if (is.null(value)) {
     rm(list = i, envir = x)
   } else {
-    assign(i, as_tex(value), envir = x)
+    assign(i, as_latex(value), envir = x)
   }
   x
 }
@@ -64,7 +64,7 @@ format.latex_macros <- function(x, prefix = "", ...) {
   } else {
     ""
   }
-  tex(out)
+  LaTeX(out)
 }
 
 #' @export

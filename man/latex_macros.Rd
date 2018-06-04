@@ -9,7 +9,7 @@ latex_macros(...)
 \arguments{
 \item{...}{For \code{latex_macros}, named arguments in which the argument
 name is the name of LaTeX command the expression is converted to a string
-using \code{\link{as_tex}}.  The dots are evaluated using [explicit splicing][dots_list].}
+using \code{\link{as_latex}}.  The dots are evaluated using [explicit splicing][dots_list].}
 }
 \value{
 An object of class \code{latex_macros} which extends

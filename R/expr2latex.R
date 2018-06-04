@@ -323,16 +323,16 @@ expr2latex_ <- function(expr) {
 
 
 #' @export
-as_tex.expression <- function(x, ...) {
-  tex(expr2latex(x))
+as_latex.expression <- function(x, ...) {
+  LaTeX(expr2latex(x))
 }
 
 #' @export
-as_tex.call <- function(x, ...) {
-  as_tex(as.expression(x))
+as_latex.call <- function(x, ...) {
+  as_latex(as.expression(x))
 }
 
 #' @export
-as_tex.name <- function(x, ...) {
-  as_tex(as.expression(x))
+as_latex.name <- function(x, ...) {
+  as_latex(as.expression(x))
 }

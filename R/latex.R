@@ -1,7 +1,7 @@
-#' Check or make valid TeX command name
+#' Check or make valid LaTeX command name
 #'
 #' Valid LaTeX command names can only contain letters \code{[A-Za-z]}.
-#' The function \code{is_tex_name} checks whether strings are valid LaTeX
+#' The function \code{is_latex_name} checks whether strings are valid LaTeX
 #' command names. The function \code{make_tex_name} converts a character vector
 #' to valid LaTeX command names by dropping all invalid characters.
 #'
@@ -10,21 +10,21 @@
 #'   character in addition to upper- and lower-cased letters.
 #' @return
 #' \describe{
-#' \item{\code{is_tex_name}}{A logical vector with length \code{length(x)}
+#' \item{\code{is_latex_name}}{A logical vector with length \code{length(x)}
 #' indicating which elements elements of the vector contain valid TeX
 #' command names}
 #' \item{}{A character vector with length \code{length(x)} with syntactically
-#'   valid TeX command names.}
+#'   valid LaTeX command names.}
 #' }
 #' @export
-is_tex_name <- function(x, allow_at = FALSE) {
+is_latex_name <- function(x, allow_at = FALSE) {
   pattern <- if (allow_at) "^[A-Za-z@]+[*]?$" else "^[A-Za-z]+[*]?$"
   str_detect(x, pattern)
 }
 
 #' @export
-#' @rdname is_tex_name
-make_tex_name <- function(x, allow_at = FALSE) {
+#' @rdname is_latex_name
+make_latex_name <- function(x, allow_at = FALSE) {
   pattern <- if (allow_at[[1]]) "[^A-Za-z@]+" else "[^A-Za-z]+"
   y <- str_replace(x, pattern, "")
   zerolen <- !str_length(y)
@@ -35,11 +35,9 @@ make_tex_name <- function(x, allow_at = FALSE) {
   y
 }
 
-
-
 #' Convert R object to LaTeX text
 #'
-#' Marks the given text as (La)TeX, which means functions will
+#' Marks the given text as LaTeX, which means functions will
 #' know not to perform escaping on it.
 #'
 #' @param x An R object to be converted to LaTeX.
@@ -50,61 +48,57 @@ make_tex_name <- function(x, allow_at = FALSE) {
 #'   escape LaTeX special characters.
 #' @seealso \code{\link[utils]{toLatex}}
 #' @export
-#' @examples
-#' tex("Already \\textit{formatted} \\LaTeX text.")
-tex <- function(x) {
-  structure(x, class = c("tex"))
+#' @example examples/ex-LaTeX.R
+LaTeX <- function(x) {
+  structure(x, class = c("latex"))
 }
 
 # I'm not sure whether x should be forced to be a string or not.
 #' @export
-as.character.tex <- function(x, ...) {
+as.character.latex <- function(x, ...) {
   unclass(x)
 }
 
 #' @export
-print.tex <- function(x, ...) {
-  cat("<tex>\n")
+print.latex <- function(x, ...) {
   cat(str_c(x, collapse = "\n"))
   invisible(x)
 }
 
-
 #' Convert objects to LaTeX
 #'
 #' This is the preferred method to convert objects to a
-#' \code{tex} object. It is a generic function, so it can be defined for
+#' \code{latex} object. It is a generic function, so it can be defined for
 #' different classes. The default is to convert an object to a character vector
 #' and use \code{escape_latex} to escape special LaTeX symbols.
 #'
 #' @param x The object to convert
 #' @param ... Other arguments used by methods
 #' @return An object of class \code{"tex"}.
-#' @seealso \code{\link{tex}} for a description of code \code{"tex"} objects.
+#' @seealso \code{\link{LaTeX}} for a description of code \code{"latex"} objects.
 #' @export
-as_tex <- function(x, ...) {
-  UseMethod("as_tex")
+as_latex <- function(x, ...) {
+  UseMethod("as_latex")
 }
 
-#' @describeIn as_tex This converts a character vector to a \code{tex} object.
-#'    Unlike \code{\link{tex}}, it can, and by default, escapes special LaTeX
+#' @describeIn as_latex This converts a character vector to a \code{LaTeX} object.
+#'    Unlike \code{\link{LaTeX}}, it can, and by default, escapes special LaTeX
 #'    characters.
 #' @export
-as_tex.default <- function(x, ...) {
+as_latex.default <- function(x, ...) {
   x <- tryCatch(
     utils::toLatex(x, ...),
     error = function(e) {
       escape_latex(as.character(x), ...)
     }
   )
-  tex(x)
+  LaTeX(x)
 }
 
 #' @export
-#' @describeIn as_tex This simply returns \code{x}, so it will not escape already
-#'   escaped text.
-as_tex.tex <- function(x, ...) x
+#' @describeIn as_latex Return \code{x}, so as to not valid LaTeX text.
+as_latex.latex <- function(x, ...) x
 
 #' @export
-#' @describeIn as_tex This returns ""
-as_tex.NULL <- function(x, ...) tex("")
+#' @describeIn as_latex This returns ""
+as_latex.NULL <- function(x, ...) LaTeX("")
