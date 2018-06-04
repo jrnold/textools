@@ -1,24 +1,41 @@
-#' Check that string is a valid TeX command name
+#' Check or make valid TeX command name
+#'
+#' Valid LaTeX command names can only contain letters \code{[A-Za-z]}.
+#' The function \code{is_tex_name} checks whether strings are valid LaTeX
+#' command names. The function \code{make_tex_name} converts a character vector
+#' to valid LaTeX command names by dropping all invalid characters.
 #'
 #' @param x character vector
-#' @return A logical vector indicating which elements elements of the vector
-#'   contain valid TeX command names.
-#'
-#' Without resorting to changing the category codes of characters, valid
-#' LaTeX commands can only contain letters.
-#'
-#' Assertation to check for a valid LaTeX macro (command) names
-is_tex_command <- function(x) {
-  str_detect(x, "^[A-Za-z]+[*]?$")
+#' @param allow_at flag. Allow the character vector to include the \code{@}
+#'   character in addition to upper- and lower-cased letters.
+#' @return
+#' \describe{
+#' \item{\code{is_tex_name}}{A logical vector with length \code{length(x)}
+#' indicating which elements elements of the vector contain valid TeX
+#' command names}
+#' \item{}{A character vector with length \code{length(x)} with syntactically
+#'   valid TeX command names.}
+#' }
+#' @export
+is_tex_name <- function(x, allow_at = FALSE) {
+  pattern <- if (allow_at) "^[A-Za-z@]+[*]?$" else "^[A-Za-z]+[*]?$"
+  str_detect(x, pattern)
 }
 
-# is_tex_command <- function(x) {
-#   str_detect(x, "^[A-Za-z]+[*]?$")
-# }
-# on_failure(is_tex_command) <- function(call, env) {
-#   str_c(deparse(call$x), " includes invalid LaTeX command names.\n",
-#         "LaTeX command names can include only letters.")
-# }
+#' @export
+#' @rdname is_tex_name
+make_tex_name <- function(x, allow_at = FALSE) {
+  pattern <- if (allow_at[[1]]) "[^A-Za-z@]+" else "[^A-Za-z]+"
+  y <- str_replace(x, pattern, "")
+  zerolen <- !str_length(y)
+  y[zerolen] <- NA_character_
+  if (any(zerolen)) {
+    warning("Some values could not be converted to valid TeX command names.")
+  }
+  y
+}
+
+
 
 #' Convert R object to LaTeX text
 #'
@@ -74,7 +91,13 @@ as_tex <- function(x, ...) {
 #'    characters.
 #' @export
 as_tex.default <- function(x, ...) {
-  tex(escape_latex(x))
+  x <- tryCatch(
+    utils::toLatex(x, ...),
+    error = function(e) {
+      escape_latex(as.character(x), ...)
+    }
+  )
+  tex(x)
 }
 
 #' @export

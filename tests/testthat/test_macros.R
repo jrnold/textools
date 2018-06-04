@@ -26,7 +26,7 @@ test_that("latex_macros requires valid names", {
 
 test_that("format.latex_macros works", {
   out <- format(latex_macros(a = 1, b = "2 \\ 3", c = "% $"))
-  expected <- tex("\\providecommand{\\c}{\\textbackslash{}\\% \\textbackslash{}\\$}\n\\providecommand{\\b}{2 \\textbackslash{}textbackslash\\{\\} 3}\n\\providecommand{\\a}{1}")
+  expected <- tex("\\providecommand{c}{\\% \\$}\n\\providecommand{b}{2 \\textbackslash  3}\n\\providecommand{a}{1}")
   expect_equal(out, expected)
 })
 

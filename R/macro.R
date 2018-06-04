@@ -1,5 +1,5 @@
 .providecommand <- function(x) {
-  tex(sprintf("\\providecommand{\\%s}{%s}", names(x), as_tex(x)))
+  str_c("\\providecommand{\\", names(x), "}{", x, "}")
 }
 
 
@@ -22,7 +22,7 @@ latex_macros <- function(...) {
   if (length(x) && any(names2(x) == "")) {
     stop("All arguments must be named", call. = FALSE)
   }
-  badnames <- discard(names(x), is_tex_command)
+  badnames <- discard(names(x), is_tex_name)
   if (length(badnames) > 0) {
     stop("All names must be valid LaTeX command names. ",
          "The following names are invalid: ",
@@ -38,7 +38,7 @@ latex_macros <- function(...) {
 #' @export
 #' @importFrom glue glue
 `[[<-.latex_macros` <- function(x, i, value) {
-  if (!is_tex_command(i)) {
+  if (!is_tex_name(i)) {
     stop(glue("`{i}` is not a valid key.", call. = FALSE))
   }
   if (is.null(value)) {
@@ -60,7 +60,7 @@ format.latex_macros <- function(x, prefix = "", ...) {
   x <- as.list(x)
   out <- if (length(x)) {
     str_c(.providecommand(set_names(x, str_c(prefix, names(x)))),
-                 collapse = "\n")
+          collapse = "\n")
   } else {
     ""
   }
